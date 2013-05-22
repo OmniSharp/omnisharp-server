@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using OmniSharp.Common;
 using OmniSharp.Solution;
 
@@ -34,7 +35,7 @@ namespace OmniSharp.Build
         {
 			var build = IsUnix
 						? "xbuild" 
-						: @"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Msbuild.exe";
+						: Path.Combine(System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory(), "Msbuild.exe");
 
             var startInfo = new ProcessStartInfo
                 {
