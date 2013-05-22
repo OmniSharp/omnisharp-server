@@ -65,12 +65,12 @@ namespace OmniSharp
                 {
                     var solution = new CSharpSolution(solutionPath);
                     Console.CancelKeyPress +=
-                        delegate(object sender, ConsoleCancelEventArgs e)
-                        {
-                            solution.Terminated = true;
-                            Console.WriteLine("Ctrl-C pressed");
-                            e.Cancel = true;
-                        };
+                        (sender, e) =>
+                            {
+                                solution.Terminated = true;
+                                Console.WriteLine("Ctrl-C pressed");
+                                e.Cancel = true;
+                            };
 
                     var nancyHost = new NancyHost(new Bootstrapper(solution), new Uri("http://localhost:" + port));
 
