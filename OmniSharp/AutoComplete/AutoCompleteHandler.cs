@@ -55,7 +55,7 @@ namespace OmniSharp.AutoComplete
 					   .ThenByDescending(d => d.CompletionText.IsValidCompletionStartsWithIgnoreCase(partialWord))
 					   .ThenByDescending(d => d.CompletionText.IsCamelCaseMatch(partialWord))
 					   .ThenByDescending(d => d.CompletionText.IsSubsequenceMatch(partialWord))
-                       .ThenBy(d => d.DisplayText);
+                       .ThenBy(d => d.CompletionText);
         }
     }
 }
