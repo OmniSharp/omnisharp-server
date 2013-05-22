@@ -57,21 +57,21 @@ namespace OmniSharp
 
         private static void StartServer(string solutionPath, int port)
         {
-            var solution = new CSharpSolution(solutionPath);
-            Console.CancelKeyPress +=
-                delegate(object sender, ConsoleCancelEventArgs e)
-                    {
-                        solution.Terminated = true;
-                        Console.WriteLine("Ctrl-C pressed");
-                        e.Cancel = true;
-                    };
-
             var lockfile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "lockfile-" + port);
 
             try
             {
                 using (new FileStream(lockfile, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None))
                 {
+                    var solution = new CSharpSolution(solutionPath);
+                    Console.CancelKeyPress +=
+                        delegate(object sender, ConsoleCancelEventArgs e)
+                        {
+                            solution.Terminated = true;
+                            Console.WriteLine("Ctrl-C pressed");
+                            e.Cancel = true;
+                        };
+
                     var nancyHost = new NancyHost(new Bootstrapper(solution), new Uri("http://localhost:" + port));
 
                     nancyHost.Start();
@@ -85,7 +85,6 @@ namespace OmniSharp
                     nancyHost.Stop();
                 }
                 DeleteLockFile(lockfile);
-                
             }
             catch (IOException)
             {
