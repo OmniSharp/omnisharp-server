@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using NDesk.Options;
 using Nancy.Hosting.Self;
@@ -13,23 +14,23 @@ namespace OmniSharp
             bool showHelp = false;
             string solutionPath = null;
 
-            int port = 2000;
-			
+            var port = 2000;
+
             var p = new OptionSet
+                    {
                         {
-                            {
-                                "s|solution=", "The path to the solution file",
-                                v => solutionPath = v
-                            },
-                            {
-                                "p|port=", "Port number to listen on",
-                                (int v) => port = v
-                            },
-                            {
-                                "h|help", "show this message and exit",
-                                v => showHelp = v != null
-                            },
-                        };
+                            "s|solution=", "The path to the solution file",
+                            v => solutionPath = v
+                        },
+                        {
+                            "p|port=", "Port number to listen on",
+                            (int v) => port = v
+                        },
+                        {
+                            "h|help", "show this message and exit",
+                            v => showHelp = v != null
+                        },
+                    };
 
             try
             {
@@ -49,36 +50,53 @@ namespace OmniSharp
                 ShowHelp(p);
                 return;
             }
-             
-            bool createdNew;
-            using (var mutex = new Mutex(true, "OmniSharp" + port, out createdNew))
-            {
-                if (createdNew)
-                {
-                    StartServer(solutionPath, port);
-                }
-                else
-                {
-                    Console.WriteLine("Detected an OmniSharp instance already running on port " + port + ". Press a key.");
-                    Console.ReadKey();
-                }    
-            }
+
+            StartServer(solutionPath, port);
+            
         }
 
         private static void StartServer(string solutionPath, int port)
         {
             var solution = new CSharpSolution(solutionPath);
+            Console.CancelKeyPress +=
+                delegate(object sender, ConsoleCancelEventArgs e)
+                    {
+                        solution.Terminated = true;
+                        Console.WriteLine("Ctrl-C pressed");
+                        e.Cancel = true;
+                    };
 
-            var nancyHost = new NancyHost(new Bootstrapper(solution), new Uri("http://localhost:" + port));
+            var lockfile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "lockfile-" + port);
 
-            nancyHost.Start();
-
-            while (!solution.Terminated)
+            try
             {
-                Thread.Sleep(1000);
-            }
+                using (new FileStream(lockfile, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None))
+                {
+                    var nancyHost = new NancyHost(new Bootstrapper(solution), new Uri("http://localhost:" + port));
 
-            nancyHost.Stop();
+                    nancyHost.Start();
+
+                    while (!solution.Terminated)
+                    {
+                        Thread.Sleep(1000);
+                    }
+                    
+                    Console.WriteLine("Quit gracefully");
+                    nancyHost.Stop();
+                }
+                DeleteLockFile(lockfile);
+                
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("Detected an OmniSharp instance already running on port " + port + ". Press a key.");
+                Console.ReadKey();
+            }
+        }
+
+        private static void DeleteLockFile(string lockfile)
+        {
+            File.Delete(lockfile);
         }
 
         static void ShowHelp(OptionSet p)

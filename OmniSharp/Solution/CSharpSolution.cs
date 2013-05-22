@@ -45,7 +45,7 @@ namespace OmniSharp.Solution
 
         public string FileName { get; private set; }
 
-        public bool Terminated { get; private set; }
+        public bool Terminated { get; set; }
 
         public CSharpSolution(string fileName)
         {
