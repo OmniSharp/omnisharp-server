@@ -11,7 +11,7 @@ namespace OmniSharp.AddReference
                 {
                     var req = this.Bind<AddReferenceRequest>();
                     var res = handler.AddReference(req);
-                    return res;
+                    return Response.AsJson(res);
                 };
         }
     }
