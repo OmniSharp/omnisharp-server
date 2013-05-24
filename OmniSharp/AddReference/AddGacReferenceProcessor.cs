@@ -12,17 +12,17 @@ namespace OmniSharp.AddReference
 
             var projectXml = project.AsXml();
 
-            var compilationNodes = GetReferenceNodes(projectXml, "Reference");
+            var referenceNodes = GetReferenceNodes(projectXml, "Reference");
 
-            var referenceAlreadyAdded = compilationNodes.Any(n => n.Attribute("Include").Value.Equals(reference));
+            var referenceAlreadyAdded = referenceNodes.Any(n => n.Attribute("Include").Value.Equals(reference));
 
             var fileReferenceNode = CreateReferenceNode(reference);
 
             if (!referenceAlreadyAdded)
             {
-                if (compilationNodes.Count > 0)
+                if (referenceNodes.Count > 0)
                 {
-                    compilationNodes.First().Parent.Add(fileReferenceNode);
+                    referenceNodes.First().Parent.Add(fileReferenceNode);
                 }
                 else
                 {

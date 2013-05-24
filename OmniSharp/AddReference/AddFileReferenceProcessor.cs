@@ -13,21 +13,21 @@ namespace OmniSharp.AddReference
 
             var projectXml = project.AsXml();
             
-            var compilationNodes = GetReferenceNodes(projectXml, "Reference");
+            var referenceNodes = GetReferenceNodes(projectXml, "Reference");
 
             var relativeReferencePath = project.FileName.GetRelativePath(reference);
 
             var referenceName = reference.Substring(reference.LastIndexOf(Path.DirectorySeparatorChar) + 1).Replace(".dll", "");
 
-            var referenceAlreadyAdded = compilationNodes.Any(n => n.Attribute("Include").Value.Equals(referenceName));
+            var referenceAlreadyAdded = referenceNodes.Any(n => n.Attribute("Include").Value.Equals(referenceName));
 
             var fileReferenceNode = CreateReferenceNode(relativeReferencePath, referenceName);
 
             if (!referenceAlreadyAdded)
             {
-                if (compilationNodes.Count > 0)
+                if (referenceNodes.Count > 0)
                 {
-                    compilationNodes.First().Parent.Add(fileReferenceNode);
+                    referenceNodes.First().Parent.Add(fileReferenceNode);
                 }
                 else
                 {

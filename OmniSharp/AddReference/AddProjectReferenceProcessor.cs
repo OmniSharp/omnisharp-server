@@ -22,13 +22,13 @@ namespace OmniSharp.AddReference
 
             var projectXml = project.AsXml();
 
-            var compilationNodes = GetReferenceNodes(projectXml, "ProjectReference");
+            var referenceNodes = GetReferenceNodes(projectXml, "ProjectReference");
             
             var relativeProjectPath = project.FileName.GetRelativePath(projectToReference.FileName);
 
             var projectReferenceNode = CreateProjectReferenceNode(relativeProjectPath, projectToReference);
 
-            var projectAlreadyAdded = compilationNodes.Any(n => n.Attribute("Include").Value.Equals(relativeProjectPath));
+            var projectAlreadyAdded = referenceNodes.Any(n => n.Attribute("Include").Value.Equals(relativeProjectPath));
 
             if (IsCircularReference(project, projectToReference))
             {
@@ -38,11 +38,11 @@ namespace OmniSharp.AddReference
 
             if (!projectAlreadyAdded)
             {
-                var projectContainsProjectReferences = compilationNodes.Count > 0;
+                var projectContainsProjectReferences = referenceNodes.Count > 0;
 
                 if (projectContainsProjectReferences)
                 {
-                    compilationNodes.First().Parent.Add(projectReferenceNode);
+                    referenceNodes.First().Parent.Add(projectReferenceNode);
                 }
                 else
                 {
