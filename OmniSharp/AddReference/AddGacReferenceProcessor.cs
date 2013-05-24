@@ -1,27 +1,22 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Xml.Linq;
 using OmniSharp.Solution;
 
 namespace OmniSharp.AddReference
 {
-    public class AddFileReferenceProcessor : ReferenceProcessorBase, IReferenceProcessor
+    public class AddGacReferenceProcessor : ReferenceProcessorBase, IReferenceProcessor
     {
         public AddReferenceResponse AddReference(IProject project, string reference)
         {
             var response = new AddReferenceResponse();
 
             var projectXml = project.AsXml();
-            
+
             var referenceNodes = GetReferenceNodes(projectXml, "Reference");
 
-            var relativeReferencePath = project.FileName.GetRelativePath(reference);
+            var referenceAlreadyAdded = referenceNodes.Any(n => n.Attribute("Include").Value.Equals(reference));
 
-            var referenceName = reference.Substring(reference.LastIndexOf(Path.DirectorySeparatorChar) + 1).Replace(".dll", "");
-
-            var referenceAlreadyAdded = referenceNodes.Any(n => n.Attribute("Include").Value.Equals(referenceName));
-
-            var fileReferenceNode = CreateReferenceNode(relativeReferencePath, referenceName);
+            var fileReferenceNode = CreateReferenceNode(reference);
 
             if (!referenceAlreadyAdded)
             {
@@ -36,10 +31,10 @@ namespace OmniSharp.AddReference
                     projectXml.Element(MsBuildNameSpace + "Project").Add(projectItemGroup);
                 }
 
-                project.AddReference(reference.FixPath());
+                project.AddReference(reference);
                 project.Save(projectXml);
 
-                response.Message = string.Format("Reference to {0} added successfully", referenceName);
+                response.Message = string.Format("Reference to {0} added successfully", reference);
             }
             else
             {
@@ -47,18 +42,13 @@ namespace OmniSharp.AddReference
             }
 
             return response;
-
         }
 
-        XElement CreateReferenceNode(string relativeReferencePath, string referenceName)
+        XElement CreateReferenceNode(string referenceName)
         {
             var projectReferenceNode =
                 new XElement(MsBuildNameSpace + "Reference",
                     new XAttribute("Include", referenceName));
-
-            projectReferenceNode.Add(
-                new XElement(MsBuildNameSpace + "HintPath",
-                    new XText(relativeReferencePath)));
 
             return projectReferenceNode;
         }

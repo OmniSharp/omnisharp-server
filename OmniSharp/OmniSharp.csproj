@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddReference\AddFileReferenceProcessor.cs" />
+    <Compile Include="AddReference\AddGacReferenceProcessor.cs" />
     <Compile Include="AddReference\AddProjectReferenceProcessor.cs" />
     <Compile Include="AddReference\AddReferenceHandler.cs" />
     <Compile Include="AddReference\AddReferenceModule.cs" />

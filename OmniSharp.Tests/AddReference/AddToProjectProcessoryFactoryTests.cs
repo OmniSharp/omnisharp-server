@@ -22,7 +22,8 @@ namespace OmniSharp.Tests.AddReference
             _processors = new List<IReferenceProcessor>
                               {
                                   new AddProjectReferenceProcessor(_solution),
-                                  new AddFileReferenceProcessor()
+                                  new AddFileReferenceProcessor(),
+                                  new AddGacReferenceProcessor()
                               };
 
             _factory = new AddReferenceProcessorFactory(_solution, _processors);
@@ -52,6 +53,19 @@ namespace OmniSharp.Tests.AddReference
             var processor = _factory.CreateProcessorFor(request);
 
             processor.ShouldBeType<AddFileReferenceProcessor>();
+        }
+
+        [Test]
+        public void ShouldReturnAddGacReferenceProcessorWhenReferencingGac()
+        {
+            var request = new AddReferenceRequest
+            {
+                Reference = "System.Web.Mvc"
+            };
+
+            var processor = _factory.CreateProcessorFor(request);
+
+            processor.ShouldBeType<AddGacReferenceProcessor>();
         }
     }
 }

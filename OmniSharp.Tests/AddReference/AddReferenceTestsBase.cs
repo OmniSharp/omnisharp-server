@@ -50,5 +50,24 @@ namespace OmniSharp.Tests.AddReference
             project.AddFile("some content", @"c:\test\one\test.cs");
             return project;
         }
+
+        protected IProject CreateDefaultProjectWithGacReference()
+        {
+            var project = new FakeProject("fakeone", @"c:\test\one\fake1.csproj", Guid.NewGuid())
+            {
+                Title = "Project One",
+                XmlRepresentation = XDocument.Parse(@"
+                <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+                    <ItemGroup>
+                        <Compile Include=""Test.cs""/>
+                    </ItemGroup>
+                    <ItemGroup>
+                        <Reference Include=""System.Web.Mvc"" />
+                    </ItemGroup>
+                </Project>")
+            };
+            project.AddFile("some content", @"c:\test\one\test.cs");
+            return project;
+        }
     }
 }
