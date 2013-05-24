@@ -12,10 +12,8 @@ namespace OmniSharp.AddReference
             var response = new AddReferenceResponse();
 
             var projectXml = project.AsXml();
-
-            var compilationNodes = projectXml.Element(MsBuildNameSpace + "Project")
-                                             .Elements(MsBuildNameSpace + "ItemGroup")
-                                             .Elements(MsBuildNameSpace + "Reference").ToList();
+            
+            var compilationNodes = GetReferenceNodes(projectXml, "Reference");
 
             var relativeReferencePath = project.FileName.GetRelativePath(reference);
 

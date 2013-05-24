@@ -5,9 +5,9 @@ namespace OmniSharp.AddReference
     public class AddReferenceHandler
     {
         private readonly ISolution _solution;
-        private readonly AddReferenceProcessorFactory _addReferenceProcessorFactory;
+        private readonly IAddReferenceProcessorFactory _addReferenceProcessorFactory;
 
-        public AddReferenceHandler(ISolution solution, AddReferenceProcessorFactory addReferenceProcessorFactory)
+        public AddReferenceHandler(ISolution solution, IAddReferenceProcessorFactory addReferenceProcessorFactory)
         {
             _solution = solution;
             _addReferenceProcessorFactory = addReferenceProcessorFactory;
