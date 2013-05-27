@@ -1,6 +1,6 @@
 ﻿using OmniSharp.Common;
 
-namespace OmniSharp.AddToProject
+namespace OmniSharp.ProjectManipulation.AddToProject
 {
     public class AddToProjectRequest : Request
     {
