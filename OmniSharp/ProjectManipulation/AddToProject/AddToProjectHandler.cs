@@ -3,7 +3,7 @@ using System.Linq;
 using System.Xml.Linq;
 using OmniSharp.Solution;
 
-namespace OmniSharp.AddToProject
+namespace OmniSharp.ProjectManipulation.AddToProject
 {
     public class AddToProjectHandler
     {

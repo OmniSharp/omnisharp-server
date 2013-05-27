@@ -1,10 +1,10 @@
 ﻿using System.Xml.Linq;
 using NUnit.Framework;
-using OmniSharp.AddToProject;
+using OmniSharp.ProjectManipulation.AddToProject;
 using OmniSharp.Solution;
 using Should;
 
-namespace OmniSharp.Tests.AddToProject
+namespace OmniSharp.Tests.ProjectManipulation.AddToProject
 {
     [TestFixture]
     public class AddToProjectTests

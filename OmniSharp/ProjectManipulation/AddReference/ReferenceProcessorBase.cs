@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using OmniSharp.Solution;
 
-namespace OmniSharp.AddReference
+namespace OmniSharp.ProjectManipulation.AddReference
 {
     public abstract class ReferenceProcessorBase
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OmniSharp.AddToProject
+namespace OmniSharp.ProjectManipulation.AddToProject
 {
     public class ProjectNotFoundException : Exception
     {

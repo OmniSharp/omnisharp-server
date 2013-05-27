@@ -3,7 +3,7 @@ using System.Xml.Linq;
 using NUnit.Framework;
 using OmniSharp.Solution;
 
-namespace OmniSharp.Tests.AddReference
+namespace OmniSharp.Tests.ProjectManipulation.AddReference
 {
     public abstract class AddReferenceTestsBase
     {
