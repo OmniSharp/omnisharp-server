@@ -49,7 +49,7 @@ namespace OmniSharp.ProjectManipulation.AddToProject
                 var newFileElement = new XElement(_msBuildNameSpace + "Compile", new XAttribute("Include", relativeFileName));
 
                 compilationNodeParent.Add(newFileElement);
-
+                
                 relativeProject.Save(project);
             }
         }

@@ -36,6 +36,8 @@ namespace OmniSharp.ProjectManipulation.RemoveFromProject
 
             if (fileNode != null)
             {
+                RemoveFileFromProject(relativeProject, request.FileName);
+
                 project.CompilationNodes().Where(n => n.Attribute("Include").Value.Equals(relativeFileName, StringComparison.InvariantCultureIgnoreCase)).Remove();
 
                 var nodes = project.CompilationNodes();
@@ -44,9 +46,14 @@ namespace OmniSharp.ProjectManipulation.RemoveFromProject
                 {
                     project.ItemGroupNodes().Where(n => !n.Nodes().Any()).Remove();
                 }
-
+                
                 relativeProject.Save(project);
             }
+        }
+
+        private void RemoveFileFromProject(IProject project, string filename)
+        {
+            project.Files.Remove(project.Files.First(f => f.FileName == filename));
         }
     }
 
