@@ -144,6 +144,7 @@
     <Compile Include="ProjectManipulation\RemoveFromProject\RemoveFromProjectHandler.cs" />
     <Compile Include="ProjectManipulation\RemoveFromProject\RemoveFromProjectModule.cs" />
     <Compile Include="ProjectManipulation\RemoveFromProject\RemoveFromProjectRequest.cs" />
+    <Compile Include="ProjectManipulation\RemoveFromProject\XDocumentExtensions.cs" />
     <Compile Include="Refactoring\OmniSharpScript.cs" />
     <Compile Include="Refactoring\OmniSharpRefactoringContext.cs" />
     <Compile Include="GetCodeActions\RunCodeActionModule.cs" />
