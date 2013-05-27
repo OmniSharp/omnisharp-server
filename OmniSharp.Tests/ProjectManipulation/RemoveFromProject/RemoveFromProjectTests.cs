@@ -60,5 +60,37 @@ namespace OmniSharp.Tests.ProjectManipulation.RemoveFromProject
 
             project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
         }
+
+        [Test]
+        public void ShouldRemoveItemGroupWhenRemovingLastFile()
+        {
+            var project = new FakeProject(fileName: @"c:\test\code\fake.csproj");
+            project.AddFile("some content", @"c:\test\code\test.cs");
+
+            var xml = @"
+                <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+                    <ItemGroup>
+                        <Compile Include=""Test.cs""/>
+                    </ItemGroup>
+                </Project>";
+
+            project.XmlRepresentation = XDocument.Parse(xml);
+            var expectedXml = XDocument.Parse(@"
+                <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+                </Project>");
+
+            var solution = new FakeSolution(@"c:\test\fake.sln");
+            solution.Projects.Add(project);
+
+            var request = new RemoveFromProjectRequest
+            {
+                FileName = @"c:\test\code\test.cs"
+            };
+
+            var handler = new RemoveFromProjectHandler(solution);
+            handler.RemoveFromProject(request);
+
+            project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
+        }
     }
 }
