@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using OmniSharp.Solution;
 
-namespace OmniSharp.AddReference
+namespace OmniSharp.ProjectManipulation.AddReference
 {
     public interface IAddReferenceProcessorFactory
     {

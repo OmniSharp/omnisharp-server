@@ -1,7 +1,7 @@
 ﻿using Nancy;
 using Nancy.ModelBinding;
 
-namespace OmniSharp.AddToProject
+namespace OmniSharp.ProjectManipulation.AddToProject
 {
     public class AddToProjectModule : NancyModule
     {

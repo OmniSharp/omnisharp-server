@@ -1,7 +1,7 @@
 ﻿using Nancy.Json;
 using Nancy.TinyIoc;
 using Nancy.Bootstrapper;
-using OmniSharp.AddReference;
+using OmniSharp.ProjectManipulation.AddReference;
 using OmniSharp.Solution;
 
 namespace OmniSharp

@@ -106,20 +106,20 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddReference\AddFileReferenceProcessor.cs" />
-    <Compile Include="AddReference\AddGacReferenceProcessor.cs" />
-    <Compile Include="AddReference\AddProjectReferenceProcessor.cs" />
-    <Compile Include="AddReference\AddReferenceHandler.cs" />
-    <Compile Include="AddReference\AddReferenceModule.cs" />
-    <Compile Include="AddReference\AddReferenceRequest.cs" />
-    <Compile Include="AddReference\AddReferenceResponse.cs" />
-    <Compile Include="AddReference\AddReferenceProcessorFactory.cs" />
-    <Compile Include="AddReference\IReferenceProcessor.cs" />
-    <Compile Include="AddReference\ReferenceProcessorBase.cs" />
-    <Compile Include="AddToProject\AddToProjectHandler.cs" />
-    <Compile Include="AddToProject\AddToProjectModule.cs" />
-    <Compile Include="AddToProject\AddToProjectRequest.cs" />
-    <Compile Include="AddToProject\ProjectNotFoundException.cs" />
+    <Compile Include="ProjectManipulation\AddReference\AddFileReferenceProcessor.cs" />
+    <Compile Include="ProjectManipulation\AddReference\AddGacReferenceProcessor.cs" />
+    <Compile Include="ProjectManipulation\AddReference\AddProjectReferenceProcessor.cs" />
+    <Compile Include="ProjectManipulation\AddReference\AddReferenceHandler.cs" />
+    <Compile Include="ProjectManipulation\AddReference\AddReferenceModule.cs" />
+    <Compile Include="ProjectManipulation\AddReference\AddReferenceRequest.cs" />
+    <Compile Include="ProjectManipulation\AddReference\AddReferenceResponse.cs" />
+    <Compile Include="ProjectManipulation\AddReference\AddReferenceProcessorFactory.cs" />
+    <Compile Include="ProjectManipulation\AddReference\IReferenceProcessor.cs" />
+    <Compile Include="ProjectManipulation\AddReference\ReferenceProcessorBase.cs" />
+    <Compile Include="ProjectManipulation\AddToProject\AddToProjectHandler.cs" />
+    <Compile Include="ProjectManipulation\AddToProject\AddToProjectModule.cs" />
+    <Compile Include="ProjectManipulation\AddToProject\AddToProjectRequest.cs" />
+    <Compile Include="ProjectManipulation\ProjectNotFoundException.cs" />
     <Compile Include="AutoComplete\AutoCompleteResponse.cs" />
     <Compile Include="AutoComplete\CompletionDataExtensions.cs" />
     <Compile Include="Build\BuildHandler.cs" />
@@ -141,6 +141,10 @@
     <Compile Include="GetCodeActions\GetCodeActionsHandler.cs" />
     <Compile Include="GetCodeActions\GetCodeActionsModule.cs" />
     <Compile Include="GetCodeActions\GetCodeActionsResponse.cs" />
+    <Compile Include="ProjectManipulation\RemoveFromProject\RemoveFromProjectHandler.cs" />
+    <Compile Include="ProjectManipulation\RemoveFromProject\RemoveFromProjectModule.cs" />
+    <Compile Include="ProjectManipulation\RemoveFromProject\RemoveFromProjectRequest.cs" />
+    <Compile Include="ProjectManipulation\RemoveFromProject\XDocumentExtensions.cs" />
     <Compile Include="Refactoring\OmniSharpScript.cs" />
     <Compile Include="Refactoring\OmniSharpRefactoringContext.cs" />
     <Compile Include="GetCodeActions\RunCodeActionModule.cs" />

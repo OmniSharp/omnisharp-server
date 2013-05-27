@@ -1,6 +1,6 @@
 ﻿using OmniSharp.Common;
 
-namespace OmniSharp.AddReference
+namespace OmniSharp.ProjectManipulation.AddReference
 {
     public class AddReferenceRequest : Request
     {

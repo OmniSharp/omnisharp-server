@@ -3,7 +3,7 @@ using System.Linq;
 using System.Xml.Linq;
 using OmniSharp.Solution;
 
-namespace OmniSharp.AddToProject
+namespace OmniSharp.ProjectManipulation.AddToProject
 {
     public class AddToProjectHandler
     {
@@ -49,7 +49,7 @@ namespace OmniSharp.AddToProject
                 var newFileElement = new XElement(_msBuildNameSpace + "Compile", new XAttribute("Include", relativeFileName));
 
                 compilationNodeParent.Add(newFileElement);
-
+                
                 relativeProject.Save(project);
             }
         }

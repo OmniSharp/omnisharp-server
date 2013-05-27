@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Xml.Linq;
 using NUnit.Framework;
-using OmniSharp.AddReference;
+using OmniSharp.ProjectManipulation.AddReference;
 using OmniSharp.Solution;
 using Should;
 
-namespace OmniSharp.Tests.AddReference
+namespace OmniSharp.Tests.ProjectManipulation.AddReference
 {
     [TestFixture]
     public class AddProjectReferenceTests : AddReferenceTestsBase
