@@ -89,6 +89,7 @@
     <Compile Include="Build\BuildLogParserTests.cs" />
     <Compile Include="CodeFormat\CodeFormatTest.cs" />
     <Compile Include="FakeAssembly.cs" />
+    <Compile Include="ProjectManipulation\RemoveFromProject\RemoveFromProjectTests.cs" />
     <Compile Include="Rename\Buffer.cs" />
     <Compile Include="Rename\FakeSolutionBuilder.cs" />
     <Compile Include="Rename\MultiFileRenameTests.cs" />

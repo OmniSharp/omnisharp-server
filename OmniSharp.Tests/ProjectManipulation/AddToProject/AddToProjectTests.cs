@@ -1,5 +1,6 @@
 ﻿using System.Xml.Linq;
 using NUnit.Framework;
+using OmniSharp.ProjectManipulation;
 using OmniSharp.ProjectManipulation.AddToProject;
 using OmniSharp.Solution;
 using Should;

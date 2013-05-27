@@ -119,7 +119,7 @@
     <Compile Include="ProjectManipulation\AddToProject\AddToProjectHandler.cs" />
     <Compile Include="ProjectManipulation\AddToProject\AddToProjectModule.cs" />
     <Compile Include="ProjectManipulation\AddToProject\AddToProjectRequest.cs" />
-    <Compile Include="ProjectManipulation\AddToProject\ProjectNotFoundException.cs" />
+    <Compile Include="ProjectManipulation\ProjectNotFoundException.cs" />
     <Compile Include="AutoComplete\AutoCompleteResponse.cs" />
     <Compile Include="AutoComplete\CompletionDataExtensions.cs" />
     <Compile Include="Build\BuildHandler.cs" />
