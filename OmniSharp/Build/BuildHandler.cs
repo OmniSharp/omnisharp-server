@@ -1,46 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using OmniSharp.Common;
-using OmniSharp.Solution;
 
 namespace OmniSharp.Build
 {
     public class BuildHandler
     {
-        private readonly ISolution _solution;
+        private readonly BuildCommandBuilder _commandBuilder;
         private readonly BuildResponse _response;
         private readonly List<QuickFix> _quickFixes;
         private readonly BuildLogParser _logParser;
 
-        public BuildHandler(ISolution solution)
+        public BuildHandler(BuildCommandBuilder commandBuilder)
         {
-            _solution = solution;
+            _commandBuilder = commandBuilder;
             _response = new BuildResponse();
             _quickFixes = new List<QuickFix>();
             _logParser = new BuildLogParser();
         }
 
-		private static bool IsUnix
-		{
-			get
-			{
-				var p = (int)Environment.OSVersion.Platform;
-				return (p == 4) || (p == 6) || (p == 128);
-			}
-		}
-
         public BuildResponse Build()
         {
-			var build = IsUnix
-						? "xbuild" 
-						: Path.Combine(System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory(), "Msbuild.exe");
+            var build = _commandBuilder.Executable;
 
             var startInfo = new ProcessStartInfo
                 {
                     FileName = build,
-                    Arguments = IsUnix ? "" : "/m " + "/nologo /property:GenerateFullPaths=true \"" + _solution.FileName + "\"",
+                    Arguments = _commandBuilder.Arguments,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     RedirectStandardInput = true,
