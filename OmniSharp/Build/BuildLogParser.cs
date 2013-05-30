@@ -8,7 +8,7 @@ namespace OmniSharp.Build
 
         public QuickFix Parse(string line)
         {
-            if (!line.Contains("error CS"))
+            if (!line.Contains("warning CS") && !line.Contains("error CS"))
                 return null;
 
             var match = GetMatches(line, @".*(Source file '(.*)'.*)");
@@ -24,7 +24,7 @@ namespace OmniSharp.Build
                 return quickFix;
             }
 
-            match = GetMatches(line, @"\s*(.*cs)\((\d+),(\d+)\).*error CS\d+: (.*) \[");
+            match = GetMatches(line, @"\s*(.*cs)\((\d+),(\d+)\).*(warning|error) CS\d+: (.*) \[");
             if(match.Matched)
             {
                 var matches = match.Matches;
@@ -33,7 +33,7 @@ namespace OmniSharp.Build
                         FileName = matches[0].Groups[1].Value,
                         Line = int.Parse(matches[0].Groups[2].Value),
                         Column = int.Parse(matches[0].Groups[3].Value),
-                        Text = matches[0].Groups[4].Value.Replace("'", "''")
+                        Text = "[" + matches[0].Groups[4].Value + "] " + matches[0].Groups[5].Value.Replace("'", "''")
                     };
 
                 return quickFix;
