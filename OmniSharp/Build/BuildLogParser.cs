@@ -24,7 +24,7 @@ namespace OmniSharp.Build
                 return quickFix;
             }
 
-            match = GetMatches(line, @"\s+(.*cs)\((\d+),(\d+)\).*error CS\d+: (.*) \[");
+            match = GetMatches(line, @"\s*(.*cs)\((\d+),(\d+)\).*error CS\d+: (.*) \[");
             if(match.Matched)
             {
                 var matches = match.Matches;
