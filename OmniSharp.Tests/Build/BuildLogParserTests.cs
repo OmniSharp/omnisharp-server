@@ -16,7 +16,7 @@ namespace OmniSharp.Tests.Build
             quickfix.Line.ShouldEqual(12);
             quickfix.Column.ShouldEqual(34);
             quickfix.Text.ShouldEqual(
-                @"; expected");
+                @"[error] ; expected");
             
         }
 
