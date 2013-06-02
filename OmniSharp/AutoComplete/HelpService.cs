@@ -47,7 +47,6 @@ namespace MonoDevelop.Projects
 
                 try
                 {
-                    helpTree = RootTree.LoadTree();
 
                     //foreach (var node in AddinManager.GetExtensionNodes("/MonoDevelop/ProjectModel/MonoDocSources"))
                     //    sources.Add(((MonoDocSourceNode)node).Directory);
@@ -58,8 +57,9 @@ namespace MonoDevelop.Projects
                     foreach (var s in sources.ToList().Where(d => !Directory.Exists(d)))
                         sources.Remove(s);
 
-                    foreach (var s in sources)
-                        helpTree.AddSource(s);
+                    //foreach (var s in sources)
+                    //    helpTree.AddSource(s);
+                    helpTree = RootTree.LoadTree(sources.First());
 
                 }
                 catch (Exception ex)
