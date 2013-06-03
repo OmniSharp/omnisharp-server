@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using ICSharpCode.NRefactory.Documentation;
+using MonoDevelop.Ide.TypeSystem;
 
 namespace OmniSharp.AutoComplete
 {
@@ -12,10 +13,21 @@ namespace OmniSharp.AutoComplete
 
         private static readonly ConcurrentDictionary<string, XmlDocumentationProvider> _providers =
             new ConcurrentDictionary<string, XmlDocumentationProvider>();
- 
 
-        public static XmlDocumentationProvider Get(string assemblyName)
+        private static bool IsUnix
         {
+            get
+            {
+                var p = (int)Environment.OSVersion.Platform;
+                return (p == 4) || (p == 6) || (p == 128);
+            }
+        }
+
+        public static IDocumentationProvider Get(string assemblyName)
+        {
+            if (IsUnix)
+                return new MonoDocDocumentationProvider();
+
             if (_providers.ContainsKey(assemblyName))
                 return _providers[assemblyName];
 

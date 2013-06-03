@@ -61,7 +61,7 @@ namespace OmniSharp.AutoComplete
             }
             else
             {
-                XmlDocumentationProvider docProvider = null;
+                IDocumentationProvider docProvider = null;
                 if (entity.ParentAssembly.AssemblyName != null)
                 {
                     docProvider =
