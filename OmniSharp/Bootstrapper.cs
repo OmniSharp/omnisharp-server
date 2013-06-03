@@ -1,4 +1,5 @@
-﻿using Nancy.Json;
+﻿using MonoDevelop.Projects;
+using Nancy.Json;
 using Nancy.TinyIoc;
 using Nancy.Bootstrapper;
 using OmniSharp.ProjectManipulation.AddReference;
@@ -18,6 +19,7 @@ namespace OmniSharp
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
+            HelpService.AsyncInitialize();
             pipelines.OnError.AddItemToEndOfPipeline((ctx, ex) =>
                 {
                     System.Console.WriteLine(ex);
