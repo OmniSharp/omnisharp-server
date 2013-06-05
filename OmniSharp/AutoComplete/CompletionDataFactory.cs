@@ -43,7 +43,7 @@ namespace OmniSharp.AutoComplete
                 GenerateMethodSignature(method);
             }
 
-            if (entity is IField)
+            if (entity is IField || entity is IProperty)
             {
                 _signature = _signatureAmbience.ConvertEntity(entity).Replace(";", "");
             }

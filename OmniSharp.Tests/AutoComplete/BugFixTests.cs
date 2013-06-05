@@ -54,7 +54,7 @@ public class MyClass
         }
 
         [Test]
-        public void Should_add_return_type_for_property()
+        public void Should_add_return_type_for_field()
         {
             DisplayTextFor(
                 @"
@@ -65,6 +65,21 @@ public class MyClass
         var i = int.maxv$
     }
 }").ShouldContainOnly("int MaxValue");
+
+        }
+
+        [Test]
+        public void Should_add_return_type_for_property()
+        {
+            DisplayTextFor(
+                @"
+public class MyClass
+{
+    public static void Main()
+    {
+        var i = ""test"".leng$
+    }
+}").ShouldContainOnly("int Length");
 
         }
     }
