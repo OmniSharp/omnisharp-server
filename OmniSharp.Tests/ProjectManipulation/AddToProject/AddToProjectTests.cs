@@ -38,16 +38,16 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
         {
             var project = new FakeProject(fileName: @"c:\test\code\fake.csproj");
             project.XmlRepresentation = XDocument.Parse(@"<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003""><ItemGroup><Compile Include=""Hello.cs""/></ItemGroup></Project>");
-            var expectedXml = XDocument.Parse(@"<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003""><ItemGroup><Compile Include=""Hello.cs""/><Compile Include=""Test.cs""/></ItemGroup></Project>");
+            var expectedXml = XDocument.Parse(@"<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003""><ItemGroup><Compile Include=""Hello.cs""/><Compile Include=""files\Test.cs""/></ItemGroup></Project>");
 
-            project.AddFile("some content", @"c:\test\code\Test.cs");
+            project.AddFile("some content", @"c:\test\code\files\Test.cs");
             
             var solution = new FakeSolution(@"c:\test\fake.sln");
             solution.Projects.Add(project);
 
             var request = new AddToProjectRequest
             {
-                FileName = @"c:\test\code\Test.cs"
+                FileName = @"c:\test\code\files\Test.cs"
             };
 
             var handler = new AddToProjectHandler(solution);
