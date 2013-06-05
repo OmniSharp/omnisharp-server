@@ -43,6 +43,11 @@ namespace OmniSharp.AutoComplete
                 GenerateMethodSignature(method);
             }
 
+            if (entity is IField)
+            {
+                _signature = _signatureAmbience.ConvertEntity(entity).Replace(";", "");
+            }
+
             ICompletionData completionData = CompletionData(entity);
 
             Debug.Assert(completionData != null);

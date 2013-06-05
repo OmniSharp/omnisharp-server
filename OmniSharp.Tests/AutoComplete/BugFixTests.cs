@@ -52,5 +52,20 @@ public class MyClass
     }
 }").ShouldContain("int Process1More()");
         }
+
+        [Test]
+        public void Should_add_return_type_for_property()
+        {
+            DisplayTextFor(
+                @"
+public class MyClass
+{
+    public static void Main()
+    {
+        var i = int.maxv$
+    }
+}").ShouldContainOnly("int MaxValue");
+
+        }
     }
 }
