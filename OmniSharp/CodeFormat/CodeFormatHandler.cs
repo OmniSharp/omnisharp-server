@@ -7,12 +7,13 @@ namespace OmniSharp.CodeFormat
 {
     public class CodeFormatHandler  
     {
-        public CodeFormatResponse Format(Request request)
+        public CodeFormatResponse Format(CodeFormatRequest request)
         {
             var document = new StringBuilderDocument(request.Buffer);
             var options = new TextEditorOptions();
             options.EolMarker = Environment.NewLine;
             options.WrapLineLength = 80;
+            options.TabsToSpaces = request.ExpandTab;
             var policy = FormattingOptionsFactory.CreateAllman();
             var visitor = new AstFormattingVisitor(policy, document, options);
             visitor.FormattingMode = FormattingMode.Intrusive;
