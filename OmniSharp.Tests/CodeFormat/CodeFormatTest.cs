@@ -21,7 +21,7 @@ namespace OmniSharp.Tests.CodeFormat
 {
 }";
             var handler = new CodeFormatHandler();
-            var buffer = handler.Format(new Request {Buffer = code}).Buffer;
+            var buffer = handler.Format(new CodeFormatRequest {Buffer = code}).Buffer;
             buffer.ShouldEqual(expected);
         }
     }

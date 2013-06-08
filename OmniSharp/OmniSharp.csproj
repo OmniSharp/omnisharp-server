@@ -140,6 +140,7 @@
     <Compile Include="CodeFormat\CodeFormatHandler.cs" />
     <Compile Include="CodeFormat\CodeFormatModule.cs" />
     <Compile Include="CodeFormat\CodeFormatResponse.cs" />
+    <Compile Include="CodeFormat\CodeFormatRequest.cs" />
     <Compile Include="Extensions\NodeExtensions.cs" />
     <Compile Include="FindUsages\AstNodeExtensions.cs" />
     <Compile Include="FindUsages\FindUsagesHandler.cs" />

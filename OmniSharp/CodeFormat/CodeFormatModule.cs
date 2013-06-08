@@ -9,7 +9,7 @@ namespace OmniSharp.CodeFormat
         {
             Post["/codeformat"] = x =>
                 {
-                    var request = this.Bind<Common.Request>();
+                    var request = this.Bind<CodeFormatRequest>();
                     return Response.AsJson(codeFormatHandler.Format(request));
                 };
         }
