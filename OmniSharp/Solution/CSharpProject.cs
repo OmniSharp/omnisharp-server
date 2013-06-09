@@ -21,7 +21,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml.Linq;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
@@ -49,6 +48,7 @@ namespace OmniSharp.Solution
     {
         public static readonly string[] AssemblySearchPaths = {
             //Windows Paths
+            @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5",
             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0",
             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.5",
             @"C:\Windows\Microsoft.NET\Framework\v2.0.50727",
