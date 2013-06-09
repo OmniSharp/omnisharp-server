@@ -117,6 +117,10 @@
     <Compile Include="AutoComplete\MonoDocDocumentationProvider.cs" />
     <Compile Include="Build\BuildCommandBuilder.cs" />
     <Compile Include="Build\BuildCommandModule.cs" />
+    <Compile Include="LookupAllTypes\LookupAllTypesHandler.cs" />
+    <Compile Include="LookupAllTypes\LookupAllTypesModule.cs" />
+    <Compile Include="LookupAllTypes\LookupAllTypesRequest.cs" />
+    <Compile Include="LookupAllTypes\LookupAllTypesResponse.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddFileReferenceProcessor.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddGacReferenceProcessor.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddProjectReferenceProcessor.cs" />
