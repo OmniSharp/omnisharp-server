@@ -51,8 +51,11 @@ namespace OmniSharp.Solution
             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5",
             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0",
             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.5",
+            @"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5",
+            @"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0",
+            @"C:\Program Files\Reference Assemblies\Microsoft\Framework\v3.5",
             @"C:\Windows\Microsoft.NET\Framework\v2.0.50727",
-
+            
             //Unix Paths
             @"/usr/local/lib/mono/4.0",
             @"/usr/local/lib/mono/3.5",
