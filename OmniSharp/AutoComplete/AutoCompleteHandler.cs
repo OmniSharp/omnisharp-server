@@ -9,7 +9,8 @@ using OmniSharp.Parser;
 
 namespace OmniSharp.AutoComplete
 {
-    public class AutoCompleteHandler
+    public class AutoCompleteHandler : IEnumerable
+
     {
         private readonly BufferParser _parser;
         private readonly Logger _logger;

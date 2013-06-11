@@ -2,6 +2,7 @@
 {
     public class LookupAllTypesResponse
     {
-        public string AllTypes;
+        public string Types;
+        public string Interfaces;
     }
 }

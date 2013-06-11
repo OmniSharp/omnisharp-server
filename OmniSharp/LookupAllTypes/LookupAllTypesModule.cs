@@ -1,5 +1,4 @@
 ﻿using Nancy;
-using Nancy.ModelBinding;
 
 namespace OmniSharp.LookupAllTypes
 {
@@ -9,8 +8,7 @@ namespace OmniSharp.LookupAllTypes
         {
             Post["/lookupalltypes"] = x =>
             {
-                var req = this.Bind<LookupAllTypesRequest>();
-                var res = handler.GetLookupAllTypesResponse(req);
+                var res = handler.GetLookupAllTypesResponse();
                 return Response.AsJson(res);
             };
         }

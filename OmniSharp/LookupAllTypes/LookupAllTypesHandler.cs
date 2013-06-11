@@ -1,12 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ICSharpCode.NRefactory;
-using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.CSharp.Resolver;
-using ICSharpCode.NRefactory.Semantics;
 using ICSharpCode.NRefactory.TypeSystem;
-using ICSharpCode.NRefactory.TypeSystem.Implementation;
-using OmniSharp.Parser;
 using OmniSharp.Solution;
 
 namespace OmniSharp.LookupAllTypes
@@ -20,45 +14,42 @@ namespace OmniSharp.LookupAllTypes
             _solution = solution;
         }
 
-        string GetAllTypesAsString()
+        public LookupAllTypesResponse GetLookupAllTypesResponse()
         {
-            var types = new HashSet<string>();
-
+            var classes = new HashSet<string>();
+            var interfaces = new HashSet<string>();
             foreach (var project in _solution.Projects)
             {
-                AddProjectTypes(project, types);
-            }
+                var types = project.References.OfType<IUnresolvedAssembly>()
+                                   .SelectMany(unresolvedRef => unresolvedRef.GetAllTypeDefinitions())
+                                   .Union(project.ProjectContent.GetAllTypeDefinitions());
 
-            // This causes a conflict with the vim keyword 'contains'
-            types.Remove("Contains");
-
-            return types.Aggregate("", (current, type) => current + type + " ");
-        }
-
-        private void AddProjectTypes(IProject project, HashSet<string> types)
-        {
-            foreach (var reference in project.References)
-            {
-                var unresolvedRef = reference as IUnresolvedAssembly;
-
-                if (unresolvedRef != null)
+                foreach (var def in types)
                 {
-                    foreach (var def in unresolvedRef.GetAllTypeDefinitions())
+                    if (def.Kind == TypeKind.Interface)
                     {
-                        types.Add(def.Name);
+                        interfaces.Add(def.Name);
+                    }
+                    else
+                    {
+                        classes.Add(def.Name);
                     }
                 }
             }
 
-            foreach (var type in project.ProjectContent.GetAllTypeDefinitions())
-            {
-                types.Add(type.Name);
-            }
+            return new LookupAllTypesResponse
+                {
+                    Types = GetAllTypesAsString(classes),
+                    Interfaces = GetAllTypesAsString(interfaces)
+                };
         }
 
-        public LookupAllTypesResponse GetLookupAllTypesResponse(LookupAllTypesRequest request)
+        string GetAllTypesAsString(HashSet<string> types)
         {
-            return new LookupAllTypesResponse { AllTypes = GetAllTypesAsString() };
+            // This causes a conflict with the vim keyword 'contains'
+            types.Remove("Contains");
+
+            return types.Aggregate("", (current, type) => current + type + " ");
         }
     }
 }
