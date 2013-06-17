@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Xml;
 using ICSharpCode.NRefactory.TypeSystem;
@@ -46,7 +47,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
         #region IDocumentationProvider implementation
         [NonSerialized]
-        readonly Dictionary<string, DocumentationComment> commentCache = new Dictionary<string, DocumentationComment>();
+        static readonly ConcurrentDictionary<string, DocumentationComment> commentCache = new ConcurrentDictionary<string, DocumentationComment>();
 
         public DocumentationComment GetDocumentation(IEntity entity)
         {
@@ -81,7 +82,10 @@ namespace MonoDevelop.Ide.TypeSystem
                     doc = helpTree.GetHelpXml(parentId);
 #pragma warning restore 612,618
                     if (doc == null)
+					{
+						commentCache[idString] = null;
                         return null;
+					}
                     XmlNode node = SelectNode(doc, entity);
 
                     if (node != null)
@@ -243,4 +247,3 @@ namespace MonoDevelop.Ide.TypeSystem
 
     }
 }
-
