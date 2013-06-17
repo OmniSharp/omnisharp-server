@@ -47,7 +47,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
         #region IDocumentationProvider implementation
         [NonSerialized]
-        static readonly ConcurrentDictionary<string, DocumentationComment> commentCache = new ConcurrentDictionary<string, DocumentationComment>();
+        static readonly Dictionary<string, DocumentationComment> commentCache = new Dictionary<string, DocumentationComment>();
 
         public DocumentationComment GetDocumentation(IEntity entity)
         {
