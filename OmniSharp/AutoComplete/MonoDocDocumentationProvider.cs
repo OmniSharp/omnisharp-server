@@ -38,13 +38,6 @@ namespace MonoDevelop.Ide.TypeSystem
     [Serializable]
     public class MonoDocDocumentationProvider : IDocumentationProvider
     {
-        [NonSerialized]
-        bool hadError;
-
-        public MonoDocDocumentationProvider()
-        {
-        }
-
         #region IDocumentationProvider implementation
         [NonSerialized]
         static readonly Dictionary<string, DocumentationComment> commentCache = new Dictionary<string, DocumentationComment>();
@@ -54,10 +47,6 @@ namespace MonoDevelop.Ide.TypeSystem
             if (entity == null)
                 throw new System.ArgumentNullException("entity");
 
-            // If we had an exception while getting the help xml the monodoc help provider
-            // shouldn't try it again. A corrupt .zip file could cause long tooltip delays otherwise.
-            if (hadError)
-                return null;
             var idString = entity.GetIdString();
             DocumentationComment result;
             if (commentCache.TryGetValue(idString, out result))
@@ -97,8 +86,6 @@ namespace MonoDevelop.Ide.TypeSystem
             }
             catch (Exception e)
             {
-                hadError = true;
-                //LoggingService.LogError("Error while reading monodoc file.", e);
                 Console.WriteLine("Error while reading monodoc file." + e);
             }
             if (doc == null)
