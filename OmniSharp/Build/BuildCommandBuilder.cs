@@ -33,7 +33,7 @@ namespace OmniSharp.Build
 
         public string Arguments
         {
-            get { return IsUnix ? "" : "/m " + "/nologo /v:q /property:GenerateFullPaths=true \"" + _solution.FileName + "\""; }
+            get { return (IsUnix ? "" : "/m ") + "/nologo /v:q /property:GenerateFullPaths=true \"" + _solution.FileName + "\""; }
         }
     }
 }
