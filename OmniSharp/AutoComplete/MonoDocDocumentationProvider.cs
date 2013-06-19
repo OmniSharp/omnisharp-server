@@ -79,6 +79,7 @@ namespace MonoDevelop.Ide.TypeSystem
 
                     if (node != null)
                         return commentCache[idString] = new DocumentationComment(node.OuterXml, new SimpleTypeResolveContext(entity));
+					commentCache[idString] = null;
                     return null;
                     //					var node = doc.SelectSingleNode ("/Type/Members/Member")
                     //					return new DocumentationComment (doc.OuterXml, new SimpleTypeResolveContext (entity));

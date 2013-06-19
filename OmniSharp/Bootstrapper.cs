@@ -19,6 +19,7 @@ namespace OmniSharp
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
+			HelpService.AsyncInitialize();
             pipelines.OnError.AddItemToEndOfPipeline((ctx, ex) =>
                 {
                     System.Console.WriteLine(ex);
