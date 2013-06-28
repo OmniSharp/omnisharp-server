@@ -215,6 +215,7 @@
     <Compile Include="TypeLookup\TypeLookupResponse.cs" />
     <Compile Include="TypeLookup\TypeLookupModule.cs" />
     <Compile Include="TypeLookup\TypeLookupRequest.cs" />
+    <Compile Include="GotoImplementation\GotoImplementationAsQuickFixesModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
