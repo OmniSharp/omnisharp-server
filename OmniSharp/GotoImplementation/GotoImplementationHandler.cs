@@ -23,14 +23,6 @@ namespace OmniSharp.GotoImplementation
             _bufferParser = bufferParser;
         }
 
-        public GotoImplementationResponse FindDerivedMembers
-            (GotoImplementationRequest request) {
-
-            IEnumerable<QuickFix> quickFixes =
-                FindDerivedMembersAsQuickFixes(request);
-            return new GotoImplementationResponse(quickFixes);
-        }
-
         public IEnumerable<QuickFix> FindDerivedMembersAsQuickFixes
             (GotoImplementationRequest request) {
             var res = _bufferParser.ParsedContent(request.Buffer, request.FileName);

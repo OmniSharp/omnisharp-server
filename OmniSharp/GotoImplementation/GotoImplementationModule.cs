@@ -1,5 +1,7 @@
 ﻿using Nancy;
 using Nancy.ModelBinding;
+using System.Collections.Generic;
+using OmniSharp.Common;
 
 namespace OmniSharp.GotoImplementation
 {
@@ -10,7 +12,8 @@ namespace OmniSharp.GotoImplementation
             Post["/findimplementations"] = x =>
                 {
                     var req = this.Bind<GotoImplementationRequest>();
-                    var res = handler.FindDerivedMembers(req);
+                    IEnumerable<QuickFix> res =
+                        handler.FindDerivedMembersAsQuickFixes(req);
                     return Response.AsJson(res);
                 };
         }

@@ -184,7 +184,6 @@
     <Compile Include="GotoImplementation\GotoImplementationHandler.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GotoImplementation\GotoImplementationResponse.cs" />
     <Compile Include="GotoImplementation\Location.cs" />
     <Compile Include="GotoDefinition\GotoDefinitionResponse.cs" />
     <Compile Include="Parser\ParsedResult.cs" />
@@ -215,7 +214,6 @@
     <Compile Include="TypeLookup\TypeLookupResponse.cs" />
     <Compile Include="TypeLookup\TypeLookupModule.cs" />
     <Compile Include="TypeLookup\TypeLookupRequest.cs" />
-    <Compile Include="GotoImplementation\GotoImplementationAsQuickFixesModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
