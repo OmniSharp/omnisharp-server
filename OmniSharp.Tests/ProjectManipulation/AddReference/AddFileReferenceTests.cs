@@ -37,7 +37,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                     </ItemGroup>
                 </Project>");
 
-            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddFileReferenceProcessor() }));
+            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddFileReferenceProcessor() }, new FakeFileSystem()));
             handler.AddReference(request);
 
             project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
@@ -69,7 +69,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                     </ItemGroup>
                 </Project>");
 
-            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddFileReferenceProcessor() }));
+            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddFileReferenceProcessor() }, new FakeFileSystem()));
             handler.AddReference(request);
 
             project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
@@ -101,7 +101,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                     </ItemGroup>
                 </Project>");
 
-            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddFileReferenceProcessor() }));
+            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddFileReferenceProcessor() }, new FakeFileSystem()));
             handler.AddReference(request);
 
             project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
