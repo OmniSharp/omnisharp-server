@@ -12,7 +12,7 @@ namespace OmniSharp.GotoImplementation
             Post["/findimplementations"] = x =>
                 {
                     var req = this.Bind<GotoImplementationRequest>();
-                    IEnumerable<QuickFix> res =
+                    var res =
                         handler.FindDerivedMembersAsQuickFixes(req);
                     return Response.AsJson(res);
                 };
