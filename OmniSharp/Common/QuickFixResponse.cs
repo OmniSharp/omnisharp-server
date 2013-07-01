@@ -13,6 +13,11 @@ namespace OmniSharp.Common {
             this.QuickFixes = quickFixes;
         }
 
+        /// <remarks>
+        ///   This will not be sent over the network. It must be
+        ///   accessed in a public property in a derived class. Then
+        ///   the public property will be sent.
+        /// </remarks>
         protected IEnumerable<QuickFix> QuickFixes { get; set; }
     }
 }
