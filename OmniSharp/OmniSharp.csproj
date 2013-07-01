@@ -117,6 +117,8 @@
     <Compile Include="AutoComplete\MonoDocDocumentationProvider.cs" />
     <Compile Include="Build\BuildCommandBuilder.cs" />
     <Compile Include="Build\BuildCommandModule.cs" />
+    <Compile Include="Common\FileSystem.cs" />
+    <Compile Include="Common\IFileSystem.cs" />
     <Compile Include="LookupAllTypes\LookupAllTypesHandler.cs" />
     <Compile Include="LookupAllTypes\LookupAllTypesModule.cs" />
     <Compile Include="LookupAllTypes\LookupAllTypesRequest.cs" />

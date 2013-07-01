@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml.Linq;
 using NUnit.Framework;
+using OmniSharp.Common;
 using OmniSharp.ProjectManipulation.AddReference;
 using OmniSharp.Solution;
 using Should;
@@ -48,7 +49,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                     FileName = @"c:\test\two\test.cs"
                 };
 
-            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddProjectReferenceProcessor(Solution) }));
+            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddProjectReferenceProcessor(Solution) }, new FileSystem()));
             handler.AddReference(request);
 
             projectTwo.AsXml().ToString().ShouldEqual(expectedXml.ToString());
@@ -102,7 +103,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                     FileName = @"c:\test\two\test.cs"
                 };
 
-            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddProjectReferenceProcessor(Solution) }));
+            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddProjectReferenceProcessor(Solution) }, new FileSystem()));
             handler.AddReference(request);
 
             projectTwo.AsXml().ToString().ShouldEqual(expectedXml.ToString());
@@ -144,7 +145,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                     FileName = @"c:\test\two\test.cs"
                 };
 
-            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddProjectReferenceProcessor(Solution) }));
+            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddProjectReferenceProcessor(Solution) }, new FileSystem()));
             var response = handler.AddReference(request);
 
             projectTwo.AsXml().ToString().ShouldEqual(expectedXml.ToString());
@@ -187,7 +188,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                 FileName = @"c:\test\one\test.cs"
             };
 
-            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddProjectReferenceProcessor(Solution) }));
+            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddProjectReferenceProcessor(Solution) }, new FileSystem()));
             var response = handler.AddReference(request);
 
             projectTwo.AsXml().ToString().ShouldEqual(expectedXml.ToString());

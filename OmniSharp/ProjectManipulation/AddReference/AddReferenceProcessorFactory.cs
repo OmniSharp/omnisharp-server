@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using OmniSharp.Common;
 using OmniSharp.Solution;
 
 namespace OmniSharp.ProjectManipulation.AddReference
@@ -14,11 +14,13 @@ namespace OmniSharp.ProjectManipulation.AddReference
     public class AddReferenceProcessorFactory : IAddReferenceProcessorFactory
     {
         private readonly ISolution _solution;
+        private readonly IFileSystem _fileSystem;
         private readonly IDictionary<Type, IReferenceProcessor> _processors; 
 
-        public AddReferenceProcessorFactory(ISolution solution, IEnumerable<IReferenceProcessor> processors)
+        public AddReferenceProcessorFactory(ISolution solution, IEnumerable<IReferenceProcessor> processors, IFileSystem fileSystem)
         {
             _solution = solution;
+            _fileSystem = fileSystem;
             _processors = processors.ToDictionary(k => k.GetType(), v => v);
         }
 
@@ -44,7 +46,8 @@ namespace OmniSharp.ProjectManipulation.AddReference
 
         private bool IsFileReference(string reference)
         {
-            return new FileInfo(reference).Extension.Equals(".dll", StringComparison.InvariantCultureIgnoreCase);
+            var fileInfo = _fileSystem.GetFileInfo(reference);
+            return fileInfo.Exists && fileInfo.Extension.Equals(".dll", StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }
