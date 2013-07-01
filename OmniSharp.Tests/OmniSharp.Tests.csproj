@@ -108,6 +108,7 @@
     <Compile Include="AutoComplete\NamespaceCompletions.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GoToImplementation\GoToImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OmniSharp\OmniSharp.csproj">
