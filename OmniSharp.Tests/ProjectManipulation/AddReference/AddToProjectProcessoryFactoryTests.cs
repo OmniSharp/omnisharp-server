@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
+using OmniSharp.Common;
 using OmniSharp.ProjectManipulation.AddReference;
 using OmniSharp.Solution;
 using Should;
@@ -26,7 +27,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                                   new AddGacReferenceProcessor()
                               };
 
-            _factory = new AddReferenceProcessorFactory(_solution, _processors);
+            _factory = new AddReferenceProcessorFactory(_solution, _processors, new FileSystem());
         }
 
         [Test]
@@ -47,7 +48,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
         {
             var request = new AddReferenceRequest
                               {
-                                  Reference = "test.dll"
+                                  Reference = "Nancy.dll"
                               };
 
             var processor = _factory.CreateProcessorFor(request);
@@ -65,6 +66,21 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
 
             var processor = _factory.CreateProcessorFor(request);
 
+            processor.ShouldBeType<AddGacReferenceProcessor>();
+        }
+
+        [Test]
+        public void ShouldReturnAddGacReferenceProcessorWhenFileReferenceNotFound()
+        {
+            var fs = new FakeFileSystem();
+            fs.FileExists(false);
+            _factory = new AddReferenceProcessorFactory(_solution, _processors, fs);
+            var request = new AddReferenceRequest
+            {
+                Reference = "Nancy.dll"
+            };
+
+            var processor = _factory.CreateProcessorFor(request);
             processor.ShouldBeType<AddGacReferenceProcessor>();
         }
     }
