@@ -1,4 +1,6 @@
-﻿using MonoDevelop.Projects;
+﻿using System;
+using System.Diagnostics;
+using MonoDevelop.Projects;
 using Nancy.Json;
 using Nancy.TinyIoc;
 using Nancy.Bootstrapper;
@@ -24,9 +26,24 @@ namespace OmniSharp
                 HelpService.AsyncInitialize();
             }
 
+            pipelines.BeforeRequest.AddItemToStartOfPipeline(ctx =>
+                {
+                    var stopwatch = new Stopwatch();
+                    ctx.Items["stopwatch"] = stopwatch;
+                    stopwatch.Start();
+                    return null;
+                });
+
+            pipelines.AfterRequest.AddItemToEndOfPipeline(ctx =>
+                {
+                    var stopwatch = (Stopwatch) ctx.Items["stopwatch"];
+                    stopwatch.Stop();
+                    Console.WriteLine(ctx.Request.Path + " " + stopwatch.ElapsedMilliseconds + "ms");
+                });
+
             pipelines.OnError.AddItemToEndOfPipeline((ctx, ex) =>
                 {
-                    System.Console.WriteLine(ex);
+                    Console.WriteLine(ex);
                     return null;
                 });
         }
