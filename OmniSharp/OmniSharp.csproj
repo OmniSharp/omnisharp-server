@@ -153,7 +153,6 @@
     <Compile Include="FindUsages\FindUsagesHandler.cs" />
     <Compile Include="FindUsages\FindUsagesModule.cs" />
     <Compile Include="FindUsages\FindUsagesRequest.cs" />
-    <Compile Include="FindUsages\FindUsagesResponse.cs" />
     <Compile Include="FindUsages\MemberCollector.cs" />
     <Compile Include="Common\QuickFix.cs" />
     <Compile Include="GetCodeActions\CodeActionProviders.cs" />
@@ -218,7 +217,6 @@
     <Compile Include="TypeLookup\TypeLookupModule.cs" />
     <Compile Include="TypeLookup\TypeLookupRequest.cs" />
     <Compile Include="Common\QuickFixResponse.cs" />
-    <Compile Include="GotoImplementation\GotoImplementationResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
