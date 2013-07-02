@@ -123,6 +123,7 @@
     <Compile Include="LookupAllTypes\LookupAllTypesModule.cs" />
     <Compile Include="LookupAllTypes\LookupAllTypesRequest.cs" />
     <Compile Include="LookupAllTypes\LookupAllTypesResponse.cs" />
+    <Compile Include="Platform.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddFileReferenceProcessor.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddGacReferenceProcessor.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddProjectReferenceProcessor.cs" />
