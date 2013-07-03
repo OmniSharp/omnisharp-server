@@ -4,6 +4,10 @@ using ICSharpCode.NRefactory.TypeSystem;
 using System;
 using OmniSharp.AutoComplete.Overrides;
 
+// Without this all OverrideTypeKind references will default to the
+// class member of the same name
+using kind = OmniSharp.AutoComplete.Overrides.OverrideTypeKind;
+
 namespace OmniSharp.AutoComplete.Overrides {
 
     public class AutoCompleteOverrideResponse : AutoCompleteResponse {
@@ -19,7 +23,7 @@ namespace OmniSharp.AutoComplete.Overrides {
             this.Description    = descriptionText;
             this.CompletionText = completionText;
 
-            this.OverrideTypeKind = OverrideTypeKind.Method;
+            this.OverrideTypeKind = kind.Method.ToString();
         }
 
         public AutoCompleteOverrideResponse
@@ -31,7 +35,7 @@ namespace OmniSharp.AutoComplete.Overrides {
             this.Description    = descriptionText;
             this.CompletionText = completionText;
 
-            this.OverrideTypeKind = OverrideTypeKind.Property;
+            this.OverrideTypeKind = kind.Property.ToString();
         }
 
         public AutoCompleteOverrideResponse
@@ -43,8 +47,10 @@ namespace OmniSharp.AutoComplete.Overrides {
             this.Description    = descriptionText;
             this.CompletionText = completionText;
 
-            this.OverrideTypeKind = OverrideTypeKind.Event;
+            this.OverrideTypeKind = kind.Event.ToString();
         }
+
+        private OverrideTypeKind _overrideTypeKind;
 
         /// <summary>
         ///   Gets or sets a value indicating what kind of overridable
@@ -54,7 +60,15 @@ namespace OmniSharp.AutoComplete.Overrides {
         ///   Perhaps the users of this API will find a good use for
         ///   this. Better not lose this information in any case.
         /// </remarks>
-        public OverrideTypeKind OverrideTypeKind {get; set;}
+        public string OverrideTypeKind {
+            get {
+                return _overrideTypeKind.ToString();
+            }
+            set {
+                _overrideTypeKind = (OverrideTypeKind)
+                    Enum.Parse(typeof(OverrideTypeKind), value);
+            }
+        }
 
         public static string createDisplayText(IUnresolvedMethod m) {
             return string.Format
