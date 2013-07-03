@@ -4,39 +4,38 @@ using System.Linq;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.Solution;
 using OmniSharp.AutoComplete;
-using unResolvedTypes = System.Collections.Generic.IEnumerable
-    <ICSharpCode.NRefactory.TypeSystem.IUnresolvedTypeDefinition>;
+using OmniSharp.Parser;
 
 namespace OmniSharp.AutoComplete.Overrides {
     public class AutoCompleteOverrideHandler {
 
         /// <summary>
-        ///   TODO
+        ///   Returns the available overridable members in the given
+        ///   request.
         /// </summary>
-        public IEnumerable<AutoCompleteOverrideResponse>
-            GetOverridableTargets
-            (ISolution solution, OverrideTypeKind kind) {
+        public IEnumerable<AutoCompleteOverrideResponse> GetOverrideTargets
+            ( AutoCompleteRequest request
+            , BufferParser        parser) {
+            var completionContext = new AutoCompleteBufferContext
+                (request, parser);
 
-            var classesAndStructsInAllProjects =
-                from project in solution.Projects
-                from unresolvedRef in project.References.OfType<IUnresolvedAssembly>()
-                from anyType in unresolvedRef.GetAllTypeDefinitions()
-                    .Union(project.ProjectContent.GetAllTypeDefinitions())
-                where    anyType.Kind == TypeKind.Class
-                      || anyType.Kind == TypeKind.Struct
-                select anyType;
+            var currentType = completionContext.ParsedContent
+                .UnresolvedFile.GetInnermostTypeDefinition
+                    (completionContext.TextLocation);
 
-            return this.GetOverridableMethods(classesAndStructsInAllProjects)
-                .Concat(this.GetOverridableProperties(classesAndStructsInAllProjects))
-                .Concat(this.GetOverridableEvents(classesAndStructsInAllProjects));
+            var overrideTargets = this.GetOverridableMethods(currentType)
+                .Concat(this.GetOverridableProperties(currentType))
+                .Concat(this.GetOverridableEvents(currentType))
+                // TODO should we remove duplicates?
+                .ToArray();
 
+            return overrideTargets;
         }
 
         public IEnumerable<AutoCompleteOverrideResponse> GetOverridableMethods
-            (unResolvedTypes classesAndStructsInAllProjects) {
+            (IUnresolvedTypeDefinition type) {
 
-            var overridableMethods = classesAndStructsInAllProjects
-                .SelectMany(c => c.Methods)
+            var overridableMethods = type.Methods
                 .Where(method => method.IsOverridable)
                 .Select(m => new AutoCompleteOverrideResponse
                         ( m
@@ -47,10 +46,9 @@ namespace OmniSharp.AutoComplete.Overrides {
         }
 
         public IEnumerable<AutoCompleteOverrideResponse> GetOverridableProperties
-            (unResolvedTypes classesAndStructsInAllProjects) {
+            (IUnresolvedTypeDefinition type) {
 
-            var overridableProperties = classesAndStructsInAllProjects
-                .SelectMany(c => c.Properties)
+            var overridableProperties = type.Properties
                 .Where(property => property.IsOverridable)
                 .Select(p => new AutoCompleteOverrideResponse
                         ( p
@@ -61,10 +59,9 @@ namespace OmniSharp.AutoComplete.Overrides {
         }
 
         public IEnumerable<AutoCompleteOverrideResponse> GetOverridableEvents
-            (unResolvedTypes classesAndStructsInAllProjects) {
+            (IUnresolvedTypeDefinition type) {
 
-            var overridableProperties = classesAndStructsInAllProjects
-                .SelectMany(c => c.Events)
+            var overridableProperties = type.Events
                 .Where(@event => @event.IsOverridable)
                 .Select(e => new AutoCompleteOverrideResponse
                         ( e
