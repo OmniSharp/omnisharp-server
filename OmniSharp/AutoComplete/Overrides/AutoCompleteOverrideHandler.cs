@@ -26,57 +26,62 @@ namespace OmniSharp.AutoComplete.Overrides {
 
             var currentType = completionContext.ParsedContent
                 .UnresolvedFile.GetInnermostTypeDefinition
-                    (completionContext.TextLocation);
+                    (completionContext.TextLocation)
+                .Resolve(completionContext.ResolveContext);
 
             var overrideTargets = this.GetOverridableMethods(currentType)
-                .Concat(this.GetOverridableProperties(currentType))
-                .Concat(this.GetOverridableEvents(currentType))
+                // .Concat(this.GetOverridableProperties(currentType))
+                // .Concat(this.GetOverridableEvents(currentType))
                 // TODO should we remove duplicates?
                 .ToArray();
 
             return overrideTargets;
         }
 
-        public IEnumerable<AutoCompleteOverrideResponse> GetOverridableMethods
-            (IUnresolvedTypeDefinition type) {
+        public IEnumerable<AutoCompleteOverrideResponse>
+            GetOverridableMethods(IType type) {
 
-            var overridableMethods = type.Methods
-                .Where(method => method.IsVirtual
-				       && method.IsOverridable)
+            var overridableMethods = type
+                .GetMethods(m => m.IsVirtual
+                            && m.IsOverridable)
                 .Select(m => new AutoCompleteOverrideResponse
                         ( m
                         , descriptionText : "TODO descriptionText"
-                        , completionText  : "TODO completionText"));
+                        , completionText  : "TODO completionText"))
+				.ToArray();
 
             return overridableMethods;
         }
 
-        public IEnumerable<AutoCompleteOverrideResponse> GetOverridableProperties
-            (IUnresolvedTypeDefinition type) {
+        public IEnumerable<AutoCompleteOverrideResponse>
+            GetOverridableProperties(IType type) {
 
-            var overridableProperties = type.Properties
-                .Where(property => property.IsOverridable
-				       && property.IsVirtual)
+            var overridableProperties = type
+                .GetProperties(property => property.IsOverridable
+                               && property.IsVirtual)
                 .Select(p => new AutoCompleteOverrideResponse
                         ( p
                         , descriptionText : "TODO descriptionText"
-                        , completionText  : "TODO completionText"));
+                        , completionText  : "TODO completionText"))
+                .ToArray();
 
             return overridableProperties;
         }
 
-        public IEnumerable<AutoCompleteOverrideResponse> GetOverridableEvents
-            (IUnresolvedTypeDefinition type) {
+        public IEnumerable<AutoCompleteOverrideResponse>
+            GetOverridableEvents(IType type) {
 
-            var overridableProperties = type.Events
-                .Where(@event => @event.IsOverridable
-				       && @event.IsVirtual)
+            var overridableProperties = type
+                .GetEvents(@event => @event.IsOverridable
+                           && @event.IsVirtual)
                 .Select(e => new AutoCompleteOverrideResponse
                         ( e
                         , descriptionText : "TODO descriptionText"
-                        , completionText  : "TODO completionText"));
+                        , completionText  : "TODO completionText"))
+                .ToArray();
 
             return overridableProperties;
         }
+
     }
 }

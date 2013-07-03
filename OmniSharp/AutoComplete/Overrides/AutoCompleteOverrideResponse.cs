@@ -15,7 +15,7 @@ namespace OmniSharp.AutoComplete.Overrides {
         public AutoCompleteOverrideResponse() : base() {}
 
         public AutoCompleteOverrideResponse
-            ( IUnresolvedMethod m
+            ( IMethod m
             , string            descriptionText
             , string            completionText) {
 
@@ -27,7 +27,7 @@ namespace OmniSharp.AutoComplete.Overrides {
         }
 
         public AutoCompleteOverrideResponse
-            ( IUnresolvedProperty p
+            ( IProperty p
             , string              descriptionText
             , string              completionText) {
 
@@ -39,7 +39,7 @@ namespace OmniSharp.AutoComplete.Overrides {
         }
 
         public AutoCompleteOverrideResponse
-            ( IUnresolvedEvent e
+            ( IEvent e
             , string           descriptionText
             , string           completionText) {
 
@@ -70,7 +70,7 @@ namespace OmniSharp.AutoComplete.Overrides {
             }
         }
 
-        public static string createDisplayText(IUnresolvedMethod m) {
+        public static string createDisplayText(IMethod m) {
             return string.Format
                 ( "{0} {1} {2}({3})"
                 , m.Accessibility         // e.g. public, protected
@@ -79,7 +79,7 @@ namespace OmniSharp.AutoComplete.Overrides {
                 , m.Parameters);
         }
 
-        public static string createDisplayText(IUnresolvedProperty p) {
+        public static string createDisplayText(IProperty p) {
             return string.Format
                 ( @"{0} {1} {2}\{{3}{4}\}"
                 , p.Accessibility         // e.g. public, protected
@@ -89,7 +89,7 @@ namespace OmniSharp.AutoComplete.Overrides {
                 , p.CanSet ? "set;" : "");
         }
 
-        public static string createDisplayText(IUnresolvedEvent e) {
+        public static string createDisplayText(IEvent e) {
             throw new NotImplementedException();
         }
 
