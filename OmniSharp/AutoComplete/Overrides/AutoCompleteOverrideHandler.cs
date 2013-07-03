@@ -41,7 +41,8 @@ namespace OmniSharp.AutoComplete.Overrides {
             (IUnresolvedTypeDefinition type) {
 
             var overridableMethods = type.Methods
-                .Where(method => method.IsOverridable)
+                .Where(method => method.IsVirtual
+				       && method.IsOverridable)
                 .Select(m => new AutoCompleteOverrideResponse
                         ( m
                         , descriptionText : "TODO descriptionText"
@@ -54,7 +55,8 @@ namespace OmniSharp.AutoComplete.Overrides {
             (IUnresolvedTypeDefinition type) {
 
             var overridableProperties = type.Properties
-                .Where(property => property.IsOverridable)
+                .Where(property => property.IsOverridable
+				       && property.IsVirtual)
                 .Select(p => new AutoCompleteOverrideResponse
                         ( p
                         , descriptionText : "TODO descriptionText"
@@ -67,7 +69,8 @@ namespace OmniSharp.AutoComplete.Overrides {
             (IUnresolvedTypeDefinition type) {
 
             var overridableProperties = type.Events
-                .Where(@event => @event.IsOverridable)
+                .Where(@event => @event.IsOverridable
+				       && @event.IsVirtual)
                 .Select(e => new AutoCompleteOverrideResponse
                         ( e
                         , descriptionText : "TODO descriptionText"
