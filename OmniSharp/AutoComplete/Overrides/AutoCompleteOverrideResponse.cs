@@ -10,8 +10,6 @@ namespace OmniSharp.AutoComplete.Overrides {
 
         public AutoCompleteOverrideResponse() : base() {}
 
-        public AutoCompleteOverrideResponse(ICompletionData d) : base(d) {}
-
         public AutoCompleteOverrideResponse
             ( IUnresolvedMethod m
             , string            descriptionText
