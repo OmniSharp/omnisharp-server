@@ -9,15 +9,20 @@ using OmniSharp.Parser;
 namespace OmniSharp.AutoComplete.Overrides {
     public class AutoCompleteOverrideHandler {
 
+        private readonly BufferParser _parser;
+
+        public AutoCompleteOverrideHandler(BufferParser parser) {
+            _parser = parser;
+        }
+
         /// <summary>
         ///   Returns the available overridable members in the given
         ///   request.
         /// </summary>
         public IEnumerable<AutoCompleteOverrideResponse> GetOverrideTargets
-            ( AutoCompleteRequest request
-            , BufferParser        parser) {
+            (AutoCompleteRequest request) {
             var completionContext = new AutoCompleteBufferContext
-                (request, parser);
+                (request, this._parser);
 
             var currentType = completionContext.ParsedContent
                 .UnresolvedFile.GetInnermostTypeDefinition
