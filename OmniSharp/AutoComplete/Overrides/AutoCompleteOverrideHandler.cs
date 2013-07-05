@@ -29,58 +29,13 @@ namespace OmniSharp.AutoComplete.Overrides {
                     (completionContext.TextLocation)
                 .Resolve(completionContext.ResolveContext);
 
-            var overrideTargets = this.GetOverridableMethods(currentType)
-                // .Concat(this.GetOverridableProperties(currentType))
-                // .Concat(this.GetOverridableEvents(currentType))
+            var overrideTargets = currentType.GetMembers
+                (m => m.IsVirtual && m.IsOverridable)
                 // TODO should we remove duplicates?
+                .Select(m => new AutoCompleteOverrideResponse(m))
                 .ToArray();
 
             return overrideTargets;
-        }
-
-        public IEnumerable<AutoCompleteOverrideResponse>
-            GetOverridableMethods(IType type) {
-
-            var overridableMethods = type
-                .GetMethods(m => m.IsVirtual
-                            && m.IsOverridable)
-                .Select(m => new AutoCompleteOverrideResponse
-                        ( m
-                        , descriptionText : "TODO descriptionText"
-                        , completionText  : "TODO completionText"))
-				.ToArray();
-
-            return overridableMethods;
-        }
-
-        public IEnumerable<AutoCompleteOverrideResponse>
-            GetOverridableProperties(IType type) {
-
-            var overridableProperties = type
-                .GetProperties(property => property.IsOverridable
-                               && property.IsVirtual)
-                .Select(p => new AutoCompleteOverrideResponse
-                        ( p
-                        , descriptionText : "TODO descriptionText"
-                        , completionText  : "TODO completionText"))
-                .ToArray();
-
-            return overridableProperties;
-        }
-
-        public IEnumerable<AutoCompleteOverrideResponse>
-            GetOverridableEvents(IType type) {
-
-            var overridableProperties = type
-                .GetEvents(@event => @event.IsOverridable
-                           && @event.IsVirtual)
-                .Select(e => new AutoCompleteOverrideResponse
-                        ( e
-                        , descriptionText : "TODO descriptionText"
-                        , completionText  : "TODO completionText"))
-                .ToArray();
-
-            return overridableProperties;
         }
 
     }

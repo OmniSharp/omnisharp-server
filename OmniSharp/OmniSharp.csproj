@@ -216,7 +216,6 @@
     <Compile Include="TypeLookup\TypeLookupModule.cs" />
     <Compile Include="TypeLookup\TypeLookupRequest.cs" />
     <Compile Include="AutoComplete\Overrides\AutoCompleteOverrideHandler.cs" />
-    <Compile Include="AutoComplete\Overrides\OverrideTypeKind.cs" />
     <Compile Include="AutoComplete\Overrides\AutoCompleteOverrideResponse.cs" />
     <Compile Include="AutoComplete\AutoCompleteBufferContext.cs" />
     <Compile Include="AutoComplete\Overrides\AutoCompleteOverrideModule.cs" />
