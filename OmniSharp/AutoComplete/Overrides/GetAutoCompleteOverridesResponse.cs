@@ -6,11 +6,11 @@ using OmniSharp.AutoComplete.Overrides;
 
 namespace OmniSharp.AutoComplete.Overrides {
 
-    public class AutoCompleteOverrideResponse {
+    public class GetAutoCompleteOverridesResponse {
 
-        public AutoCompleteOverrideResponse() {}
+        public GetAutoCompleteOverridesResponse() {}
 
-        public AutoCompleteOverrideResponse(IMember m) {
+        public GetAutoCompleteOverridesResponse(IMember m) {
             if (m == null)
                 throw new ArgumentNullException("m");
 
