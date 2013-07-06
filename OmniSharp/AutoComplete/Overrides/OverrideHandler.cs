@@ -19,7 +19,7 @@ namespace OmniSharp.AutoComplete.Overrides {
         ///   Returns the available overridable members in the given
         ///   request.
         /// </summary>
-        public IEnumerable<GetAutoCompleteOverridesResponse> GetOverrideTargets
+        public IEnumerable<GetOverrideTargetsResponse> GetOverrideTargets
             (AutoCompleteRequest request) {
             var completionContext = new AutoCompleteBufferContext
                 (request, this._parser);
@@ -32,7 +32,7 @@ namespace OmniSharp.AutoComplete.Overrides {
             var overrideTargets = currentType.GetMembers
                 (m => m.IsVirtual && m.IsOverridable)
                 // TODO should we remove duplicates?
-                .Select(m => new GetAutoCompleteOverridesResponse(m))
+                .Select(m => new GetOverrideTargetsResponse(m))
                 .ToArray();
 
             return overrideTargets;
