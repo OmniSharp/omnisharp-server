@@ -8,6 +8,7 @@ using ICSharpCode.NRefactory.Semantics;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.Parser;
 using OmniSharp.Solution;
+using OmniSharp.Common;
 
 namespace OmniSharp.GotoImplementation
 {
@@ -22,8 +23,8 @@ namespace OmniSharp.GotoImplementation
             _bufferParser = bufferParser;
         }
 
-        public GotoImplementationResponse FindDerivedMembers(GotoImplementationRequest request)
-        {
+        public GotoImplementationResponse FindDerivedMembersAsQuickFixes
+            (GotoImplementationRequest request) {
             var res = _bufferParser.ParsedContent(request.Buffer, request.FileName);
 
             var loc = new TextLocation(request.Line, request.Column);
@@ -50,24 +51,19 @@ namespace OmniSharp.GotoImplementation
         private GotoImplementationResponse GetTypeResponse(CSharpTypeResolveContext rctx, ITypeDefinition typeDefinition)
         {
             var types = GetAllTypes().Select(t => t.Resolve(rctx).GetDefinition());
-            var locations = from type in types where type != null 
-                                && type != typeDefinition 
-                                && type.IsDerivedFrom(typeDefinition)
-                            select type.Region
-                            into region
-                            select new Location
-                                {
-                                    FileName = region.FileName,
-                                    Line = region.BeginLine,
-                                    Column = region.BeginColumn
-                                };
+            var quickFixes = from type in types where type != null
+                                 && type != typeDefinition
+                                 && type.IsDerivedFrom(typeDefinition)
+                             select QuickFix.ForFirstLineInRegion
+                                        ( type.Region
+                                        , _solution.GetFile(type.Region.FileName));
 
-            return new GotoImplementationResponse {Locations = locations};
+            return new GotoImplementationResponse(quickFixes);
         }
 
         private GotoImplementationResponse GetMemberResponse(CSharpTypeResolveContext rctx, MemberResolveResult resolveResult)
         {
-            var locations = new List<Location>();
+            var quickFixes = new List<QuickFix>();
             //TODO: we don't need to scan all types in all projects
             foreach (IUnresolvedTypeDefinition type in GetAllTypes())
             {
@@ -78,18 +74,14 @@ namespace OmniSharp.GotoImplementation
                         InheritanceHelper.GetDerivedMember(resolveResult.Member, resolvedDef);
                     if (member != null)
                     {
-                        var region = member.MemberDefinition.Region;
-                        var location = new Location
-                            {
-                                FileName = region.FileName,
-                                Line = region.BeginLine,
-                                Column = region.BeginColumn
-                            };
-                        locations.Add(location);
+                        var quickFix = QuickFix.ForFirstLineInRegion
+                                           ( member.MemberDefinition.Region
+                                           , _solution.GetFile(type.Region.FileName));
+                        quickFixes.Add(quickFix);
                     }
                 }
             }
-            return new GotoImplementationResponse { Locations = locations };
+            return new GotoImplementationResponse(quickFixes);
         }
 
         private IEnumerable<IUnresolvedTypeDefinition> GetAllTypes()
