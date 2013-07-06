@@ -218,7 +218,7 @@
     <Compile Include="AutoComplete\Overrides\AutoCompleteOverrideHandler.cs" />
     <Compile Include="AutoComplete\Overrides\GetAutoCompleteOverridesResponse.cs" />
     <Compile Include="AutoComplete\AutoCompleteBufferContext.cs" />
-    <Compile Include="AutoComplete\Overrides\AutoCompleteOverrideModule.cs" />
+    <Compile Include="AutoComplete\Overrides\GetOverrideTargetsModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

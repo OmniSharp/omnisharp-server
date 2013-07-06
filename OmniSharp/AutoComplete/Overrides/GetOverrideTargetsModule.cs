@@ -3,12 +3,12 @@ using Nancy;
 using Nancy.ModelBinding;
 
 namespace OmniSharp.AutoComplete.Overrides {
-    public class AutoCompleteOverrideModule : NancyModule {
+    public class GetOverrideTargetsModule : NancyModule {
 
-        public AutoCompleteOverrideModule
+        public GetOverrideTargetsModule
             (AutoCompleteOverrideHandler overrideHandler) {
 
-            Post["/autocompleteoverrides"] = x =>
+            Post["/getoverridetargets"] = x =>
                 {
                     var req = this.Bind<AutoCompleteRequest>();
                     var completions = overrideHandler.GetOverrideTargets(req);
