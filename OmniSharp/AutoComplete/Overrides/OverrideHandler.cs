@@ -7,11 +7,11 @@ using OmniSharp.AutoComplete;
 using OmniSharp.Parser;
 
 namespace OmniSharp.AutoComplete.Overrides {
-    public class AutoCompleteOverrideHandler {
+    public class OverrideHandler {
 
         private readonly BufferParser _parser;
 
-        public AutoCompleteOverrideHandler(BufferParser parser) {
+        public OverrideHandler(BufferParser parser) {
             _parser = parser;
         }
 

@@ -6,7 +6,7 @@ namespace OmniSharp.AutoComplete.Overrides {
     public class GetOverrideTargetsModule : NancyModule {
 
         public GetOverrideTargetsModule
-            (AutoCompleteOverrideHandler overrideHandler) {
+            (OverrideHandler overrideHandler) {
 
             Post["/getoverridetargets"] = x =>
                 {
