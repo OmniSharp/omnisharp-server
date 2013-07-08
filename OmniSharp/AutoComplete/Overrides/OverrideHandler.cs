@@ -38,5 +38,17 @@ namespace OmniSharp.AutoComplete.Overrides {
             return overrideTargets;
         }
 
+        /// <summary>
+        ///   Takes an editing context. Inserts an override
+        ///   declaration of the chosen member in the context. Returns
+        ///   the new context.
+        /// </summary>
+        public RunOverrideTargetResponse RunOverrideTarget
+            (RunOverrideTargetRequest request) {
+
+            throw new NotImplementedException();
+        }
+
+
     }
 }
