@@ -169,6 +169,7 @@
     <Compile Include="GetCodeActions\RunCodeActionRequest.cs" />
     <Compile Include="GetCodeActions\RunCodeActionsResponse.cs" />
     <Compile Include="ReloadSolution\ReloadSolutionModule.cs" />
+    <Compile Include="Poke\PokeModule.cs" />
     <Compile Include="Rename\ModifiedFileResponse.cs" />
     <Compile Include="Rename\RenameHandler.cs" />
     <Compile Include="Rename\RenameModule.cs" />
