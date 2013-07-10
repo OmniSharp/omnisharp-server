@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.NRefactory;
+using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.NRefactory.Editor;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.AutoComplete;
@@ -44,33 +45,17 @@ namespace OmniSharp.AutoComplete.Overrides {
             var refactoringContext = OmniSharpRefactoringContext.GetContext
                 (overrideContext.BufferParser, request);
 
-            // TODO
-            // Try looking at NRefactory source to see whether
-            // something in that library knows how to create an
-            // EntityDeclaration (abstract, derives from
-            // AstNode. These can probably be formatted back to text.)
             var memberToOverride =  overrideContext.GetOverridableMembers()
                 .First(ot => ot.ToString() == request.WordToComplete);;
 
-            Console.WriteLine("refactoringContext=" + refactoringContext);
-            Console.WriteLine("memberToOverride=" + memberToOverride);
-
             var script = new OmniSharpScript(refactoringContext);
+            var builder = new TypeSystemAstBuilder
+                (new CSharpResolver
+                 (overrideContext.CompletionContext.ResolveContext))
+                {GenerateBody = true};
+
             var newEditorContents = runOverrideTargetWorker
-                (memberToOverride, script);
-            Console.WriteLine("newEditorContents=" + newEditorContents);
-
-            // // From CreateMethodDeclarationAction
-            // // TODO there are a bunch of promising looking static
-            // //      methods in that class.
-            // script.InsertWithCursor
-            //     ( "THIS IS AN OPERATION"
-            //     , ICSharpCode.NRefactory.CSharp.Refactoring.Script.InsertPosition.After
-            //     , new[] {methodDeclaration});
-
-            // return new RunOverrideTargetResponse
-            //     ( fileName : script.CurrentDocument.FileName
-            //     , buffer   : script.CurrentDocument.Text);
+                (memberToOverride, script, builder);
 
             // Set cursor to a reasonable location!
             //
@@ -101,80 +86,18 @@ namespace OmniSharp.AutoComplete.Overrides {
         ///   property.
         /// </remarks>
         IDocument runOverrideTargetWorker
-            ( IMember         memberToOverride
-            , OmniSharpScript script) {
+            ( IMember              memberToOverride
+            , OmniSharpScript      script
+            , TypeSystemAstBuilder builder) {
 
-            if (memberToOverride is IMethod) {
-                var methodDeclaration = GetOverrideDeclarationForMethod
-                    ((IMethod) memberToOverride);
-                script.InsertWithCursor
-                    ( "THIS IS AN OPERATION"
-                    , Script.InsertPosition.After
-                    , new[] {methodDeclaration});
-            }
-            else if (memberToOverride is IProperty) {
-                var propertyDeclaration = GetOverrideDeclarationForProperty
-                    ((IProperty) memberToOverride);
-                script.InsertWithCursor
-                    ( "THIS IS AN OPERATION"
-                    , Script.InsertPosition.After
-                    , new[] {propertyDeclaration});
-            }
-            else if (memberToOverride is IEvent) {
-                var eventDeclaration = GetOverrideDeclarationForEvent
-                    ((IEvent) memberToOverride);
-                script.InsertWithCursor
-                    ( "THIS IS AN OPERATION"
-                    , Script.InsertPosition.After
-                    , new[] {eventDeclaration});
-            }
-            else
-                throw new NotSupportedException
-                    ("Can only override IMethod / IProperty / IEvent");
+            var methodDeclaration = builder.ConvertEntity(memberToOverride);
+            script.InsertWithCursor
+                ( "THIS IS AN OPERATION"
+                , Script.InsertPosition.After
+                , new[] {methodDeclaration});
 
             return script.CurrentDocument;
         }
-
-        static MethodDeclaration GetOverrideDeclarationForMethod
-            (IMethod iMethod) {
-
-            var invocationExpression = new InvocationExpression();
-                // ( methodName    : "base." + iMethod.Name
-                // , typeArguments : iMethod.TypeParameters
-                // , arguments     : iMethod.Parameters);
-
-            MethodDeclaration methodDeclaration = new MethodDeclaration()
-                { ReturnType = AstType.Create(iMethod.ReturnType.FullName)
-                , Name       = iMethod.Name
-                , Body       = new BlockStatement
-                    // TODO call base.foo() with same arguments
-                    {invocationExpression}};
-
-            //methodDeclaration.Parameters.AddRange(iMethod.Parameters);
-            // if (isStatic)
-            //     methodDeclaration.Modifiers |= Modifiers.Static;
-
-            return methodDeclaration;
-        }
-
-        static PropertyDeclaration GetOverrideDeclarationForProperty
-            (IProperty iProperty) {
-            throw new NotImplementedException();
-        }
-
-        static EventDeclaration GetOverrideDeclarationForEvent
-            (IEvent iEvent) {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        ///   Returns the type currently under the cursor in the given
-        ///   Request.
-        /// </summary>
-        public static OverrideContext GetCurrentType(Request request) {
-            throw new NotImplementedException();
-        }
-
 
     }
 }
