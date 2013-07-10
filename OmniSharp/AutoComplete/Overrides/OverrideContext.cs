@@ -17,9 +17,9 @@ namespace Omnisharp.AutoComplete.Overrides {
         public OverrideContext
             (AutoCompleteRequest request, BufferParser parser) {
 
-            this._parser = parser;
+            this.BufferParser = parser;
             this.CompletionContext = new AutoCompleteBufferContext
-                (request, this._parser);
+                (request, this.BufferParser);
 
             this.CurrentType = this.CompletionContext.ParsedContent
                 .UnresolvedFile.GetInnermostTypeDefinition
@@ -40,7 +40,8 @@ namespace Omnisharp.AutoComplete.Overrides {
         public IEnumerable<GetOverrideTargetsResponse> OverrideTargets {get; set;}
         public AutoCompleteBufferContext CompletionContext {get; set;}
 
-        BufferParser _parser {get; set;}
+        public BufferParser BufferParser {get; set;}
+
     }
 
 }
