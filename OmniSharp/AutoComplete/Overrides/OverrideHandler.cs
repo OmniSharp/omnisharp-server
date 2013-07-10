@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ICSharpCode.NRefactory;
 using ICSharpCode.NRefactory.Editor;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.AutoComplete;
@@ -70,15 +71,23 @@ namespace OmniSharp.AutoComplete.Overrides {
             // return new RunOverrideTargetResponse
             //     ( fileName : script.CurrentDocument.FileName
             //     , buffer   : script.CurrentDocument.Text);
+
+            // Set cursor to a reasonable location!
+            //
+            // Without this way the cursor is set to a location that
+            // might be offset by the amount of lines that are
+            // inserted in the overriding declaration.
+            var newOffset = script.GetCurrentOffset
+                (new TextLocation
+                 (line: request.Line, column: request.Column));
+
+            var newPosition = script.CurrentDocument.GetLocation(newOffset);
+
             return new RunOverrideTargetResponse
                 ( fileName : request.FileName
                 , buffer   : newEditorContents.Text
-                // TODO Set cursor to a reasonable location!
-                // This way the cursor is set to a location that might
-                // be offset by the amount of lines that are inserted
-                // in the overriding declaration.
-                , line     : request.Line
-                , column   : request.Column);
+                , line     : newPosition.Line
+                , column   : newPosition.Column);
 
         }
 
