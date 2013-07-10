@@ -26,8 +26,8 @@ namespace Omnisharp.AutoComplete.Overrides {
                     (this.CompletionContext.TextLocation)
                 .Resolve(this.CompletionContext.ResolveContext);
 
-            this.OverrideTargets = this.CurrentType.GetMembers
-                (m => m.IsVirtual && m.IsOverridable)
+            this.OverrideTargets =
+                GetOverridableMembers()
                 // TODO should we remove duplicates?
                 .Select(m => new GetOverrideTargetsResponse(m))
                 .ToArray();
@@ -42,6 +42,10 @@ namespace Omnisharp.AutoComplete.Overrides {
 
         public BufferParser BufferParser {get; set;}
 
+        public IEnumerable<IMember> GetOverridableMembers() {
+            return this.CurrentType
+                .GetMembers(m => m.IsVirtual && m.IsOverridable);
+        }
     }
 
 }
