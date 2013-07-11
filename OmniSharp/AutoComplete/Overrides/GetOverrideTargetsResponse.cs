@@ -21,13 +21,8 @@ namespace OmniSharp.AutoComplete.Overrides {
             if (m == null)
                 throw new ArgumentNullException("m");
 
-            var builder = new TypeSystemAstBuilder
-                (new CSharpResolver(resolveContext));
-
             this.OverrideTargetName =
-                builder.ConvertEntity(m).GetText()
-                // Builder automatically adds a trailing newline
-                .TrimEnd(Environment.NewLine.ToCharArray());
+                GetOverrideTargetName(m, resolveContext);
         }
 
         /// <summary>
@@ -35,6 +30,17 @@ namespace OmniSharp.AutoComplete.Overrides {
         ///   overridden.
         /// </summary>
         public string OverrideTargetName {get; set;}
+
+        public static string GetOverrideTargetName
+            (IMember m, CSharpTypeResolveContext resolveContext) {
+            var builder = new TypeSystemAstBuilder
+                (new CSharpResolver(resolveContext));
+
+            return builder.ConvertEntity(m).GetText()
+                // Builder automatically adds a trailing newline
+                .TrimEnd(Environment.NewLine.ToCharArray());
+        }
+
 
     }
 
