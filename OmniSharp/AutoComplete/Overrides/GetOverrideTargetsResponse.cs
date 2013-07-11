@@ -31,7 +31,8 @@ namespace OmniSharp.AutoComplete.Overrides {
         }
 
         /// <summary>
-        ///   TODO
+        ///   A human readable signature of the member that is to be
+        ///   overridden.
         /// </summary>
         public string OverrideTargetName {get; set;}
 
