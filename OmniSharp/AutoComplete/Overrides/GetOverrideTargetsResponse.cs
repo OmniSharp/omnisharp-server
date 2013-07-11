@@ -16,7 +16,7 @@ namespace OmniSharp.AutoComplete.Overrides {
             ( IMember m
             , CSharpTypeResolveContext resolveContext) {
             if (resolveContext == null)
-                throw new ArgumentNullException("overrideContext");
+                throw new ArgumentNullException("resolveContext");
 
             if (m == null)
                 throw new ArgumentNullException("m");
