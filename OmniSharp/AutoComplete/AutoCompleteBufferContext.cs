@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.NRefactory;
+using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Completion;
 using ICSharpCode.NRefactory.CSharp.TypeSystem;
 using ICSharpCode.NRefactory.Completion;
@@ -46,6 +47,12 @@ namespace OmniSharp.AutoComplete {
         public BufferParser             BufferParser        {get; set;}
         public ParsedResult             ParsedContent       {get; set;}
         public CSharpTypeResolveContext ResolveContext      {get; set;}
+
+        public AstNode NodeCurrentlyUnderCursor {
+            get {
+                return this.ParsedContent.SyntaxTree.GetNodeAt(this.TextLocation);
+            }
+        }
 
     }
 
