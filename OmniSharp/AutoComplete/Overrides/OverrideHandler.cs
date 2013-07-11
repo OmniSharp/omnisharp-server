@@ -59,7 +59,11 @@ namespace OmniSharp.AutoComplete.Overrides {
 
 
             var newEditorContents = runOverrideTargetWorker
-                (memberToOverride, script, builder);
+                ( memberToOverride
+                , script
+                , builder
+                , overrideContext.CompletionContext
+                    .ResolveContext.CurrentTypeDefinition);
 
             // Set cursor to a reasonable location!
             //
@@ -91,10 +95,15 @@ namespace OmniSharp.AutoComplete.Overrides {
         ///   Modifiers.Override to its Modifiers as well as removing
         ///   Modifiers.Virtual.
         /// </remarks>
+        /// <param name="currentType">
+        ///   The type currently under cursor. This is expected to be
+        ///   the class the member is to be overridden in.
+        /// </param>
         IDocument runOverrideTargetWorker
             ( IMember              memberToOverride
             , OmniSharpScript      script
-            , TypeSystemAstBuilder builder) {
+            , TypeSystemAstBuilder builder
+            , ITypeDefinition      currentType) {
 
             var memberDeclaration = builder.ConvertEntity(memberToOverride);
 
@@ -103,10 +112,12 @@ namespace OmniSharp.AutoComplete.Overrides {
             // Remove virtual flag
             memberDeclaration.Modifiers &= ~ Modifiers.Virtual;
 
+            // TODO this inserts the overriding member to the very top
+            // of the class and does not indent it properly
             script.InsertWithCursor
-                ( "THIS IS AN OPERATION"
-                , Script.InsertPosition.After
-                , new[] {memberDeclaration});
+                ( operation  : "THIS IS AN OPERATION" // what shoud this be?
+                , parentType : currentType
+                , nodes      : memberDeclaration) ;
 
             return script.CurrentDocument;
         }
