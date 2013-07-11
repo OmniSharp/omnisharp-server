@@ -83,18 +83,26 @@ namespace OmniSharp.AutoComplete.Overrides {
         /// </summary>
         /// <remarks>
         ///   Alters the given script. Returns its CurrentDocument
-        ///   property.
+        ///   property. Alters the given memberToOverride, adding
+        ///   Modifiers.Override to its Modifiers as well as removing
+        ///   Modifiers.Virtual.
         /// </remarks>
         IDocument runOverrideTargetWorker
             ( IMember              memberToOverride
             , OmniSharpScript      script
             , TypeSystemAstBuilder builder) {
 
-            var methodDeclaration = builder.ConvertEntity(memberToOverride);
+            var memberDeclaration = builder.ConvertEntity(memberToOverride);
+
+            // Add override flag
+            memberDeclaration.Modifiers |= Modifiers.Override;
+            // Remove virtual flag
+            memberDeclaration.Modifiers &= ~ Modifiers.Virtual;
+
             script.InsertWithCursor
                 ( "THIS IS AN OPERATION"
                 , Script.InsertPosition.After
-                , new[] {methodDeclaration});
+                , new[] {memberDeclaration});
 
             return script.CurrentDocument;
         }
