@@ -52,7 +52,11 @@ namespace OmniSharp.AutoComplete.Overrides {
             var builder = new TypeSystemAstBuilder
                 (new CSharpResolver
                  (overrideContext.CompletionContext.ResolveContext))
-                {GenerateBody = true};
+                 // Will generate a "throw new
+                 // NotImplementedException();" statement in the
+                 // bodies
+                 {GenerateBody = true};
+
 
             var newEditorContents = runOverrideTargetWorker
                 (memberToOverride, script, builder);
