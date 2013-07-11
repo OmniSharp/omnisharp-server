@@ -21,8 +21,6 @@ namespace OmniSharp.AutoComplete.Overrides {
             if (m == null)
                 throw new ArgumentNullException("m");
 
-            this._entityType = m.EntityType;
-
             var builder = new TypeSystemAstBuilder
                 (new CSharpResolver(resolveContext));
 
@@ -30,15 +28,6 @@ namespace OmniSharp.AutoComplete.Overrides {
                 builder.ConvertEntity(m).GetText()
                 // Builder automatically adds a trailing newline
                 .TrimEnd(Environment.NewLine.ToCharArray());
-        }
-
-        private EntityType _entityType;
-        public string OverrideType {
-            get {return _entityType.ToString();}
-            set {
-                _entityType = (EntityType)
-                    Enum.Parse(typeof(EntityType), value);
-            }
         }
 
         /// <summary>
