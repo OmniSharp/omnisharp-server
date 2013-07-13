@@ -44,6 +44,10 @@ namespace Omnisharp.AutoComplete.Overrides {
         public BufferParser BufferParser {get; set;}
 
         public IEnumerable<IMember> GetOverridableMembers() {
+            // TODO do not return members that are already overridden!
+
+            // TODO do not return members that are overridden in this
+            // type!
             return this.CurrentType
                 .GetMembers(m => m.IsVirtual && m.IsOverridable);
         }
