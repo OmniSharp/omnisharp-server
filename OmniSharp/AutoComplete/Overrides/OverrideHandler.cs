@@ -39,6 +39,10 @@ namespace OmniSharp.AutoComplete.Overrides {
         ///   declaration of the chosen member in the context. Returns
         ///   the new context.
         /// </summary>
+        /// <remarks>
+        ///   The text editor cursor stays in the same line and column
+        ///   it originally was.
+        /// </remarks>
         public RunOverrideTargetResponse RunOverrideTarget
             (RunOverrideTargetRequest request) {
             var overrideContext = new OverrideContext(request, this._parser);
@@ -62,30 +66,19 @@ namespace OmniSharp.AutoComplete.Overrides {
                  // bodies
                  {GenerateBody = true};
 
-
             var newEditorContents = runOverrideTargetWorker
                 ( memberToOverride
                 , script
                 , builder
                 , overrideContext.CompletionContext
-                    .ResolveContext.CurrentTypeDefinition);
-
-            // Set cursor to a reasonable location!
-            //
-            // Without this way the cursor is set to a location that
-            // might be offset by the amount of lines that are
-            // inserted in the overriding declaration.
-            var newOffset = script.GetCurrentOffset
-                (new TextLocation
-                 (line: request.Line, column: request.Column));
-
-            var newPosition = script.CurrentDocument.GetLocation(newOffset);
+                    .ResolveContext.CurrentTypeDefinition
+                , request);
 
             return new RunOverrideTargetResponse
                 ( fileName : request.FileName
                 , buffer   : newEditorContents.Text
-                , line     : newPosition.Line
-                , column   : newPosition.Column);
+                , line     : request.Line
+                , column   : request.Column);
 
         }
 
@@ -108,7 +101,8 @@ namespace OmniSharp.AutoComplete.Overrides {
             ( IMember              memberToOverride
             , OmniSharpScript      script
             , TypeSystemAstBuilder builder
-            , ITypeDefinition      currentType) {
+            , ITypeDefinition      currentType
+            , Request              request) {
 
             var memberDeclaration = builder.ConvertEntity(memberToOverride);
 
@@ -117,12 +111,16 @@ namespace OmniSharp.AutoComplete.Overrides {
             // Remove virtual flag
             memberDeclaration.Modifiers &= ~ Modifiers.Virtual;
 
-            // TODO this inserts the overriding member to the very top
-            // of the class and does not indent it properly
-            script.InsertWithCursor
-                ( operation  : "THIS IS AN OPERATION" // what shoud this be?
-                , parentType : currentType
-                , nodes      : memberDeclaration) ;
+            // TODO make indentation beautiful. This implementation
+            // does not take the surrounding level of indentation into
+            // account at all. The user has to manually indent the
+            // overriding member.
+            script.CurrentDocument.Insert
+                ( offset: script.CurrentDocument.GetOffset
+                  (new TextLocation
+                   (line: request.Line, column: request.Column))
+                , text: memberDeclaration
+                  .GetText(FormattingOptionsFactory.CreateEmpty()));
 
             return script.CurrentDocument;
         }
