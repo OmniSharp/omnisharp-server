@@ -15,7 +15,7 @@ namespace Omnisharp.AutoComplete.Overrides {
     public class OverrideContext {
 
         public OverrideContext
-            (AutoCompleteRequest request, BufferParser parser) {
+            (Request request, BufferParser parser) {
 
             this.BufferParser = parser;
             this.CompletionContext = new BufferContext

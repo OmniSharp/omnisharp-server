@@ -28,7 +28,7 @@ namespace OmniSharp.AutoComplete.Overrides {
         ///   request.
         /// </summary>
         public IEnumerable<GetOverrideTargetsResponse> GetOverrideTargets
-            (AutoCompleteRequest request) {
+            (Request request) {
             var overrideContext = new OverrideContext(request, this._parser);
 
             return overrideContext.OverrideTargets;

@@ -7,6 +7,7 @@ using ICSharpCode.NRefactory.CSharp.Completion;
 using ICSharpCode.NRefactory.CSharp.TypeSystem;
 using ICSharpCode.NRefactory.Completion;
 using ICSharpCode.NRefactory.Editor;
+using OmniSharp.Common;
 using OmniSharp.Parser;
 
 namespace OmniSharp.AutoComplete {
@@ -17,16 +18,31 @@ namespace OmniSharp.AutoComplete {
     ///   provide different context dependent actions to the user.
     /// </summary>
     public class BufferContext {
+
+        public BufferContext
+            (Request request, BufferParser bufferParser) {
+            this.Initialize(request, bufferParser);
+        }
+
+        /// <summary>
+        ///   Initialize with a custom TextLocation.
+        /// </summary>
         public BufferContext
             ( AutoCompleteRequest request
             , BufferParser parser) {
-            this.AutoCompleteRequest = request;
+            this.Initialize(request, parser);
+            this.TextLocation = new TextLocation
+                ( request.Line
+                , request.Column - request.WordToComplete.Length);
+        }
+
+        void Initialize(Request request, BufferParser parser) {
+            this.Request = request;
             this.BufferParser = parser;
 
             this.Document = new ReadOnlyDocument(request.Buffer ?? "");
             this.TextLocation = new TextLocation
-                ( request.Line
-                , request.Column - request.WordToComplete.Length);
+                (line: request.Line, column: request.Column);
 
             int cursorPosition = this.Document.GetOffset(this.TextLocation);
             //Ensure cursorPosition only equals 0 when editorText is empty, so line 1,column 1
@@ -37,10 +53,9 @@ namespace OmniSharp.AutoComplete {
 
             this.ParsedContent = this.BufferParser.ParsedContent(request.Buffer, request.FileName);
             this.ResolveContext = this.ParsedContent.UnresolvedFile.GetTypeResolveContext(this.ParsedContent.Compilation, this.TextLocation);
-
         }
 
-        public AutoCompleteRequest      AutoCompleteRequest {get; set;}
+        public Request                  Request             {get; set;}
         public ReadOnlyDocument         Document            {get; set;}
         public int                      CursorPosition      {get; set;}
         public TextLocation             TextLocation        {get; set;}

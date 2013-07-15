@@ -27,7 +27,7 @@ namespace OmniSharp.AutoComplete
             var completionContext = new BufferContext
                 (request, _parser);
 
-            var partialWord = completionContext.AutoCompleteRequest.WordToComplete;
+            var partialWord = request.WordToComplete;
 
             ICompletionContextProvider contextProvider = new DefaultCompletionContextProvider
                 (completionContext.Document, completionContext.ParsedContent.UnresolvedFile);
