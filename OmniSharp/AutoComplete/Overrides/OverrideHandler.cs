@@ -119,6 +119,7 @@ namespace OmniSharp.AutoComplete.Overrides {
             script.InsertAfter
                 ( node    : memberBeforeClosingBraceNode
                 , newNode : memberDeclaration);
+            script.FormatText(memberDeclaration);
 
             return script.CurrentDocument;
         }
