@@ -14,10 +14,10 @@ namespace OmniSharp.AutoComplete {
     /// <summary>
     ///   Represents a buffer state in an editor and that state's
     ///   context in relation to the current solution. Can be used to
-    ///   provide different context dependent completions to the user.
+    ///   provide different context dependent actions to the user.
     /// </summary>
-    public class AutoCompleteBufferContext {
-        public AutoCompleteBufferContext
+    public class BufferContext {
+        public BufferContext
             ( AutoCompleteRequest request
             , BufferParser parser) {
             this.AutoCompleteRequest = request;

@@ -18,7 +18,7 @@ namespace Omnisharp.AutoComplete.Overrides {
             (AutoCompleteRequest request, BufferParser parser) {
 
             this.BufferParser = parser;
-            this.CompletionContext = new AutoCompleteBufferContext
+            this.CompletionContext = new BufferContext
                 (request, this.BufferParser);
 
             this.CurrentType = this.CompletionContext.ParsedContent
@@ -38,7 +38,7 @@ namespace Omnisharp.AutoComplete.Overrides {
         /// </summary>
         public IType CurrentType {get; set;}
         public IEnumerable<GetOverrideTargetsResponse> OverrideTargets {get; set;}
-        public AutoCompleteBufferContext CompletionContext {get; set;}
+        public BufferContext CompletionContext {get; set;}
 
         public BufferParser BufferParser {get; set;}
 
