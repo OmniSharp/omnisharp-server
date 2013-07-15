@@ -68,7 +68,7 @@ namespace OmniSharp.AutoComplete.Overrides {
             var newEditorContents = runOverrideTargetWorker
                 ( request
                 , refactoringContext
-                , this._parser
+                , overrideContext.CompletionContext.ParsedContent
                 , script: new OmniSharpScript(refactoringContext)
                 , memberDeclaration:
                     builder.ConvertEntity(memberToOverride));
@@ -94,7 +94,7 @@ namespace OmniSharp.AutoComplete.Overrides {
         IDocument runOverrideTargetWorker
             ( Request                     request
             , OmniSharpRefactoringContext refactoringContext
-            , BufferParser                parser
+            , ParsedResult                parsedContent
             , EntityDeclaration           memberDeclaration
             , OmniSharpScript             script) {
 
@@ -103,12 +103,8 @@ namespace OmniSharp.AutoComplete.Overrides {
             // Remove virtual flag
             memberDeclaration.Modifiers &= ~ Modifiers.Virtual;
 
-            var parsedResult = parser.ParsedContent
-                ( editorText : script.CurrentDocument.Text
-                , filename   : request.FileName);
-
             // The current type declaration, e.g. class, struct..
-            var typeDeclaration = parsedResult.SyntaxTree.GetNodeAt
+            var typeDeclaration = parsedContent.SyntaxTree.GetNodeAt
                 ( refactoringContext.Location
                 , n => n.NodeType == NodeType.TypeDeclaration);
 
