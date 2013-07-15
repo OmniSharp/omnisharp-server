@@ -3,9 +3,11 @@ using OmniSharp.Common;
 
 namespace OmniSharp.AutoComplete.Overrides {
 
-    /// <remarks>
-    ///   This class uses AutoCompleteRequest.WordToComplete as the
-    ///   name of the inherited member to override. This is a hack.
-    /// </remarks>
-    public class RunOverrideTargetRequest : AutoCompleteRequest {}
+    public class RunOverrideTargetRequest : Request {
+        /// <example>
+        ///   public override bool Equals(object obj);
+        /// </example>
+        public string OverrideTargetName {get; set;}
+
+    }
 }

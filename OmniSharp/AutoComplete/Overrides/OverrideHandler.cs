@@ -55,7 +55,7 @@ namespace OmniSharp.AutoComplete.Overrides {
                      GetOverrideTargetsResponse.GetOverrideTargetName
                       (ot, overrideContext.CompletionContext.ResolveContext);
 
-                    return memberSignature == request.WordToComplete;});
+                    return memberSignature == request.OverrideTargetName;});
 
             var script = new OmniSharpScript(refactoringContext);
             var builder = new TypeSystemAstBuilder
