@@ -43,6 +43,11 @@ namespace Omnisharp.AutoComplete.Overrides {
         public BufferParser BufferParser {get; set;}
 
         public IEnumerable<IMember> GetOverridableMembers() {
+            // Disallow trying to override in e.g. interfaces or enums
+            if (   this.CurrentType.Kind != TypeKind.Class
+                && this.CurrentType.Kind != TypeKind.Struct)
+                return new IMember[0];
+
             // TODO do not return members that are already overridden!
 
             // TODO do not return members that are overridden in this
