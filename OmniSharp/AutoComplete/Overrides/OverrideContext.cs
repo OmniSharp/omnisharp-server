@@ -28,7 +28,6 @@ namespace Omnisharp.AutoComplete.Overrides {
 
             this.OverrideTargets =
                 GetOverridableMembers()
-                // TODO should we remove duplicates?
                 .Select(m => new GetOverrideTargetsResponse
                         (m, this.CompletionContext.ResolveContext))
                 .ToArray();
