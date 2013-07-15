@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.NRefactory;
+using ICSharpCode.NRefactory.CSharp;
+using ICSharpCode.NRefactory.CSharp.Refactoring;
 using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.NRefactory.Editor;
 using ICSharpCode.NRefactory.TypeSystem;
@@ -11,8 +13,6 @@ using OmniSharp.Parser;
 using OmniSharp.Refactoring;
 using OmniSharp.Solution;
 using Omnisharp.AutoComplete.Overrides;
-using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.CSharp.Refactoring;
 
 namespace OmniSharp.AutoComplete.Overrides {
     public class OverrideHandler {
@@ -57,7 +57,6 @@ namespace OmniSharp.AutoComplete.Overrides {
 
                     return memberSignature == request.OverrideTargetName;});
 
-            var script = new OmniSharpScript(refactoringContext);
             var builder = new TypeSystemAstBuilder
                 (new CSharpResolver
                  (overrideContext.CompletionContext.ResolveContext))
@@ -67,60 +66,59 @@ namespace OmniSharp.AutoComplete.Overrides {
                  {GenerateBody = true};
 
             var newEditorContents = runOverrideTargetWorker
-                ( memberToOverride
-                , script
-                , builder
-                , overrideContext.CompletionContext
-                    .ResolveContext.CurrentTypeDefinition
-                , request);
+                ( request
+                , refactoringContext
+                , this._parser
+                , script: new OmniSharpScript(refactoringContext)
+                , memberDeclaration:
+                    builder.ConvertEntity(memberToOverride));
 
             return new RunOverrideTargetResponse
                 ( fileName : request.FileName
                 , buffer   : newEditorContents.Text
                 , line     : request.Line
                 , column   : request.Column);
-
         }
 
         /// <summary>
-        ///   Creates an overriding declaration for the given IMember,
-        ///   which must be IMethod, IProperty or IEvent. Inserts this
-        ///   declaration with the given script.
+        ///   Inserts the given EntityDeclaration with the given
+        ///   script at the end of the type declaration under the
+        ///   cursor (e.g. class / struct).
         /// </summary>
         /// <remarks>
         ///   Alters the given script. Returns its CurrentDocument
-        ///   property. Alters the given memberToOverride, adding
+        ///   property. Alters the given memberDeclaration, adding
         ///   Modifiers.Override to its Modifiers as well as removing
         ///   Modifiers.Virtual.
         /// </remarks>
-        /// <param name="currentType">
-        ///   The type currently under cursor. This is expected to be
-        ///   the class the member is to be overridden in.
-        /// </param>
         IDocument runOverrideTargetWorker
-            ( IMember              memberToOverride
-            , OmniSharpScript      script
-            , TypeSystemAstBuilder builder
-            , ITypeDefinition      currentType
-            , Request              request) {
-
-            var memberDeclaration = builder.ConvertEntity(memberToOverride);
+            ( Request                     request
+            , OmniSharpRefactoringContext refactoringContext
+            , BufferParser                parser
+            , EntityDeclaration           memberDeclaration
+            , OmniSharpScript             script) {
 
             // Add override flag
             memberDeclaration.Modifiers |= Modifiers.Override;
             // Remove virtual flag
             memberDeclaration.Modifiers &= ~ Modifiers.Virtual;
 
-            // TODO make indentation beautiful. This implementation
-            // does not take the surrounding level of indentation into
-            // account at all. The user has to manually indent the
-            // overriding member.
-            script.CurrentDocument.Insert
-                ( offset: script.CurrentDocument.GetOffset
-                  (new TextLocation
-                   (line: request.Line, column: request.Column))
-                , text: memberDeclaration
-                  .GetText(FormattingOptionsFactory.CreateEmpty()));
+            var parsedResult = parser.ParsedContent
+                ( editorText : script.CurrentDocument.Text
+                , filename   : request.FileName);
+
+            // The current type declaration, e.g. class, struct..
+            var typeDeclaration = parsedResult.SyntaxTree.GetNodeAt
+                ( refactoringContext.Location
+                , n => n.NodeType == NodeType.TypeDeclaration);
+
+            // Even empty classes have nodes, so this works
+            var memberBeforeClosingBraceNode =
+                typeDeclaration.Children.Last().GetPrevNode();
+
+            script.InsertAfter
+                ( node    : memberBeforeClosingBraceNode
+                , newNode : memberDeclaration);
 
             return script.CurrentDocument;
         }
