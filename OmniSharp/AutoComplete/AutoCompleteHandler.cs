@@ -23,31 +23,27 @@ namespace OmniSharp.AutoComplete
 
         public IEnumerable<ICompletionData> CreateProvider(AutoCompleteRequest request)
         {
-            var editorText = request.Buffer ?? string.Empty;
-            var filename = request.FileName;
-            var partialWord = request.WordToComplete ?? string.Empty;
 
-            var doc = new ReadOnlyDocument(editorText);
-            var loc = new TextLocation(request.Line, request.Column - partialWord.Length);
-            int cursorPosition = doc.GetOffset(loc);
-            //Ensure cursorPosition only equals 0 when editorText is empty, so line 1,column 1
-            //completion will work correctly.
-            cursorPosition = Math.Max(cursorPosition, 1);
-            cursorPosition = Math.Min(cursorPosition, editorText.Length);
+            var completionContext = new BufferContext
+                (request, _parser);
 
-            
-            var res = _parser.ParsedContent(editorText, filename);
-            var rctx = res.UnresolvedFile.GetTypeResolveContext(res.Compilation, loc);
+            var partialWord = request.WordToComplete;
 
-            ICompletionContextProvider contextProvider = new DefaultCompletionContextProvider(doc, res.UnresolvedFile);
-            var engine = new CSharpCompletionEngine(doc, contextProvider, new CompletionDataFactory(partialWord), res.ProjectContent, rctx)
+            ICompletionContextProvider contextProvider = new DefaultCompletionContextProvider
+                (completionContext.Document, completionContext.ParsedContent.UnresolvedFile);
+            var engine = new CSharpCompletionEngine
+                ( completionContext.Document
+                , contextProvider
+                , new CompletionDataFactory(partialWord)
+                , completionContext.ParsedContent.ProjectContent
+                , completionContext.ResolveContext)
                 {
                     EolMarker = Environment.NewLine
                 };
 
             _logger.Debug("Getting Completion Data");
 
-            IEnumerable<ICompletionData> data = engine.GetCompletionData(cursorPosition, true);
+            IEnumerable<ICompletionData> data = engine.GetCompletionData(completionContext.CursorPosition, true);
             _logger.Debug("Got Completion Data");
             return data.Where(d => d != null && d.CompletionText.IsValidCompletionFor(partialWord))
                        .FlattenOverloads()
