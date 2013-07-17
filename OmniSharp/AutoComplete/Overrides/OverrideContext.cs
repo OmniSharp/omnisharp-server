@@ -15,10 +15,10 @@ namespace Omnisharp.AutoComplete.Overrides {
     public class OverrideContext {
 
         public OverrideContext
-            (AutoCompleteRequest request, BufferParser parser) {
+            (Request request, BufferParser parser) {
 
             this.BufferParser = parser;
-            this.CompletionContext = new AutoCompleteBufferContext
+            this.CompletionContext = new BufferContext
                 (request, this.BufferParser);
 
             this.CurrentType = this.CompletionContext.ParsedContent
@@ -28,7 +28,6 @@ namespace Omnisharp.AutoComplete.Overrides {
 
             this.OverrideTargets =
                 GetOverridableMembers()
-                // TODO should we remove duplicates?
                 .Select(m => new GetOverrideTargetsResponse
                         (m, this.CompletionContext.ResolveContext))
                 .ToArray();
@@ -39,11 +38,16 @@ namespace Omnisharp.AutoComplete.Overrides {
         /// </summary>
         public IType CurrentType {get; set;}
         public IEnumerable<GetOverrideTargetsResponse> OverrideTargets {get; set;}
-        public AutoCompleteBufferContext CompletionContext {get; set;}
+        public BufferContext CompletionContext {get; set;}
 
         public BufferParser BufferParser {get; set;}
 
         public IEnumerable<IMember> GetOverridableMembers() {
+            // Disallow trying to override in e.g. interfaces or enums
+            if (   this.CurrentType.Kind != TypeKind.Class
+                && this.CurrentType.Kind != TypeKind.Struct)
+                return new IMember[0];
+
             // TODO do not return members that are already overridden!
 
             // TODO do not return members that are overridden in this

@@ -224,6 +224,7 @@
     <Compile Include="AutoComplete\Overrides\RunOverrideTargetRequest.cs" />
     <Compile Include="AutoComplete\Overrides\OverrideContext.cs" />
     <Compile Include="AutoComplete\Overrides\RunOverrideTargetModule.cs" />
+    <Compile Include="AutoComplete\BufferContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
