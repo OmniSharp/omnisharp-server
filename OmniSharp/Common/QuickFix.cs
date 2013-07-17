@@ -1,4 +1,5 @@
-﻿using OmniSharp.GotoImplementation;
+﻿using ICSharpCode.NRefactory.Editor;
+using OmniSharp.GotoImplementation;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.Solution;
 
@@ -25,6 +26,12 @@ namespace OmniSharp.Common
         public static QuickFix ForFirstLineInRegion
             (DomRegion region, CSharpFile file) {
 
+            return QuickFix.ForFirstLineInRegion
+                (region, file.Document);
+        }
+
+        public static QuickFix ForFirstLineInRegion
+            (DomRegion region, IDocument document) {
             return new QuickFix
                 { FileName = region.FileName
                 , Line     = region.BeginLine
@@ -33,11 +40,10 @@ namespace OmniSharp.Common
                 // Note that we could display an arbitrary amount of
                 // context to the user: ranging from one line to tens,
                 // hundreds..
-                , Text = file.Document.GetText
-                    ( offset: file.Document.GetOffset(region.Begin)
-                    , length: file.Document.GetLineByNumber
+                , Text = document.GetText
+                    ( offset: document.GetOffset(region.Begin)
+                    , length: document.GetLineByNumber
                                 (region.BeginLine).Length)};
         }
-
     }
 }
