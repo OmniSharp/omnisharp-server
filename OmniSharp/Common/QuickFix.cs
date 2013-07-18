@@ -46,5 +46,49 @@ namespace OmniSharp.Common
                                 (region.BeginLine).Length)
                     .Trim()};
         }
+
+        /// <summary>
+        ///   Creates a new QuickFix representing the non-bodyRegion
+        ///   of the given region. Can be used to create QuickFixes
+        ///   for AST members. The resulting QuickFix will then
+        ///   contain the name and type signature of the member.
+        /// </summary>
+        /// <example>
+        ///   For the region containing a "public string GetText(...)
+        ///   {return null}" this method will return a QuickFix whose
+        ///   Text is "public string GetText(...) ". So the returned
+        ///   Text contains the type signature and not the body.
+        /// </example>
+        public static QuickFix ForNonBodyRegion
+            (DomRegion region, IDocument document, DomRegion bodyRegion) {
+
+            var text = GetNonBodyRegion(region, document, bodyRegion);
+
+            return new QuickFix
+                { FileName = region.FileName
+                , Line     = region.BeginLine
+                , Column   = region.BeginColumn
+                , Text     = text};
+
+        }
+
+        static string GetNonBodyRegion
+            (DomRegion region, IDocument document, DomRegion bodyRegion) {
+            var begin     = document.GetOffset(region.Begin);
+            var bodyStart = document.GetOffset(bodyRegion.Begin);
+
+            var typeSignatureLength = bodyStart - begin;
+
+            // Note: We remove extra spaces and newlines from the type
+            // signature to make displaying it easier in Vim. Other
+            // editors might not have a problem with displaying
+            // results with multiple lines.
+            var text = document.GetText
+                ( offset: document.GetOffset(region.Begin)
+                , length: typeSignatureLength)
+                .MultipleWhitespaceCharsToSingleSpace();
+
+            return text;
+        }
     }
 }
