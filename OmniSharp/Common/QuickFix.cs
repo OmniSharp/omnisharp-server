@@ -43,7 +43,8 @@ namespace OmniSharp.Common
                 , Text = document.GetText
                     ( offset: document.GetOffset(region.Begin)
                     , length: document.GetLineByNumber
-                                (region.BeginLine).Length)};
+                                (region.BeginLine).Length)
+                    .Trim()};
         }
     }
 }
