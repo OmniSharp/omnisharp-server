@@ -1,10 +1,17 @@
 ﻿using System;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace OmniSharp.Solution
 {
     public static class StringExtensions
     {
+
+        public static string MultipleWhitespaceCharsToSingleSpace
+            (this string stringToTrim) {
+            return Regex.Replace(stringToTrim, @"\s+", " ");
+        }
+
         /// <summary>
         /// Changes a path's directory separator from Windows-style to the native
         /// separator if necessary and expands it to the full path name.
