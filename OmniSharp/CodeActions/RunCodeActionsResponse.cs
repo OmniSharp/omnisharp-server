@@ -1,4 +1,4 @@
-﻿namespace OmniSharp.GetCodeActions
+﻿namespace OmniSharp.CodeActions
 {
     public class RunCodeActionsResponse
     {

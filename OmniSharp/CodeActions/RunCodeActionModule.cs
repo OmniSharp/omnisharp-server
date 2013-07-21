@@ -1,7 +1,7 @@
 ﻿using Nancy;
 using Nancy.ModelBinding;
 
-namespace OmniSharp.GetCodeActions
+namespace OmniSharp.CodeActions
 {
     public class RunCodeActionModule : NancyModule
     {

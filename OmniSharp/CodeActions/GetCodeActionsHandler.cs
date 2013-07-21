@@ -5,7 +5,7 @@ using OmniSharp.Common;
 using OmniSharp.Parser;
 using OmniSharp.Refactoring;
 
-namespace OmniSharp.GetCodeActions
+namespace OmniSharp.CodeActions
 {
     public class GetCodeActionsHandler
     {

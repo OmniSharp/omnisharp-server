@@ -1,11 +1,10 @@
 ﻿using Nancy;
-using OmniSharp.Solution;
 
-namespace OmniSharp.CheckAliveStatusModule
+namespace OmniSharp.CheckAliveStatus
 {
     public class CheckAliveStatusModule : NancyModule
     {
-        public CheckAliveStatusModule(ISolution solution)
+        public CheckAliveStatusModule()
         {
             Post["/checkalivestatus"] = x =>
                 {

@@ -11,14 +11,14 @@ namespace OmniSharp.Refactoring
     public class OmniSharpRefactoringContext : RefactoringContext
     {
         private readonly IDocument _document;
-        private TextLocation _location;
+        private readonly TextLocation _location;
 
         public OmniSharpRefactoringContext(IDocument document, CSharpAstResolver resolver)
             : this(document, resolver, new TextLocation(1,1))
         {
         }
 
-        public OmniSharpRefactoringContext(IDocument document, CSharpAstResolver resolver, TextLocation location) 
+        private OmniSharpRefactoringContext(IDocument document, CSharpAstResolver resolver, TextLocation location) 
             : base(resolver, CancellationToken.None)
         {
             _document = document;
@@ -41,7 +41,6 @@ namespace OmniSharp.Refactoring
         {
             return _document.GetOffset(location);
         }
-
         
         public override IDocumentLine GetLineByOffset(int offset)
         {

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ICSharpCode.NRefactory;
 using ICSharpCode.NRefactory.CSharp.Completion;
 using ICSharpCode.NRefactory.Completion;
-using ICSharpCode.NRefactory.Editor;
 using OmniSharp.Parser;
 
 namespace OmniSharp.AutoComplete
