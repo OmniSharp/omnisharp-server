@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using ICSharpCode.NRefactory;
 using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.CSharp.Completion;
 using ICSharpCode.NRefactory.CSharp.TypeSystem;
-using ICSharpCode.NRefactory.Completion;
 using ICSharpCode.NRefactory.Editor;
 using OmniSharp.Common;
 using OmniSharp.Parser;
@@ -24,26 +20,17 @@ namespace OmniSharp.AutoComplete {
             this.Initialize(request, bufferParser);
         }
 
-        /// <summary>
-        ///   Initialize with a custom TextLocation.
-        /// </summary>
-        public BufferContext
-            ( AutoCompleteRequest request
-            , BufferParser parser) {
-            this.Initialize(request, parser);
-            this.TextLocation = new TextLocation
-                ( request.Line
-                , request.Column - request.WordToComplete.Length);
-        }
-
         void Initialize(Request request, BufferParser parser) {
             this.Request = request;
             this.BufferParser = parser;
 
             this.Document = new ReadOnlyDocument(request.Buffer ?? "");
             this.TextLocation = new TextLocation
-                (line: request.Line, column: request.Column);
-
+                (line: request.Line, 
+                column: request is AutoCompleteRequest 
+                ? request.Column - (request as AutoCompleteRequest).WordToComplete.Length
+                : request.Column);
+            
             int cursorPosition = this.Document.GetOffset(this.TextLocation);
             //Ensure cursorPosition only equals 0 when editorText is empty, so line 1,column 1
             //completion will work correctly.
@@ -55,7 +42,7 @@ namespace OmniSharp.AutoComplete {
             this.ResolveContext = this.ParsedContent.UnresolvedFile.GetTypeResolveContext(this.ParsedContent.Compilation, this.TextLocation);
         }
 
-        public Request                  Request             {get; set;}
+        private Request                  Request             {get; set;}
         public ReadOnlyDocument         Document            {get; set;}
         public int                      CursorPosition      {get; set;}
         public TextLocation             TextLocation        {get; set;}
