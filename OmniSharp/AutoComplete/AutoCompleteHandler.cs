@@ -23,6 +23,7 @@ namespace OmniSharp.AutoComplete
 
         public IEnumerable<ICompletionData> CreateProvider(AutoCompleteRequest request)
         {
+            request.Column = request.Column - request.WordToComplete.Length;
 
             var completionContext = new BufferContext
                 (request, _parser);

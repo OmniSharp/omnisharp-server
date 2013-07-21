@@ -27,9 +27,7 @@ namespace OmniSharp.AutoComplete {
             this.Document = new ReadOnlyDocument(request.Buffer ?? "");
             this.TextLocation = new TextLocation
                 (line: request.Line, 
-                column: request is AutoCompleteRequest 
-                ? request.Column - (request as AutoCompleteRequest).WordToComplete.Length
-                : request.Column);
+                column: request.Column);
             
             int cursorPosition = this.Document.GetOffset(this.TextLocation);
             //Ensure cursorPosition only equals 0 when editorText is empty, so line 1,column 1
