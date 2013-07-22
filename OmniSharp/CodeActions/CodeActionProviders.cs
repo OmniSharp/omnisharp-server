@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using ICSharpCode.NRefactory.CSharp.Refactoring;
 
-namespace OmniSharp.GetCodeActions
+namespace OmniSharp.CodeActions
 {
     public class CodeActionProviders
     {

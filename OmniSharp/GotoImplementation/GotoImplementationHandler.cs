@@ -23,7 +23,7 @@ namespace OmniSharp.GotoImplementation
             _bufferParser = bufferParser;
         }
 
-        public GotoImplementationResponse FindDerivedMembersAsQuickFixes
+        public QuickFixResponse FindDerivedMembersAsQuickFixes
             (GotoImplementationRequest request) {
             var res = _bufferParser.ParsedContent(request.Buffer, request.FileName);
 
@@ -45,10 +45,10 @@ namespace OmniSharp.GotoImplementation
                 return GetMemberResponse(rctx, resolveResult as MemberResolveResult);
             }
 
-            return new GotoImplementationResponse();
+            return new QuickFixResponse();
         }
 
-        private GotoImplementationResponse GetTypeResponse(CSharpTypeResolveContext rctx, ITypeDefinition typeDefinition)
+        private QuickFixResponse GetTypeResponse(CSharpTypeResolveContext rctx, ITypeDefinition typeDefinition)
         {
             var types = GetAllTypes().Select(t => t.Resolve(rctx).GetDefinition());
             var quickFixes = from type in types where type != null
@@ -58,10 +58,10 @@ namespace OmniSharp.GotoImplementation
                                         ( type.Region
                                         , _solution.GetFile(type.Region.FileName));
 
-            return new GotoImplementationResponse(quickFixes);
+            return new QuickFixResponse(quickFixes);
         }
 
-        private GotoImplementationResponse GetMemberResponse(CSharpTypeResolveContext rctx, MemberResolveResult resolveResult)
+        private QuickFixResponse GetMemberResponse(CSharpTypeResolveContext rctx, MemberResolveResult resolveResult)
         {
             var quickFixes = new List<QuickFix>();
             //TODO: we don't need to scan all types in all projects
@@ -81,7 +81,7 @@ namespace OmniSharp.GotoImplementation
                     }
                 }
             }
-            return new GotoImplementationResponse(quickFixes);
+            return new QuickFixResponse(quickFixes);
         }
 
         private IEnumerable<IUnresolvedTypeDefinition> GetAllTypes()

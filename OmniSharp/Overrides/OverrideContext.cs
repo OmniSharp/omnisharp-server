@@ -2,11 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.AutoComplete;
-using OmniSharp.AutoComplete.Overrides;
 using OmniSharp.Common;
 using OmniSharp.Parser;
 
-namespace Omnisharp.AutoComplete.Overrides {
+namespace OmniSharp.Overrides {
 
     /// <summary>
     ///   Represents a context where some base class members are going

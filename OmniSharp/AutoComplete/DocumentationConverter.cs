@@ -20,7 +20,6 @@ namespace OmniSharp.AutoComplete
             var reader = new System.IO.StringReader("<docroot>" + xmlDocumentation + "</docroot>");
             var xml = new XmlTextReader(reader);
             var ret = new StringBuilder();
-            ////Regex whitespace    = new Regex(@"\s+");
 
             try
             {
@@ -90,7 +89,6 @@ namespace OmniSharp.AutoComplete
             }
             catch (Exception)
             {
-                //LoggingService.Debug("Invalid XML documentation: " + ex.Message);
                 return xmlDocumentation;
             }
             return ret.ToString();

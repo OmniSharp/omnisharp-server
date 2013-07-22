@@ -1,7 +1,6 @@
-using System;
 using OmniSharp.Common;
 
-namespace OmniSharp.AutoComplete.Overrides {
+namespace OmniSharp.Overrides {
 
     public class RunOverrideTargetRequest : Request {
         /// <example>

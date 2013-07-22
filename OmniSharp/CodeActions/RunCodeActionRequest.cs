@@ -1,6 +1,6 @@
 ﻿using OmniSharp.Common;
 
-namespace OmniSharp.GetCodeActions
+namespace OmniSharp.CodeActions
 {
     public class RunCodeActionRequest : Request
     {

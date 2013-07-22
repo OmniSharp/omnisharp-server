@@ -1,5 +1,6 @@
 ﻿using System.Xml.Linq;
 using NUnit.Framework;
+using OmniSharp.Common;
 using OmniSharp.ProjectManipulation.AddReference;
 using Should;
 
@@ -30,7 +31,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                  FileName = @"c:\test\one\test.cs"
              };
 
-             var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[]{new AddGacReferenceProcessor() }));
+             var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[]{new AddGacReferenceProcessor() }, new FileSystem()));
              handler.AddReference(request);
 
              project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
@@ -59,7 +60,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                 FileName = @"c:\test\one\test.cs"
             };
 
-            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddGacReferenceProcessor() }));
+            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddGacReferenceProcessor() }, new FileSystem()));
             handler.AddReference(request);
 
             project.AsXml().ToString().ShouldEqual(expectedXml.ToString());

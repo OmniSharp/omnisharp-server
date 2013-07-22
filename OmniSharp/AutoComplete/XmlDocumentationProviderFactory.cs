@@ -14,18 +14,10 @@ namespace OmniSharp.AutoComplete
         private static readonly ConcurrentDictionary<string, XmlDocumentationProvider> _providers =
             new ConcurrentDictionary<string, XmlDocumentationProvider>();
 
-        private static bool IsUnix
-        {
-            get
-            {
-                var p = (int)Environment.OSVersion.Platform;
-                return (p == 4) || (p == 6) || (p == 128);
-            }
-        }
 
         public static IDocumentationProvider Get(string assemblyName)
         {
-            if (IsUnix)
+            if (PlatformService.IsUnix)
                 return new MonoDocDocumentationProvider();
 
             if (_providers.ContainsKey(assemblyName))

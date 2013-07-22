@@ -2,7 +2,7 @@
 using Nancy.ModelBinding;
 using Request = OmniSharp.Common.Request;
 
-namespace OmniSharp.GetCodeActions
+namespace OmniSharp.CodeActions
 {
     public class GetCodeActionsModule : NancyModule
     {

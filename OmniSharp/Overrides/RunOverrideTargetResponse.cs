@@ -1,8 +1,6 @@
-using System;
-using OmniSharp.Common;
 using OmniSharp.Rename;
 
-namespace OmniSharp.AutoComplete.Overrides {
+namespace OmniSharp.Overrides {
     public class RunOverrideTargetResponse : ModifiedFileResponse {
         public RunOverrideTargetResponse() {}
         public RunOverrideTargetResponse

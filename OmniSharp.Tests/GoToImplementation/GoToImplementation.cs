@@ -1,12 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using ICSharpCode.NRefactory.TypeSystem;
+﻿using System.Linq;
 using NUnit.Framework;
-using OmniSharp.FindUsages;
 using OmniSharp.GotoImplementation;
-using OmniSharp.Solution;
-using OmniSharp.Common;
 using OmniSharp.Parser;
 using Should;
 
@@ -40,7 +34,7 @@ public class DerivedClassC : BaseClass {}
                 , FileName = fileName};
             var gotoImplementationResponse = handler.FindDerivedMembersAsQuickFixes(request);
 
-            var quickFixes = gotoImplementationResponse.Locations.ToArray();
+            var quickFixes = gotoImplementationResponse.QuickFixes.ToArray();
             Assert.AreEqual(3, quickFixes.Length);
             quickFixes[0].Text.Trim().ShouldEqual("public class DerivedClassA : BaseClass {}");
             quickFixes[1].Text.Trim().ShouldEqual("public class DerivedClassB : BaseClass {}");

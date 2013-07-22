@@ -1,8 +1,7 @@
-﻿using System.Linq;
-using Nancy;
+﻿using Nancy;
 using Nancy.ModelBinding;
 
-namespace OmniSharp.AutoComplete.Overrides {
+namespace OmniSharp.Overrides {
     public class RunOverrideTargetModule : NancyModule {
 
         public RunOverrideTargetModule

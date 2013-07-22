@@ -39,7 +39,7 @@ namespace OmniSharp.TypeLookup
 
             if (resolveResult == null || resolveResult is NamespaceResolveResult)
                 response.Type = "";
-            else if (resolveResult != null)
+            else
             {
                 response.Type = resolveResult.Type.ToString();
 
