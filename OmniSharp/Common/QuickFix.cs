@@ -72,6 +72,17 @@ namespace OmniSharp.Common
 
         }
 
+        public static QuickFix ForNonBodyRegion
+            (IMember member, IDocument document) {
+            var text = GetNonBodyRegion
+                (member.Region, document, member.BodyRegion);
+            return new QuickFix
+                { FileName = member.Region.FileName
+                , Line     = member.Region.BeginLine
+                , Column   = member.Region.BeginColumn
+                , Text     = text};
+        }
+
         static string GetNonBodyRegion
             (DomRegion region, IDocument document, DomRegion bodyRegion) {
             var begin     = document.GetOffset(region.Begin);
