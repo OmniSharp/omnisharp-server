@@ -24,10 +24,10 @@ namespace OmniSharp.AutoComplete
         public IEnumerable<ICompletionData> CreateProvider(AutoCompleteRequest request)
         {
 
-            var completionContext = new AutoCompleteBufferContext
+            var completionContext = new BufferContext
                 (request, _parser);
 
-            var partialWord = completionContext.AutoCompleteRequest.WordToComplete;
+            var partialWord = request.WordToComplete;
 
             ICompletionContextProvider contextProvider = new DefaultCompletionContextProvider
                 (completionContext.Document, completionContext.ParsedContent.UnresolvedFile);
