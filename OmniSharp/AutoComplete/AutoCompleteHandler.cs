@@ -34,7 +34,9 @@ namespace OmniSharp.AutoComplete
             var engine = new CSharpCompletionEngine
                 ( completionContext.Document
                 , contextProvider
-                , new CompletionDataFactory(partialWord)
+                , new CompletionDataFactory
+                  ( partialWord
+                  , request.WantDocumentationForEveryCompletionResult)
                 , completionContext.ParsedContent.ProjectContent
                 , completionContext.ResolveContext)
                 {

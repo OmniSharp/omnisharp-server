@@ -22,10 +22,12 @@ namespace OmniSharp.AutoComplete
 
         private string _completionText;
         private string _signature;
+        private bool   _wantDocumentation;
 
-        public CompletionDataFactory(string partialWord)
+        public CompletionDataFactory(string partialWord, bool wantDocumentation)
         {
             _partialWord = partialWord;
+            _wantDocumentation = wantDocumentation;
         }
 
         public ICompletionData CreateEntityCompletionData(IEntity entity)
@@ -82,7 +84,7 @@ namespace OmniSharp.AutoComplete
                 };
 
                 var documentationSignature = ambience.ConvertEntity(entity);
-                if (docProvider != null)
+                if (docProvider != null && _wantDocumentation)
                 {
                     DocumentationComment documentationComment = docProvider.GetDocumentation(entity);
                     if (documentationComment != null)
