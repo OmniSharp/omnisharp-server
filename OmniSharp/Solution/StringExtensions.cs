@@ -7,6 +7,10 @@ namespace OmniSharp.Solution
     public static class StringExtensions
     {
 
+        /// <example>
+        ///   "  " -> " ".
+        ///   "foo   \n  bar" -> "foo bar".
+        /// </example>
         public static string MultipleWhitespaceCharsToSingleSpace
             (this string stringToTrim) {
             return Regex.Replace(stringToTrim, @"\s+", " ");
