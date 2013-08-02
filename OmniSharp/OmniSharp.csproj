@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -218,14 +218,22 @@
     <Compile Include="TypeLookup\TypeLookupModule.cs" />
     <Compile Include="TypeLookup\TypeLookupRequest.cs" />
     <Compile Include="Common\QuickFixResponse.cs" />
-    <Compile Include="Overrides\GetOverrideTargetsModule.cs" />
-    <Compile Include="Overrides\OverrideHandler.cs" />
-    <Compile Include="Overrides\GetOverrideTargetsResponse.cs" />
-    <Compile Include="Overrides\RunOverrideTargetResponse.cs" />
-    <Compile Include="Overrides\RunOverrideTargetRequest.cs" />
-    <Compile Include="Overrides\OverrideContext.cs" />
-    <Compile Include="Overrides\RunOverrideTargetModule.cs" />
+    <Compile Include="GotoImplementation\GotoImplementationResponse.cs" />
+    <Compile Include="AutoComplete\Overrides\GetOverrideTargetsModule.cs" />
+    <Compile Include="AutoComplete\Overrides\OverrideHandler.cs" />
+    <Compile Include="AutoComplete\Overrides\GetOverrideTargetsResponse.cs" />
+    <Compile Include="AutoComplete\Overrides\RunOverrideTargetResponse.cs" />
+    <Compile Include="AutoComplete\Overrides\RunOverrideTargetRequest.cs" />
+    <Compile Include="AutoComplete\Overrides\OverrideContext.cs" />
+    <Compile Include="AutoComplete\Overrides\RunOverrideTargetModule.cs" />
     <Compile Include="AutoComplete\BufferContext.cs" />
+    <Compile Include="CurrentFileMembers\CurrentFileMembersHandler.cs" />
+    <Compile Include="CurrentFileMembers\CurrentFileMembersRequest.cs" />
+    <Compile Include="CurrentFileMembers\Node.cs" />
+    <Compile Include="CurrentFileMembers\CurrentFileTopLevelTypesModule.cs" />
+    <Compile Include="CurrentFileMembers\CurrentFileMembersAsTreeModule.cs" />
+    <Compile Include="CurrentFileMembers\CurrentFileMembersAsTreeResponse.cs" />
+    <Compile Include="CurrentFileMembers\CurrentFileMembersAsFlatModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
