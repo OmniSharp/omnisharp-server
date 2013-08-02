@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OmniSharp.GetCodeActions
+namespace OmniSharp.CodeActions
 {
     public class GetCodeActionsResponse
     {

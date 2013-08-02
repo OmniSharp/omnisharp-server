@@ -12,13 +12,6 @@ namespace OmniSharp.Common
         public int Column { get; set; }
         public string Text { get; set; }
 
-        public Location ConvertToLocation() {
-            return new Location()
-                { FileName = this.FileName
-                , Line     = this.Line
-                , Column   = this.Column};
-        }
-
         /// <summary>
         ///   Initialize a QuickFix pointing to the first line of the
         ///   given region in the given file.

@@ -80,6 +80,7 @@
     <Compile Include="ProjectManipulation\AddReference\AddProjectReferenceTests.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddReferenceTestsBase.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddToProjectProcessoryFactoryTests.cs" />
+    <Compile Include="FakeFileSystem.cs" />
     <Compile Include="ProjectManipulation\AddToProject\AddToProjectTests.cs" />
     <Compile Include="AutoComplete\BugFixTests.cs" />
     <Compile Include="AutoComplete\CompletionsSpecBase.cs" />

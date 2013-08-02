@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ICSharpCode.NRefactory;
 using ICSharpCode.NRefactory.CSharp.Completion;
 using ICSharpCode.NRefactory.Completion;
-using ICSharpCode.NRefactory.Editor;
 using OmniSharp.Parser;
 
 namespace OmniSharp.AutoComplete
 {
     public class AutoCompleteHandler
-
     {
         private readonly BufferParser _parser;
         private readonly Logger _logger;
@@ -23,9 +20,9 @@ namespace OmniSharp.AutoComplete
 
         public IEnumerable<ICompletionData> CreateProvider(AutoCompleteRequest request)
         {
+            request.Column = request.Column - request.WordToComplete.Length;
 
-            var completionContext = new BufferContext
-                (request, _parser);
+            var completionContext = new BufferContext (request, _parser);
 
             var partialWord = request.WordToComplete;
 
@@ -34,7 +31,9 @@ namespace OmniSharp.AutoComplete
             var engine = new CSharpCompletionEngine
                 ( completionContext.Document
                 , contextProvider
-                , new CompletionDataFactory(partialWord)
+                , new CompletionDataFactory
+                  ( partialWord
+                  , request.WantDocumentationForEveryCompletionResult)
                 , completionContext.ParsedContent.ProjectContent
                 , completionContext.ResolveContext)
                 {

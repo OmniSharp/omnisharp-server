@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using ICSharpCode.NRefactory;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Refactoring;
 using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.NRefactory.Editor;
-using ICSharpCode.NRefactory.TypeSystem;
-using OmniSharp.AutoComplete;
 using OmniSharp.Common;
 using OmniSharp.Parser;
 using OmniSharp.Refactoring;
-using OmniSharp.Solution;
-using Omnisharp.AutoComplete.Overrides;
 
-namespace OmniSharp.AutoComplete.Overrides {
+namespace OmniSharp.Overrides {
     public class OverrideHandler {
 
         private readonly BufferParser _parser;

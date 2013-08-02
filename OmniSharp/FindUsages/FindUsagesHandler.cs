@@ -28,7 +28,7 @@ namespace OmniSharp.FindUsages
             _solution = solution;
         }
 
-        public FindUsagesResponse FindUsages(FindUsagesRequest request)
+        public QuickFixResponse FindUsages(FindUsagesRequest request)
         {
             var result = FindUsageNodes(request)
                             .Distinct(new NodeComparer())
@@ -36,7 +36,7 @@ namespace OmniSharp.FindUsages
                             .ThenBy(n => n.StartLocation.Line)
                             .ThenBy(n => n.StartLocation.Column);
                             
-            var res = new FindUsagesResponse();
+            var res = new QuickFixResponse();
             if (result.Any())
             {
                 var usages = result.Select(node => new QuickFix
@@ -46,7 +46,7 @@ namespace OmniSharp.FindUsages
                     Line = node.StartLocation.Line,
                     Column = node.StartLocation.Column,
                 });
-                res.Usages = usages;
+                res.QuickFixes = usages;
             }
 
             return res;
