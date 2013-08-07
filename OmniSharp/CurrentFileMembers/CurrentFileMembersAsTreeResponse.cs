@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.NRefactory.Editor;
 using ICSharpCode.NRefactory.TypeSystem;
+
 namespace OmniSharp.CurrentFileMembers {
 
     public class CurrentFileMembersAsTreeResponse {
