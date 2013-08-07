@@ -14,7 +14,7 @@ namespace OmniSharp.LookupAllTypes
             _solution = solution;
         }
 
-        public LookupAllTypesResponse GetLookupAllTypesResponse(bool includeTypesWithoutSource = false)
+        public LookupAllTypesResponse GetLookupAllTypesResponse()
         {
             var classes = new HashSet<string>();
             var interfaces = new HashSet<string>();
@@ -26,9 +26,6 @@ namespace OmniSharp.LookupAllTypes
 
                 foreach (var def in types)
                 {
-                    //if (!includeTypesWithoutSource && def.UnresolvedFile == null)
-                    //    continue;
-                    
                     if (def.Kind == TypeKind.Interface)
                     {
                         interfaces.Add(def.Name);
