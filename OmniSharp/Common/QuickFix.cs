@@ -77,6 +77,12 @@ namespace OmniSharp.Common
 
         static string GetNonBodyRegion
             (DomRegion region, IDocument document, DomRegion bodyRegion) {
+
+            // Delegates have no body, so they will crash if we don't do this
+            if (bodyRegion.BeginLine == 0
+                && bodyRegion.EndLine == 0)
+                bodyRegion = region;
+
             var begin     = document.GetOffset(region.Begin);
             var bodyStart = document.GetOffset(bodyRegion.Begin);
 
