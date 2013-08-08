@@ -1,5 +1,4 @@
 ﻿using ICSharpCode.NRefactory.Editor;
-using OmniSharp.GotoImplementation;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.Solution;
 

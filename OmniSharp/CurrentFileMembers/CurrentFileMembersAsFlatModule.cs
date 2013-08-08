@@ -1,5 +1,4 @@
-﻿using System;
-using Nancy;
+﻿using Nancy;
 using Nancy.ModelBinding;
 
 namespace OmniSharp.CurrentFileMembers {

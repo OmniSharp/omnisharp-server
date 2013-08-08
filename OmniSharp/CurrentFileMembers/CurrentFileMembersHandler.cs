@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.AutoComplete;
 using OmniSharp.Common;
 using OmniSharp.Parser;
-using OmniSharp.Solution;
 
 namespace OmniSharp.CurrentFileMembers {
 
