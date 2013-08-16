@@ -186,6 +186,8 @@
     <Compile Include="Rename\RenameModule.cs" />
     <Compile Include="Rename\RenameRequest.cs" />
     <Compile Include="Rename\RenameResponse.cs" />
+    <Compile Include="Solution\Fusion.cs" />
+    <Compile Include="Solution\GacInterop.cs" />
     <Compile Include="Solution\OrphanProject.cs" />
     <Compile Include="Solution\StringExtensions.cs" />
     <Compile Include="StopServer\StopServerModule.cs" />

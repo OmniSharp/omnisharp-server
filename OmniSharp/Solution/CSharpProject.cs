@@ -21,10 +21,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
 using ICSharpCode.NRefactory.Utils;
+using Mono.Cecil;
 
 namespace OmniSharp.Solution
 {
@@ -155,6 +157,10 @@ namespace OmniSharp.Solution
                 if (assemblyFileName == null)
                     assemblyFileName = FindAssembly(AssemblySearchPaths, item.EvaluatedInclude);
 
+                //If it isn't in the search paths, try the GAC
+                if (assemblyFileName == null)
+                    assemblyFileName = FindAssemblyInNetGac(item.EvaluatedInclude);
+
                 if (assemblyFileName != null)
                 {
                     if (Path.GetFileName(assemblyFileName).Equals("System.Core.dll", StringComparison.OrdinalIgnoreCase))
@@ -243,6 +249,12 @@ namespace OmniSharp.Solution
                     return assemblyFile;
             }
             return null;
+        }
+
+        public static string FindAssemblyInNetGac(string evaluatedInclude)
+        {
+            AssemblyNameReference assemblyNameReference = AssemblyNameReference.Parse(evaluatedInclude);
+            return GacInterop.FindAssemblyInNetGac(assemblyNameReference);
         }
 
 
