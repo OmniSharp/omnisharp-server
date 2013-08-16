@@ -4,16 +4,19 @@ using System.Linq;
 using ICSharpCode.NRefactory.CSharp.Completion;
 using ICSharpCode.NRefactory.Completion;
 using OmniSharp.Parser;
+using OmniSharp.Solution;
 
 namespace OmniSharp.AutoComplete
 {
     public class AutoCompleteHandler
     {
+        private readonly ISolution _solution;
         private readonly BufferParser _parser;
         private readonly Logger _logger;
 
-        public AutoCompleteHandler(BufferParser parser, Logger logger)
+        public AutoCompleteHandler(ISolution solution, BufferParser parser, Logger logger)
         {
+            _solution = solution;
             _parser = parser;
             _logger = logger;
         }
@@ -26,13 +29,16 @@ namespace OmniSharp.AutoComplete
 
             var partialWord = request.WordToComplete;
 
+            var project = _solution.ProjectContainingFile(request.FileName);
+
             ICompletionContextProvider contextProvider = new DefaultCompletionContextProvider
                 (completionContext.Document, completionContext.ParsedContent.UnresolvedFile);
             var engine = new CSharpCompletionEngine
                 ( completionContext.Document
                 , contextProvider
                 , new CompletionDataFactory
-                  ( partialWord
+                  ( project
+                  , partialWord
                   , request.WantDocumentationForEveryCompletionResult)
                 , completionContext.ParsedContent.ProjectContent
                 , completionContext.ResolveContext)

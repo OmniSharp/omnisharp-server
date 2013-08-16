@@ -7,6 +7,7 @@ using ICSharpCode.NRefactory.CSharp.Completion;
 using ICSharpCode.NRefactory.Completion;
 using ICSharpCode.NRefactory.Documentation;
 using ICSharpCode.NRefactory.TypeSystem;
+using OmniSharp.Solution;
 
 namespace OmniSharp.AutoComplete
 {
@@ -23,9 +24,11 @@ namespace OmniSharp.AutoComplete
         private string _completionText;
         private string _signature;
         private bool   _wantDocumentation;
+        private IProject _project;
 
-        public CompletionDataFactory(string partialWord, bool wantDocumentation)
+        public CompletionDataFactory(IProject project, string partialWord, bool wantDocumentation)
         {
+            _project = project;
             _partialWord = partialWord;
             _wantDocumentation = wantDocumentation;
         }
@@ -72,7 +75,7 @@ namespace OmniSharp.AutoComplete
                 if (entity.ParentAssembly.AssemblyName != null)
                 {
                     docProvider =
-                        XmlDocumentationProviderFactory.Get(entity.ParentAssembly.AssemblyName);
+                        XmlDocumentationProviderFactory.Get(_project, entity.ParentAssembly.AssemblyName);
                 }
                 var ambience = new CSharpAmbience
                 {
