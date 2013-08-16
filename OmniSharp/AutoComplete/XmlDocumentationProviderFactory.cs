@@ -1,21 +1,21 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Concurrent;
 using System.IO;
 using ICSharpCode.NRefactory.Documentation;
+using ICSharpCode.NRefactory.TypeSystem;
 using MonoDevelop.Ide.TypeSystem;
+using OmniSharp.Solution;
 
 namespace OmniSharp.AutoComplete
 {
     public static class XmlDocumentationProviderFactory
     {
-        static readonly string referenceAssembliesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Reference Assemblies\Microsoft\\Framework");
-        static readonly string frameworkPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), @"Microsoft.NET\Framework");
-
         private static readonly ConcurrentDictionary<string, XmlDocumentationProvider> _providers =
             new ConcurrentDictionary<string, XmlDocumentationProvider>();
 
 
-        public static IDocumentationProvider Get(string assemblyName)
+        public static IDocumentationProvider Get(IProject project, string assemblyName)
         {
             if (PlatformService.IsUnix)
                 return new MonoDocDocumentationProvider();
@@ -23,12 +23,11 @@ namespace OmniSharp.AutoComplete
             if (_providers.ContainsKey(assemblyName))
                 return _providers[assemblyName];
 
-            var assemblyDllName = assemblyName + ".dll";
+            string fileName = null;
+            IUnresolvedAssembly reference = project.References.OfType<IUnresolvedAssembly>().FirstOrDefault(i => i.AssemblyName.Equals(assemblyName));
+            if (reference != null)
+                fileName = XmlDocumentationProvider.LookupLocalizedXmlDoc(reference.Location);
 
-            //string assemblyFileName = entity.ParentAssembly.AssemblyName + ".dll";
-            string fileName = XmlDocumentationProvider.LookupLocalizedXmlDoc(Path.Combine(referenceAssembliesPath, @".NETFramework\v4.0", assemblyDllName))
-                        ?? XmlDocumentationProvider.LookupLocalizedXmlDoc(Path.Combine(frameworkPath, "v4.0.30319", assemblyDllName));
-            //string fileName = XmlDocumentationProvider.LookupLocalizedXmlDoc(assemblyFileName);
             if (fileName != null)
             {
                 var docProvider = new XmlDocumentationProvider(fileName);
