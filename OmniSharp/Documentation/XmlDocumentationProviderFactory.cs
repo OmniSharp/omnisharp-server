@@ -1,13 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Concurrent;
-using System.IO;
 using ICSharpCode.NRefactory.Documentation;
 using ICSharpCode.NRefactory.TypeSystem;
 using MonoDevelop.Ide.TypeSystem;
 using OmniSharp.Solution;
 
-namespace OmniSharp.AutoComplete
+namespace OmniSharp.Documentation
 {
     public static class XmlDocumentationProviderFactory
     {
