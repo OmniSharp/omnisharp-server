@@ -119,10 +119,21 @@
     <Compile Include="Build\BuildCommandModule.cs" />
     <Compile Include="Common\FileSystem.cs" />
     <Compile Include="Common\IFileSystem.cs" />
+    <Compile Include="FindSymbols\FindSymbolsHandler.cs" />
+    <Compile Include="FindSymbols\FindSymbolsModule.cs" />
+    <Compile Include="FindTypes\FindTypesHandler.cs" />
+    <Compile Include="FindTypes\FindTypesModule.cs" />
     <Compile Include="LookupAllTypes\LookupAllTypesHandler.cs" />
     <Compile Include="LookupAllTypes\LookupAllTypesModule.cs" />
     <Compile Include="LookupAllTypes\LookupAllTypesRequest.cs" />
     <Compile Include="LookupAllTypes\LookupAllTypesResponse.cs" />
+    <Compile Include="Overrides\GetOverrideTargetsModule.cs" />
+    <Compile Include="Overrides\GetOverrideTargetsResponse.cs" />
+    <Compile Include="Overrides\OverrideContext.cs" />
+    <Compile Include="Overrides\OverrideHandler.cs" />
+    <Compile Include="Overrides\RunOverrideTargetModule.cs" />
+    <Compile Include="Overrides\RunOverrideTargetRequest.cs" />
+    <Compile Include="Overrides\RunOverrideTargetResponse.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddFileReferenceProcessor.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddGacReferenceProcessor.cs" />
@@ -226,6 +237,13 @@
     <Compile Include="Overrides\OverrideContext.cs" />
     <Compile Include="Overrides\RunOverrideTargetModule.cs" />
     <Compile Include="AutoComplete\BufferContext.cs" />
+    <Compile Include="CurrentFileMembers\CurrentFileMembersHandler.cs" />
+    <Compile Include="CurrentFileMembers\CurrentFileMembersRequest.cs" />
+    <Compile Include="CurrentFileMembers\Node.cs" />
+    <Compile Include="CurrentFileMembers\CurrentFileTopLevelTypesModule.cs" />
+    <Compile Include="CurrentFileMembers\CurrentFileMembersAsTreeModule.cs" />
+    <Compile Include="CurrentFileMembers\CurrentFileMembersAsTreeResponse.cs" />
+    <Compile Include="CurrentFileMembers\CurrentFileMembersAsFlatModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

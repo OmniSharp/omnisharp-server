@@ -7,10 +7,10 @@ namespace OmniSharp.LookupAllTypes
         public LookupAllTypesModule(LookupAllTypesHandler handler)
         {
             Post["/lookupalltypes"] = x =>
-            {
-                var res = handler.GetLookupAllTypesResponse();
-                return Response.AsJson(res);
-            };
+                {
+                    var res = handler.GetLookupAllTypesResponse();
+                    return Response.AsJson(res);
+                };
         }
     }
 }

@@ -8,7 +8,6 @@ using OmniSharp.Parser;
 namespace OmniSharp.AutoComplete
 {
     public class AutoCompleteHandler
-
     {
         private readonly BufferParser _parser;
         private readonly Logger _logger;
@@ -23,8 +22,7 @@ namespace OmniSharp.AutoComplete
         {
             request.Column = request.Column - request.WordToComplete.Length;
 
-            var completionContext = new BufferContext
-                (request, _parser);
+            var completionContext = new BufferContext (request, _parser);
 
             var partialWord = request.WordToComplete;
 
@@ -33,7 +31,9 @@ namespace OmniSharp.AutoComplete
             var engine = new CSharpCompletionEngine
                 ( completionContext.Document
                 , contextProvider
-                , new CompletionDataFactory(partialWord)
+                , new CompletionDataFactory
+                  ( partialWord
+                  , request.WantDocumentationForEveryCompletionResult)
                 , completionContext.ParsedContent.ProjectContent
                 , completionContext.ResolveContext)
                 {
