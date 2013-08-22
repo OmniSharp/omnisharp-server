@@ -21,10 +21,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
 using ICSharpCode.NRefactory.Utils;
+using Mono.Cecil;
 
 namespace OmniSharp.Solution
 {
@@ -55,6 +57,24 @@ namespace OmniSharp.Solution
             @"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0",
             @"C:\Program Files\Reference Assemblies\Microsoft\Framework\v3.5",
             @"C:\Windows\Microsoft.NET\Framework\v2.0.50727",
+            @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v2.0\Assemblies",
+            @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\Assemblies",
+            @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET MVC 4\Assemblies",
+            @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET MVC 3\Assemblies",
+            @"C:\Program Files\Microsoft ASP.NET\ASP.NET Web Pages\v2.0\Assemblies",
+            @"C:\Program Files\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\Assemblies",
+            @"C:\Program Files\Microsoft ASP.NET\ASP.NET MVC 4\Assemblies",
+            @"C:\Program Files\Microsoft ASP.NET\ASP.NET MVC 3\Assemblies",
+            @"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v4.5",
+            @"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v4.0",
+            @"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v2.0",
+            @"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\ReferenceAssemblies\v2.0",
+            @"C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies",
+            @"C:\Program Files\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v4.5",
+            @"C:\Program Files\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v4.0",
+            @"C:\Program Files\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v2.0",
+            @"C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE\ReferenceAssemblies\v2.0",
+            @"C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies",
             
             //Unix Paths
             @"/usr/local/lib/mono/4.0",
@@ -136,6 +156,10 @@ namespace OmniSharp.Solution
                 //If there isn't a path hint or it doesn't exist, try searching
                 if (assemblyFileName == null)
                     assemblyFileName = FindAssembly(AssemblySearchPaths, item.EvaluatedInclude);
+
+                //If it isn't in the search paths, try the GAC
+                if (assemblyFileName == null)
+                    assemblyFileName = FindAssemblyInNetGac(item.EvaluatedInclude);
 
                 if (assemblyFileName != null)
                 {
@@ -225,6 +249,12 @@ namespace OmniSharp.Solution
                     return assemblyFile;
             }
             return null;
+        }
+
+        public static string FindAssemblyInNetGac(string evaluatedInclude)
+        {
+            AssemblyNameReference assemblyNameReference = AssemblyNameReference.Parse(evaluatedInclude);
+            return GacInterop.FindAssemblyInNetGac(assemblyNameReference);
         }
 
 

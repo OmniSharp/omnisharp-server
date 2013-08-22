@@ -114,7 +114,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AutoComplete\HelpService.cs" />
-    <Compile Include="AutoComplete\MonoDocDocumentationProvider.cs" />
+    <Compile Include="Documentation\DocumentationFetcher.cs" />
+    <Compile Include="Documentation\MonoDocDocumentationProvider.cs" />
     <Compile Include="Build\BuildCommandBuilder.cs" />
     <Compile Include="Build\BuildCommandModule.cs" />
     <Compile Include="Common\FileSystem.cs" />
@@ -186,6 +187,8 @@
     <Compile Include="Rename\RenameModule.cs" />
     <Compile Include="Rename\RenameRequest.cs" />
     <Compile Include="Rename\RenameResponse.cs" />
+    <Compile Include="Solution\Fusion.cs" />
+    <Compile Include="Solution\GacInterop.cs" />
     <Compile Include="Solution\OrphanProject.cs" />
     <Compile Include="Solution\StringExtensions.cs" />
     <Compile Include="StopServer\StopServerModule.cs" />
@@ -204,7 +207,7 @@
     <Compile Include="AutoComplete\AutoCompleteModule.cs" />
     <Compile Include="AutoComplete\AutoCompleteRequest.cs" />
     <Compile Include="Bootstrapper.cs" />
-    <Compile Include="AutoComplete\DocumentationConverter.cs" />
+    <Compile Include="Documentation\DocumentationConverter.cs" />
     <Compile Include="AutoComplete\CompletionData.cs" />
     <Compile Include="AutoComplete\AutoCompleteHandler.cs" />
     <Compile Include="GotoDefinition\GotoDefinitionModule.cs" />
@@ -221,7 +224,7 @@
     <Compile Include="AutoComplete\CompletionDataFactory.cs" />
     <Compile Include="Solution\CSharpSolution.cs" />
     <Compile Include="AutoComplete\StringExtensions.cs" />
-    <Compile Include="AutoComplete\XmlDocumentationProviderFactory.cs" />
+    <Compile Include="Documentation\XmlDocumentationProviderFactory.cs" />
     <Compile Include="SyntaxErrors\SyntaxErrorsHandler.cs" />
     <Compile Include="SyntaxErrors\SyntaxErrorsResponse.cs" />
     <Compile Include="TypeLookup\TypeLookupHandler.cs" />

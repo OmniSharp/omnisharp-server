@@ -39,18 +39,13 @@ namespace MonoDevelop.Ide.TypeSystem
     public class MonoDocDocumentationProvider : IDocumentationProvider
     {
         #region IDocumentationProvider implementation
-        [NonSerialized]
-        static readonly Dictionary<string, DocumentationComment> commentCache = new Dictionary<string, DocumentationComment>();
-
         public DocumentationComment GetDocumentation(IEntity entity)
         {
             if (entity == null)
                 throw new System.ArgumentNullException("entity");
 
             var idString = entity.GetIdString();
-            DocumentationComment result;
-            if (commentCache.TryGetValue(idString, out result))
-                return result;
+            
             XmlDocument doc = null;
             try
             {
@@ -72,14 +67,12 @@ namespace MonoDevelop.Ide.TypeSystem
 #pragma warning restore 612,618
                     if (doc == null)
 					{
-						commentCache[idString] = null;
                         return null;
 					}
                     XmlNode node = SelectNode(doc, entity);
 
                     if (node != null)
-                        return commentCache[idString] = new DocumentationComment(node.OuterXml, new SimpleTypeResolveContext(entity));
-					commentCache[idString] = null;
+                        return new DocumentationComment(node.OuterXml, new SimpleTypeResolveContext(entity));
                     return null;
                     //					var node = doc.SelectSingleNode ("/Type/Members/Member")
                     //					return new DocumentationComment (doc.OuterXml, new SimpleTypeResolveContext (entity));
@@ -91,10 +84,9 @@ namespace MonoDevelop.Ide.TypeSystem
             }
             if (doc == null)
             {
-                commentCache[idString] = null;
                 return null;
             }
-            return commentCache[idString] = new DocumentationComment(doc.OuterXml, new SimpleTypeResolveContext(entity));
+            return new DocumentationComment(doc.OuterXml, new SimpleTypeResolveContext(entity));
         }
 
         public XmlNode SelectNode(XmlDocument doc, IEntity entity)

@@ -4,7 +4,9 @@ using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.NRefactory.Semantics;
 using ICSharpCode.NRefactory.TypeSystem;
 using ICSharpCode.NRefactory.TypeSystem.Implementation;
+using OmniSharp.Documentation;
 using OmniSharp.Parser;
+using OmniSharp.Solution;
 
 namespace OmniSharp.TypeLookup
 {
@@ -20,9 +22,12 @@ namespace OmniSharp.TypeLookup
             ConversionFlags.ShowParameterNames |
             ConversionFlags.ShowDeclaringType;
 
-        public TypeLookupHandler(BufferParser bufferParser)
+        private readonly ISolution _solution;
+
+        public TypeLookupHandler(ISolution solution, BufferParser bufferParser)
         {
             _bufferParser = bufferParser;
+            _solution = solution;
         }
 
         public TypeLookupResponse GetTypeLookupResponse(TypeLookupRequest request)
@@ -42,10 +47,11 @@ namespace OmniSharp.TypeLookup
             else
             {
                 response.Type = resolveResult.Type.ToString();
-
+                IEntity entity = null;
                 if (resolveResult is CSharpInvocationResolveResult)
                 {
                     var result = resolveResult as CSharpInvocationResolveResult;
+                    entity = result.Member;
                     response.Type = ambience.ConvertEntity(result.Member);
                 }
                 else if (resolveResult is LocalResolveResult)
@@ -56,6 +62,7 @@ namespace OmniSharp.TypeLookup
                 else if (resolveResult is MemberResolveResult)
                 {
                     var result = resolveResult as MemberResolveResult;
+                    entity = result.Member;
                     response.Type = ambience.ConvertEntity(result.Member);
                 }
                 else if (resolveResult is TypeResolveResult)
@@ -68,10 +75,15 @@ namespace OmniSharp.TypeLookup
                     response.Type = "Unknown Type: " + resolveResult.Type.Name;
                 if (resolveResult.Type == SpecialType.UnknownType)
                     response.Type = "Unknown Type";
+
+                if (request.IncludeDocumentation && entity != null)
+                {
+                    var project = _solution.ProjectContainingFile(request.FileName);
+                    response.Documentation = new DocumentationFetcher().GetDocumentation(project, entity);
+                }
             }
 
             return response;
         }
-
     }
 }

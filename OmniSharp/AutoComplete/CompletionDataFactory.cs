@@ -7,14 +7,16 @@ using ICSharpCode.NRefactory.CSharp.Completion;
 using ICSharpCode.NRefactory.Completion;
 using ICSharpCode.NRefactory.Documentation;
 using ICSharpCode.NRefactory.TypeSystem;
+using OmniSharp.Documentation;
+using OmniSharp.Solution;
 
 namespace OmniSharp.AutoComplete
 {
     public class CompletionDataFactory : ICompletionDataFactory
     {
         private readonly string _partialWord;
-        private readonly CSharpAmbience _ambience = new CSharpAmbience {ConversionFlags = AmbienceFlags};
-        private readonly CSharpAmbience _signatureAmbience = new CSharpAmbience {ConversionFlags = AmbienceFlags | ConversionFlags.ShowReturnType};
+        private readonly CSharpAmbience _ambience = new CSharpAmbience { ConversionFlags = AmbienceFlags };
+        private readonly CSharpAmbience _signatureAmbience = new CSharpAmbience { ConversionFlags = AmbienceFlags | ConversionFlags.ShowReturnType };
 
         private const ConversionFlags AmbienceFlags =
             ConversionFlags.ShowParameterList |
@@ -22,10 +24,12 @@ namespace OmniSharp.AutoComplete
 
         private string _completionText;
         private string _signature;
-        private bool   _wantDocumentation;
+        private readonly bool _wantDocumentation;
+        private readonly IProject _project;
 
-        public CompletionDataFactory(string partialWord, bool wantDocumentation)
+        public CompletionDataFactory(IProject project, string partialWord, bool wantDocumentation)
         {
+            _project = project;
             _partialWord = partialWord;
             _wantDocumentation = wantDocumentation;
         }
@@ -34,7 +38,7 @@ namespace OmniSharp.AutoComplete
         {
 
             _completionText = _signature = entity.Name;
-            
+
             _completionText = _ambience.ConvertEntity(entity).Replace(";", "");
             if (!_completionText.IsValidCompletionFor(_partialWord))
                 return new CompletionData("~~");
@@ -58,7 +62,7 @@ namespace OmniSharp.AutoComplete
 
         private ICompletionData CompletionData(IEntity entity)
         {
-            
+
             ICompletionData completionData = null;
             if (entity.Documentation != null)
             {
@@ -68,12 +72,7 @@ namespace OmniSharp.AutoComplete
             }
             else
             {
-                IDocumentationProvider docProvider = null;
-                if (entity.ParentAssembly.AssemblyName != null)
-                {
-                    docProvider =
-                        XmlDocumentationProviderFactory.Get(entity.ParentAssembly.AssemblyName);
-                }
+
                 var ambience = new CSharpAmbience
                 {
                     ConversionFlags = ConversionFlags.ShowParameterList |
@@ -84,20 +83,12 @@ namespace OmniSharp.AutoComplete
                 };
 
                 var documentationSignature = ambience.ConvertEntity(entity);
-                if (docProvider != null && _wantDocumentation)
+                if (_wantDocumentation)
                 {
-                    DocumentationComment documentationComment = docProvider.GetDocumentation(entity);
-                    if (documentationComment != null)
-                    {
-                        var documentation = documentationSignature + Environment.NewLine +
-                                            DocumentationConverter.ConvertDocumentation(
-                                                documentationComment.Xml.Text);
-                        completionData = new CompletionData(_signature, _completionText, documentation);
-                    }
-                    else
-                    {
-                        completionData = new CompletionData(_signature, _completionText, documentationSignature);
-                    }
+                    string documentation = new DocumentationFetcher().GetDocumentation(_project, entity);
+                    var documentationAndSignature =
+                        documentationSignature + Environment.NewLine + documentation;
+                    completionData = new CompletionData(_signature, _completionText, documentationAndSignature);
                 }
                 else
                 {

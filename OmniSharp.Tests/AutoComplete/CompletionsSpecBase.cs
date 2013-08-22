@@ -30,7 +30,7 @@ namespace OmniSharp.Tests.AutoComplete
             var project = new FakeProject();
             project.AddFile(editorText);
             _solution.Projects.Add(project);
-            var provider = new AutoCompleteHandler(new BufferParser(_solution), new Logger());
+            var provider = new AutoCompleteHandler(_solution, new BufferParser(_solution), new Logger());
             var request = new AutoCompleteRequest
                 {
                     FileName = "myfile",
