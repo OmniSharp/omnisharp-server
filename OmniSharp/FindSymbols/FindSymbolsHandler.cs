@@ -26,7 +26,8 @@ namespace OmniSharp.FindSymbols
 
             var quickfixes = types.Select(t => new QuickFix
                 {
-                    Text = t.Name + "\t(in " + t.Namespace + ")",
+                    Text = t.Name + "\t(in " + t.Namespace
+                        + "." + t.DeclaringTypeDefinition.Name + ")",
                     FileName = t.UnresolvedFile.FileName,
                     Column = t.Region.BeginColumn,
                     Line = t.Region.BeginLine
