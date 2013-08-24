@@ -11,6 +11,24 @@ namespace OmniSharp.Common
         public int Column { get; set; }
         public string Text { get; set; }
 
+        public QuickFix() {}
+
+        public QuickFix(IUnresolvedMember m) {
+            Text     = m.Name + "\t(in " + m.Namespace
+                + "." + m.DeclaringTypeDefinition.Name + ")";
+
+            FileName = m.UnresolvedFile.FileName;
+            Column   = m.Region.BeginColumn;
+            Line     = m.Region.BeginLine;
+        }
+
+        public QuickFix(IUnresolvedTypeDefinition t) {
+            Text     = t.Name + "\t(in " + t.Namespace + ")";
+            FileName = t.UnresolvedFile.FileName;
+            Column   = t.Region.BeginColumn;
+            Line     = t.Region.BeginLine;
+        }
+
         /// <summary>
         ///   Initialize a QuickFix pointing to the first line of the
         ///   given region in the given file.
