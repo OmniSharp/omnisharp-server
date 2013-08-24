@@ -20,20 +20,29 @@ namespace OmniSharp.FindSymbols
         /// </summary>
         public QuickFixResponse FindAllSymbols()
         {
-            IEnumerable<IUnresolvedMember> types = 
-                _solution.Projects.SelectMany(
-                    project => project.ProjectContent.GetAllTypeDefinitions().SelectMany(t => t.Members));
+            var types =
+                from project in _solution.Projects
+                from type in project.ProjectContent.GetAllTypeDefinitions()
+                select type;
 
-            var quickfixes = types.Select(t => new QuickFix
-                {
-                    Text = t.Name + "\t(in " + t.Namespace
-                        + "." + t.DeclaringTypeDefinition.Name + ")",
-                    FileName = t.UnresolvedFile.FileName,
-                    Column = t.Region.BeginColumn,
-                    Line = t.Region.BeginLine
-                });
+            var quickfixes = types.SelectMany(GetTypeAndItsMembers)
+                .ToArray();
 
             return new QuickFixResponse(quickfixes);
         }
+
+        private static IList<QuickFix> GetTypeAndItsMembers
+            (IUnresolvedTypeDefinition t) {
+            var typeLocation = new QuickFix(t);
+            var typeMembersLocations = t.Members == null
+                ? new QuickFix[]{}
+                : t.Members.Select(m => new QuickFix(m));
+
+            // Type name first, its members second
+            var retval = new List<QuickFix> {typeLocation};
+            retval.AddRange(typeMembersLocations);
+            return retval;
+        }
+
     }
 }
