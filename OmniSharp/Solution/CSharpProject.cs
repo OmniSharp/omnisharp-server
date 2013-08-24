@@ -242,7 +242,12 @@ namespace OmniSharp.Solution
         {
             if (evaluatedInclude.IndexOf(',') >= 0)
                 evaluatedInclude = evaluatedInclude.Substring(0, evaluatedInclude.IndexOf(','));
-            foreach (string searchPath in assemblySearchPaths)
+            
+			string directAssemblyFile = (evaluatedInclude + ".dll").FixPath();
+			if (File.Exists(directAssemblyFile))
+					return directAssemblyFile;
+
+			foreach (string searchPath in assemblySearchPaths)
             {
                 string assemblyFile = Path.Combine(searchPath, evaluatedInclude + ".dll").FixPath();
                 if (File.Exists(assemblyFile))
@@ -253,8 +258,16 @@ namespace OmniSharp.Solution
 
         public static string FindAssemblyInNetGac(string evaluatedInclude)
         {
-            AssemblyNameReference assemblyNameReference = AssemblyNameReference.Parse(evaluatedInclude);
-            return GacInterop.FindAssemblyInNetGac(assemblyNameReference);
+			try
+			{
+	            AssemblyNameReference assemblyNameReference = AssemblyNameReference.Parse(evaluatedInclude);
+	            return GacInterop.FindAssemblyInNetGac(assemblyNameReference);
+			}
+			catch(System.TypeInitializationException) 
+			{
+				Console.WriteLine ("Fusion not available - cannot get {0} from the gac.", evaluatedInclude);
+				return null;
+			}
         }
 
 
