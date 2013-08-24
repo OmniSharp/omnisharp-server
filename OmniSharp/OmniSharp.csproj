@@ -232,13 +232,6 @@
     <Compile Include="TypeLookup\TypeLookupModule.cs" />
     <Compile Include="TypeLookup\TypeLookupRequest.cs" />
     <Compile Include="Common\QuickFixResponse.cs" />
-    <Compile Include="Overrides\GetOverrideTargetsModule.cs" />
-    <Compile Include="Overrides\OverrideHandler.cs" />
-    <Compile Include="Overrides\GetOverrideTargetsResponse.cs" />
-    <Compile Include="Overrides\RunOverrideTargetResponse.cs" />
-    <Compile Include="Overrides\RunOverrideTargetRequest.cs" />
-    <Compile Include="Overrides\OverrideContext.cs" />
-    <Compile Include="Overrides\RunOverrideTargetModule.cs" />
     <Compile Include="AutoComplete\BufferContext.cs" />
     <Compile Include="CurrentFileMembers\CurrentFileMembersHandler.cs" />
     <Compile Include="CurrentFileMembers\CurrentFileMembersRequest.cs" />
