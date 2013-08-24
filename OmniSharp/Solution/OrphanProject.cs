@@ -28,9 +28,9 @@ namespace OmniSharp.Solution
             AddReference(CSharpProject.LoadAssembly(reference));
         }
 
-        private CSharpFile _file;
+        private readonly CSharpFile _file;
 
-        public OrphanProject(ISolution solution)
+        public OrphanProject()
         {
             Title = "Orphan Project";
             _file = new CSharpFile(this, "dummy_file", "");

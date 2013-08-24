@@ -55,7 +55,7 @@ namespace OmniSharp.Solution
         private void LoadSolution(string fileName)
         {
             FileName = fileName;
-            _orphanProject = new OrphanProject(this);
+            _orphanProject = new OrphanProject();
             Projects = new List<IProject>();
             Directory = Path.GetDirectoryName(fileName);
             var projectLinePattern =

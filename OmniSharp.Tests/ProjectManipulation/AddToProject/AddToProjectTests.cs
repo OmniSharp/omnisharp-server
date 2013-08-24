@@ -123,7 +123,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
         public void ShouldThrowProjectNotFoundExceptionForOrphanProject()
         {
             var solution = new FakeSolution(@"/test/fake.sln");
-            var project = new OrphanProject(solution);
+            var project = new OrphanProject();
             project.Files.Add(new CSharpFile(project, "/test/folder/Test.cs", "Some content..."));
             solution.Projects.Add(project);
 

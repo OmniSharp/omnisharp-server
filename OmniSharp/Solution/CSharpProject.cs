@@ -30,22 +30,6 @@ using Mono.Cecil;
 
 namespace OmniSharp.Solution
 {
-    public interface IProject
-    {
-        IProjectContent ProjectContent { get; set; }
-        string Title { get; }
-        string FileName { get; }
-        List<CSharpFile> Files { get; }
-        List<IAssemblyReference> References { get; set; }
-        CSharpFile GetFile(string fileName);
-        CSharpParser CreateParser();
-        XDocument AsXml();
-        void Save(XDocument project);
-        Guid ProjectId { get; }
-        void AddReference(IAssemblyReference reference);
-        void AddReference(string reference);
-    }
-
     public class CSharpProject : IProject
     {
         public static readonly string[] AssemblySearchPaths = {
@@ -230,7 +214,6 @@ namespace OmniSharp.Solution
             return string.Format("[CSharpProject AssemblyName={0}]", AssemblyName);
         }
 
-        #region Static Members
         static ConcurrentDictionary<string, IUnresolvedAssembly> assemblyDict = new ConcurrentDictionary<string, IUnresolvedAssembly>(Platform.FileNameComparer);
 
         public static IUnresolvedAssembly LoadAssembly(string assemblyFileName)
@@ -263,7 +246,7 @@ namespace OmniSharp.Solution
                 AssemblyNameReference assemblyNameReference = AssemblyNameReference.Parse(evaluatedInclude);
                 return GacInterop.FindAssemblyInNetGac(assemblyNameReference);
             }
-            catch(System.TypeInitializationException) 
+            catch(TypeInitializationException) 
             {
                 Console.WriteLine ("Fusion not available - cannot get {0} from the gac.", evaluatedInclude);
                 return null;
@@ -280,6 +263,5 @@ namespace OmniSharp.Solution
                 return false;
             return null;
         }
-        #endregion
     }
 }
