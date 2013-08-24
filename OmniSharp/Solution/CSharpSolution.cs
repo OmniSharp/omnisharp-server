@@ -115,27 +115,27 @@ namespace OmniSharp.Solution
             if (project == null)
             {
                 var file = new FileInfo(filename);
-				if (File.Exists(filename))
-				{
-                var directory = file.Directory;
-
-					while(project==null && directory!=null)
+                if (File.Exists(filename))
                 {
-						var projectFiles = directory.GetFiles("*.csproj");
-                    directory = directory.Parent;
+                    var directory = file.Directory;
 
-                if (projectFiles.Any())
-                {
-							foreach(var projectFile in projectFiles)
-							{
-								project = Projects.FirstOrDefault(p => projectFile.FullName.Contains(p.FileName));
-								if(project!=null)
+                    while(project==null && directory!=null)
                     {
-                        project.Files.Add(new CSharpFile(project, filename));
-									break;
-								}
-							}
-						}
+                        var projectFiles = directory.GetFiles("*.csproj");
+                        directory = directory.Parent;
+
+                        if (projectFiles.Any())
+                        {
+                            foreach(var projectFile in projectFiles)
+                            {
+                                project = Projects.FirstOrDefault(p => projectFile.FullName.Contains(p.FileName));
+                                if(project!=null)
+                                {
+                                    project.Files.Add(new CSharpFile(project, filename));
+                                    break;
+                                }
+                           }
+                        }
                     }
                 }
             }
