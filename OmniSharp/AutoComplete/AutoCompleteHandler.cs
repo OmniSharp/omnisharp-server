@@ -71,8 +71,7 @@ namespace OmniSharp.AutoComplete
 
             if (nodeUnderCursor != null 
                 && nodeUnderCursor.Parent != null 
-                && nodeUnderCursor.Parent.Parent != null 
-                && nodeUnderCursor.Parent.PrevSibling != null)
+                && nodeUnderCursor.Parent.Parent != null) 
             {
                 instantiating =
                     nodeUnderCursor.Parent.Parent.Children.Any(child => child.Role.ToString() == "new");
