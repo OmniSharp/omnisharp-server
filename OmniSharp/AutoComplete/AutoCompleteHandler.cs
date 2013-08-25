@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Completion;
 using ICSharpCode.NRefactory.Completion;
 using OmniSharp.Parser;
@@ -33,12 +34,16 @@ namespace OmniSharp.AutoComplete
 
             ICompletionContextProvider contextProvider = new DefaultCompletionContextProvider
                 (completionContext.Document, completionContext.ParsedContent.UnresolvedFile);
+
+            var instantiating = IsInstantiating(completionContext.NodeCurrentlyUnderCursor);
+
             var engine = new CSharpCompletionEngine
                 ( completionContext.Document
                 , contextProvider
                 , new CompletionDataFactory
                   ( project
                   , partialWord
+                  , instantiating
                   , request.WantDocumentationForEveryCompletionResult)
                 , completionContext.ParsedContent.ProjectContent
                 , completionContext.ResolveContext)
@@ -58,6 +63,21 @@ namespace OmniSharp.AutoComplete
 					   .ThenByDescending(d => d.CompletionText.IsCamelCaseMatch(partialWord))
 					   .ThenByDescending(d => d.CompletionText.IsSubsequenceMatch(partialWord))
                        .ThenBy(d => d.CompletionText);
+        }
+
+        private static bool IsInstantiating(AstNode nodeUnderCursor)
+        {
+            bool instantiating = false;
+
+            if (nodeUnderCursor != null 
+                && nodeUnderCursor.Parent != null 
+                && nodeUnderCursor.Parent.Parent != null 
+                && nodeUnderCursor.Parent.PrevSibling != null)
+            {
+                instantiating =
+                    nodeUnderCursor.Parent.Parent.Children.Any(child => child.Role.ToString() == "new");
+            }
+            return instantiating;
         }
     }
 }

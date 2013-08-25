@@ -15,6 +15,7 @@ namespace OmniSharp.AutoComplete
     public class CompletionDataFactory : ICompletionDataFactory
     {
         private readonly string _partialWord;
+        private readonly bool _instantiating;
         private readonly CSharpAmbience _ambience = new CSharpAmbience { ConversionFlags = AmbienceFlags };
         private readonly CSharpAmbience _signatureAmbience = new CSharpAmbience { ConversionFlags = AmbienceFlags | ConversionFlags.ShowReturnType };
 
@@ -27,10 +28,11 @@ namespace OmniSharp.AutoComplete
         private readonly bool _wantDocumentation;
         private readonly IProject _project;
 
-        public CompletionDataFactory(IProject project, string partialWord, bool wantDocumentation)
+        public CompletionDataFactory(IProject project, string partialWord, bool instantiating, bool wantDocumentation)
         {
             _project = project;
             _partialWord = partialWord;
+            _instantiating = instantiating;
             _wantDocumentation = wantDocumentation;
         }
 
@@ -118,9 +120,16 @@ namespace OmniSharp.AutoComplete
         public ICompletionData CreateTypeCompletionData(IType type, bool showFullName, bool isInAttributeContext)
         {
             var completion = new CompletionData(type.Name);
-            foreach (var constructor in type.GetConstructors())
+            if (_instantiating)
             {
-                completion.AddOverload(CreateEntityCompletionData(constructor));
+                foreach (var constructor in type.GetConstructors())
+                {
+                    completion.AddOverload(CreateEntityCompletionData(constructor));
+                }
+            }
+            else
+            {
+                completion.AddOverload(completion);
             }
             return completion;
         }

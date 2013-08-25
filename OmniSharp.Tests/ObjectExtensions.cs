@@ -19,6 +19,15 @@ namespace OmniSharp.Tests
             }
         }
 
+        public static void ShouldNotContain<T>(this IEnumerable<T> actual, params T[] expected)
+        {
+            var actualList = new List<T>(actual);
+            foreach (T item in expected)
+            {
+                CollectionAssert.DoesNotContain(actualList, item);
+            }
+        }
+
         public static void ShouldContainOnly<T>(this IEnumerable<T> actual, IEnumerable<T> expected)
         {
             var actualList = new List<T>(actual);
