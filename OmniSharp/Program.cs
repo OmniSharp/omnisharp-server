@@ -15,6 +15,7 @@ namespace OmniSharp
             string solutionPath = null;
 
             var port = 2000;
+            bool verbose = false;
 
             var p = new OptionSet
                     {
@@ -24,6 +25,10 @@ namespace OmniSharp
                         },
                         {
                             "p|port=", "Port number to listen on",
+                            (int v) => port = v
+                        },
+                        {
+                            "v|verbose", "Output debug information",
                             (int v) => port = v
                         },
                         {
@@ -51,11 +56,11 @@ namespace OmniSharp
                 return;
             }
 
-            StartServer(solutionPath, port);
+            StartServer(solutionPath, port, verbose);
             
         }
 
-        private static void StartServer(string solutionPath, int port)
+        private static void StartServer(string solutionPath, int port, bool verbose)
         {
             var lockfile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "lockfile-" + port);
 
@@ -72,7 +77,7 @@ namespace OmniSharp
                                 e.Cancel = true;
                             };
 
-                    var nancyHost = new NancyHost(new Bootstrapper(solution), new Uri("http://localhost:" + port));
+                    var nancyHost = new NancyHost(new Bootstrapper(solution, verbose), new Uri("http://localhost:" + port));
 
                     nancyHost.Start();
 

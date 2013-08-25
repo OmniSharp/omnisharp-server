@@ -82,5 +82,6 @@ public class MyClass
 }").ShouldContainOnly("int Length");
 
         }
+
     }
 }

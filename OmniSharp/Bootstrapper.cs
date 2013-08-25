@@ -15,10 +15,12 @@ namespace OmniSharp
     public class Bootstrapper : DefaultNancyBootstrapper
     {
         private readonly ISolution _solution;
+        private readonly bool _verbose;
 
-        public Bootstrapper(ISolution solution)
+        public Bootstrapper(ISolution solution, bool verbose)
         {
             _solution = solution;
+            _verbose = verbose;
             JsonSettings.MaxJsonLength = int.MaxValue;
         }
 
@@ -28,15 +30,15 @@ namespace OmniSharp
             {
                 HelpService.AsyncInitialize();
             }
-
+            
             pipelines.BeforeRequest.AddItemToStartOfPipeline(StopWatchStart);
             pipelines.AfterRequest.AddItemToEndOfPipeline(StopWatchStop);
 
-            if (ConfigurationManager.AppSettings["LogRequests"] == "true")
+            if (_verbose)
+            {
                 pipelines.BeforeRequest.AddItemToStartOfPipeline(LogRequest);
-
-            if (ConfigurationManager.AppSettings["LogResponses"] == "true")
                 pipelines.AfterRequest.AddItemToStartOfPipeline(LogResponse);
+            }
 
             pipelines.OnError.AddItemToEndOfPipeline((ctx, ex) =>
                 {
