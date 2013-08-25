@@ -75,8 +75,8 @@ namespace OmniSharp.Solution
             @"/Library/Frameworks/Mono.Framework/Libraries/mono/2.0",
         };
 
-        public readonly ISolution Solution;
-        public readonly string AssemblyName;
+        private readonly ISolution _solution;
+        private readonly string _assemblyName;
         public string FileName { get; private set; }
         public Guid ProjectId { get; private set; }
 
@@ -84,25 +84,25 @@ namespace OmniSharp.Solution
         public IProjectContent ProjectContent { get; set; }
         public List<CSharpFile> Files { get; private set; }
 
-        private CompilerSettings _compilerSettings;
+        private readonly CompilerSettings _compilerSettings;
 
         public CSharpProject(ISolution solution, string title, string fileName, Guid id)
         {
-            Solution = solution;
+            _solution = solution;
             Title = title;
             FileName = fileName;
             ProjectId = id;
             Files = new List<CSharpFile>();
 
             var p = new Microsoft.Build.Evaluation.Project(FileName);
-            AssemblyName = p.GetPropertyValue("AssemblyName");
+            _assemblyName = p.GetPropertyValue("AssemblyName");
 
             _compilerSettings = new CompilerSettings()
                 {
                     AllowUnsafeBlocks = GetBoolProperty(p, "AllowUnsafeBlocks") ?? false,
                     CheckForOverflow = GetBoolProperty(p, "CheckForOverflowUnderflow") ?? false,
                 };
-            string[] defines = p.GetPropertyValue("DefineConstants").Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] defines = p.GetPropertyValue("DefineConstants").Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string define in defines)
                 _compilerSettings.ConditionalSymbols.Add(define);
 
@@ -168,10 +168,10 @@ namespace OmniSharp.Solution
                 AddReference(LoadAssembly(FindAssembly(AssemblySearchPaths, "System.Core")));
 
             foreach (var item in p.GetItems("ProjectReference"))
-                AddReference(new ProjectReference(Solution, item.GetMetadataValue("Name")));
+                AddReference(new ProjectReference(_solution, item.GetMetadataValue("Name")));
 
             this.ProjectContent = new CSharpProjectContent()
-                .SetAssemblyName(this.AssemblyName)
+                .SetAssemblyName(this._assemblyName)
                 .AddAssemblyReferences(References)
                 .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
             
@@ -211,7 +211,7 @@ namespace OmniSharp.Solution
         
         public override string ToString()
         {
-            return string.Format("[CSharpProject AssemblyName={0}]", AssemblyName);
+            return string.Format("[CSharpProject AssemblyName={0}]", _assemblyName);
         }
 
         static ConcurrentDictionary<string, IUnresolvedAssembly> assemblyDict = new ConcurrentDictionary<string, IUnresolvedAssembly>(Platform.FileNameComparer);

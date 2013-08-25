@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using MonoDevelop.Projects;
+using Nancy;
 using Nancy.Json;
 using Nancy.TinyIoc;
 using Nancy.Bootstrapper;
@@ -9,7 +12,7 @@ using OmniSharp.Solution;
 
 namespace OmniSharp
 {
-    public class Bootstrapper : Nancy.DefaultNancyBootstrapper
+    public class Bootstrapper : DefaultNancyBootstrapper
     {
         private readonly ISolution _solution;
 
@@ -26,26 +29,61 @@ namespace OmniSharp
                 HelpService.AsyncInitialize();
             }
 
-            pipelines.BeforeRequest.AddItemToStartOfPipeline(ctx =>
-                {
-                    var stopwatch = new Stopwatch();
-                    ctx.Items["stopwatch"] = stopwatch;
-                    stopwatch.Start();
-                    return null;
-                });
+            pipelines.BeforeRequest.AddItemToStartOfPipeline(StopWatchStart);
+            pipelines.AfterRequest.AddItemToEndOfPipeline(StopWatchStop);
 
-            pipelines.AfterRequest.AddItemToEndOfPipeline(ctx =>
-                {
-                    var stopwatch = (Stopwatch) ctx.Items["stopwatch"];
-                    stopwatch.Stop();
-                    Console.WriteLine(ctx.Request.Path + " " + stopwatch.ElapsedMilliseconds + "ms");
-                });
+            if (ConfigurationManager.AppSettings["LogRequests"] == "true")
+                pipelines.BeforeRequest.AddItemToStartOfPipeline(LogRequest);
+
+            if (ConfigurationManager.AppSettings["LogResponses"] == "true")
+                pipelines.AfterRequest.AddItemToStartOfPipeline(LogResponse);
 
             pipelines.OnError.AddItemToEndOfPipeline((ctx, ex) =>
                 {
                     Console.WriteLine(ex);
                     return null;
                 });
+        }
+
+        private Response LogRequest(NancyContext ctx)
+        {
+            Console.WriteLine("****** Request ******");
+            var form = ctx.Request.Form;
+            foreach (var field in form)
+            {
+                Console.WriteLine(field + " = " + form[field]);
+            }
+            return null;
+        }
+
+        private void LogResponse(NancyContext ctx)
+        {
+            Console.WriteLine("****** Response ******");
+
+            var stream = new MemoryStream();
+            ctx.Response.Contents.Invoke(stream);
+
+            stream.Position = 0;
+            using (var reader = new StreamReader(stream))
+            {
+                var content = reader.ReadToEnd();
+                Console.WriteLine(content);
+            }
+        }
+
+        private Response StopWatchStart(NancyContext ctx)
+        {
+            var stopwatch = new Stopwatch();
+            ctx.Items["stopwatch"] = stopwatch;
+            stopwatch.Start();
+            return null;
+        }
+
+        private void StopWatchStop(NancyContext ctx)
+        {
+            var stopwatch = (Stopwatch) ctx.Items["stopwatch"];
+            stopwatch.Stop();
+            Console.WriteLine(ctx.Request.Path + " " + stopwatch.ElapsedMilliseconds + "ms");
         }
 
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
