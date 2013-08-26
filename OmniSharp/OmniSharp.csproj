@@ -243,6 +243,8 @@
     <Compile Include="CurrentFileMembers\CurrentFileMembersAsTreeModule.cs" />
     <Compile Include="CurrentFileMembers\CurrentFileMembersAsTreeResponse.cs" />
     <Compile Include="CurrentFileMembers\CurrentFileMembersAsFlatModule.cs" />
+    <Compile Include="GotoFile\GotoFileModule.cs" />
+    <Compile Include="GotoFile\GotoFileHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
