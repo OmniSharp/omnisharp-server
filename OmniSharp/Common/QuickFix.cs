@@ -6,6 +6,8 @@ namespace OmniSharp.Common
 {
     public class QuickFix
     {
+        const string MemberIndent = "    ";
+
         public string FileName { get; set; }
         public int Line { get; set; }
         public int Column { get; set; }
@@ -14,7 +16,7 @@ namespace OmniSharp.Common
         public QuickFix() {}
 
         public QuickFix(IUnresolvedMember m) {
-            Text     = m.Name + "\t(in " + m.Namespace
+            Text = MemberIndent + m.Name + "\t(in " + m.Namespace
                 + "." + m.DeclaringTypeDefinition.Name + ")";
 
             FileName = m.UnresolvedFile.FileName;
