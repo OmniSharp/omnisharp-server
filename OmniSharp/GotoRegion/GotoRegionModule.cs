@@ -13,12 +13,5 @@ namespace OmniSharp.GotoRegion {
                 return Response.AsJson(members);
             };
         }
-        #region TestRegion
-
-        #endregion TestRegion
-
-        #region TestRegion22222
-
-        #endregion TestRegion22222
     }
 }

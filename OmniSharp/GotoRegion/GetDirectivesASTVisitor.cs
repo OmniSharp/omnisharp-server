@@ -12,9 +12,5 @@ namespace OmniSharp.GotoRegion {
             (PreProcessorDirective preProcessorDirective) {
             Directives.Add(preProcessorDirective);
         }
-        #region testesteetsets
-
-        #endregion testesteetsets
-
     }
 }
