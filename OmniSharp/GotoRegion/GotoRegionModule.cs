@@ -2,8 +2,8 @@
 using Nancy.ModelBinding;
 
 namespace OmniSharp.GotoRegion {
-    public class GotoRegionAsFlatModule : NancyModule {
-        public GotoRegionAsFlatModule
+    public class GotoRegionModule : NancyModule {
+        public GotoRegionModule
             (GotoRegionHandler handler) {
 
             Post["/gotoregion"] = x =>
