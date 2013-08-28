@@ -21,10 +21,7 @@ namespace OmniSharp.CurrentFileMembers {
         /// </summary>
         public Node(IUnresolvedMember member, IDocument document) {
             this.ChildNodes = null;
-            this.Location = QuickFix.ForNonBodyRegion
-                ( member.Region
-                , document
-                , bodyRegion: member.BodyRegion);
+            this.Location = QuickFix.ForNonBodyRegion(member, document);
 
             // Fields' BodyRegion does not include their name for some
             // reason. To prevent the field's name missing, include
@@ -44,9 +41,7 @@ namespace OmniSharp.CurrentFileMembers {
                 { ChildNodes = topLevelTypeDefinition.Members
                     .Select(m => new Node(m, document))
                 , Location = QuickFix.ForNonBodyRegion
-                    ( topLevelTypeDefinition.Region
-                    , document
-                    , bodyRegion: topLevelTypeDefinition.BodyRegion)};
+                    (topLevelTypeDefinition, document)};
 
             return retval;
         }
