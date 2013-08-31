@@ -17,29 +17,29 @@ namespace OmniSharp
             var port = 2000;
             bool verbose = false;
 
-            var p = new OptionSet
+            var options = new OptionSet
                     {
                         {
                             "s|solution=", "The path to the solution file",
-                            v => solutionPath = v
+                            s => solutionPath = s
                         },
                         {
                             "p|port=", "Port number to listen on",
-                            (int v) => port = v
+                            (int p) => port = p
                         },
                         {
                             "v|verbose", "Output debug information",
-                            (int v) => port = v
+                            v => verbose = v != null
                         },
                         {
                             "h|help", "show this message and exit",
-                            v => showHelp = v != null
+                            h => showHelp = h != null
                         },
                     };
 
             try
             {
-                p.Parse(args);
+                options.Parse(args);
             }
             catch (OptionException e)
             {
@@ -52,7 +52,7 @@ namespace OmniSharp
 
             if (showHelp)
             {
-                ShowHelp(p);
+                ShowHelp(options);
                 return;
             }
 
