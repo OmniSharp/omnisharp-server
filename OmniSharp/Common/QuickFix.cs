@@ -52,14 +52,15 @@ namespace OmniSharp.Common
         ///   Text contains the type signature and not the body.
         /// </example>
         public static QuickFix ForNonBodyRegion
-            (DomRegion region, IDocument document, DomRegion bodyRegion) {
+            (IUnresolvedEntity entity, IDocument document) {
 
-            var text = GetNonBodyRegion(region, document, bodyRegion);
+            var text = GetNonBodyRegion
+                (entity.Region, document, entity.BodyRegion);
 
             return new QuickFix
-                { FileName = region.FileName
-                , Line     = region.BeginLine
-                , Column   = region.BeginColumn
+                { FileName = entity.Region.FileName
+                , Line     = entity.Region.BeginLine
+                , Column   = entity.Region.BeginColumn
                 , Text     = text};
 
         }
@@ -86,8 +87,12 @@ namespace OmniSharp.Common
             var begin     = document.GetOffset(region.Begin);
             var bodyStart = document.GetOffset(bodyRegion.Begin);
 
-            var typeSignatureLength = bodyStart - begin;
-
+            // Some entities have no body. These include members in
+            // interfaces.
+            bool hasNoBody = bodyStart == begin;
+            var typeSignatureLength = hasNoBody
+				? document.GetOffset(region.End) - begin
+				: bodyStart - begin;
             // Note: We remove extra spaces and newlines from the type
             // signature to make displaying it easier in Vim. Other
             // editors might not have a problem with displaying
