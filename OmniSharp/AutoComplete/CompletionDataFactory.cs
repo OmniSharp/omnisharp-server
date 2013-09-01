@@ -5,7 +5,6 @@ using System.Linq;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Completion;
 using ICSharpCode.NRefactory.Completion;
-using ICSharpCode.NRefactory.Documentation;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.Documentation;
 using OmniSharp.Solution;
@@ -112,6 +111,13 @@ namespace OmniSharp.AutoComplete
             }
         }
 
+        private void GenerateGenericMethodSignature(IMethod method)
+        {
+            _signature = _signatureAmbience.ConvertEntity(method).Replace(";", "");
+            _completionText = _ambience.ConvertEntity(method);
+            _completionText = _completionText.Remove(_completionText.IndexOf('(')) + "<";
+        }
+
         public ICompletionData CreateEntityCompletionData(IEntity entity, string text)
         {
             return new CompletionData(text);
@@ -119,12 +125,25 @@ namespace OmniSharp.AutoComplete
 
         public ICompletionData CreateTypeCompletionData(IType type, bool showFullName, bool isInAttributeContext)
         {
+            if (!type.Name.IsValidCompletionFor(_partialWord))
+            {
+                return new CompletionData("~~");
+            }
             var completion = new CompletionData(type.Name);
             if (_instantiating)
             {
                 foreach (var constructor in type.GetConstructors())
                 {
-                    completion.AddOverload(CreateEntityCompletionData(constructor));
+                    if (type.TypeParameterCount > 0)
+                    {
+                        GenerateGenericMethodSignature(constructor);
+                        ICompletionData completionData = CompletionData(constructor);
+                        completion.AddOverload(completionData);
+                    }
+                    else
+                    {
+                        completion.AddOverload(CreateEntityCompletionData(constructor));
+                    }
                 }
             }
             else

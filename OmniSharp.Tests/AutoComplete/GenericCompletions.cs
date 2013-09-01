@@ -43,7 +43,6 @@ namespace OmniSharp.Tests.AutoComplete
             public class Class1 {
                 public Class1()
                 {
-        
                     var l = new List<string>();
                     l.ad$
                 }
@@ -51,6 +50,20 @@ namespace OmniSharp.Tests.AutoComplete
                 .ShouldContain(
                     "void Add(string item)",
                     "void AddRange(IEnumerable<string> collection)"); 
+        }
+
+        [Test]
+        public void Should_add_angle_bracket_to_generic_completion()
+        {
+            CompletionsFor(
+                @"using System.Collections.Generic;
+            public class Class1 {
+                public Class1()
+                {
+                    var l = new Lis$
+                }
+            }")
+                .ShouldContain("List<");
         }
     }
 }
