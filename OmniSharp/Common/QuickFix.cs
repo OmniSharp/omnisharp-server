@@ -1,4 +1,5 @@
-﻿using ICSharpCode.NRefactory.Editor;
+﻿using ICSharpCode.NRefactory.CSharp;
+using ICSharpCode.NRefactory.Editor;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.Solution;
 
@@ -24,19 +25,20 @@ namespace OmniSharp.Common
 
         public static QuickFix ForFirstLineInRegion
             (DomRegion region, IDocument document) {
+            // Note that we could display an arbitrary amount of
+            // context to the user: ranging from one line to tens,
+            // hundreds..
+            var text = document.GetText
+                ( offset: document.GetOffset(region.BeginLine, column: 0)
+                , length: document.GetLineByNumber
+                            (region.BeginLine).Length)
+                .Trim();
+
             return new QuickFix
                 { FileName = region.FileName
                 , Line     = region.BeginLine
                 , Column   = region.BeginColumn
-
-                // Note that we could display an arbitrary amount of
-                // context to the user: ranging from one line to tens,
-                // hundreds..
-                , Text = document.GetText
-                    ( offset: document.GetOffset(region.Begin)
-                    , length: document.GetLineByNumber
-                                (region.BeginLine).Length)
-                    .Trim()};
+                , Text     = text};
         }
 
         /// <summary>
