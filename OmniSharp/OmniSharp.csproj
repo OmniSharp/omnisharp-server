@@ -247,7 +247,7 @@
     <Compile Include="GotoFile\GotoFileHandler.cs" />
     <Compile Include="GotoRegion\GotoRegionHandler.cs" />
     <Compile Include="GotoRegion\GotoRegionModule.cs" />
-    <Compile Include="GotoRegion\GetDirectivesASTVisitor.cs" />
+    <Compile Include="GotoRegion\GetDirectivesAstVisitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

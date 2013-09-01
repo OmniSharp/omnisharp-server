@@ -4,7 +4,7 @@ using ICSharpCode.NRefactory.CSharp;
 
 namespace OmniSharp.GotoRegion {
 
-    public class GetDirectivesASTVisitor : DepthFirstAstVisitor {
+    public class GetDirectivesAstVisitor : DepthFirstAstVisitor {
         public IList<PreProcessorDirective> Directives =
             new List<PreProcessorDirective>();
 

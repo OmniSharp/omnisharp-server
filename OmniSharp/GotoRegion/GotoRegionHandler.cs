@@ -24,7 +24,7 @@ namespace OmniSharp.GotoRegion {
             GetFileRegions(Request request) {
             var context = new BufferContext(request, this._parser);
 
-            var declarationCollector = new GetDirectivesASTVisitor();
+            var declarationCollector = new GetDirectivesAstVisitor();
             context.ParsedContent.SyntaxTree
                 .AcceptVisitor(declarationCollector);
 
