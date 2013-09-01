@@ -245,6 +245,9 @@
     <Compile Include="CurrentFileMembers\CurrentFileMembersAsFlatModule.cs" />
     <Compile Include="GotoFile\GotoFileModule.cs" />
     <Compile Include="GotoFile\GotoFileHandler.cs" />
+    <Compile Include="GotoRegion\GotoRegionHandler.cs" />
+    <Compile Include="GotoRegion\GotoRegionModule.cs" />
+    <Compile Include="GotoRegion\GetDirectivesAstVisitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
