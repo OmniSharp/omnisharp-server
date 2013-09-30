@@ -6,12 +6,12 @@ namespace OmniSharp.CodeActions
 {
     public class GetCodeActionsModule : NancyModule
     {
-        public GetCodeActionsModule(GetCodeActionsHandler gotoDefinitionHandler)
+        public GetCodeActionsModule(GetCodeActionsHandler getCodeActionsHandler)
         {
             Post["/getcodeactions"] = x =>
                 {
                     var req = this.Bind<Request>();
-                    var res = gotoDefinitionHandler.GetCodeActions(req);
+                    var res = getCodeActionsHandler.GetCodeActions(req);
                     return Response.AsJson(res);
                 };
         }

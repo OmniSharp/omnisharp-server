@@ -64,7 +64,7 @@ namespace OmniSharp.AutoComplete
         private ICompletionData CompletionData(IEntity entity)
         {
 
-            ICompletionData completionData = null;
+            ICompletionData completionData;
             if (entity.Documentation != null)
             {
                 completionData = new CompletionData(_signature, _completionText,

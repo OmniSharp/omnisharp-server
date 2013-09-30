@@ -20,7 +20,7 @@ namespace OmniSharp.CodeActions
         {
             var actions = GetContextualCodeActions(req);
 
-            return new GetCodeActionsResponse { CodeActions = actions.Select(a => a.Description) };
+            return new GetCodeActionsResponse { CodeActions = actions.Select(a =>  a.Description) };
         }
 
         public RunCodeActionsResponse RunCodeAction(RunCodeActionRequest req)
