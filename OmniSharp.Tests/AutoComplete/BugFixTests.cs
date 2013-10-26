@@ -18,7 +18,7 @@ namespace OmniSharp.Tests.AutoComplete
         string s;
         s.Leng$;
     }
-}").ShouldContainOnly("Length");
+}").ShouldContainOnly("Lrngth");
         }
         
         [Test]

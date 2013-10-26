@@ -116,6 +116,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AutoComplete\HelpService.cs" />
+    <Compile Include="ContextInformation\GetContextModule.cs" />
+    <Compile Include="ContextInformation\GetContextHandler.cs" />
+    <Compile Include="ContextInformation\GetContextResponse.cs" />
     <Compile Include="Documentation\DocumentationFetcher.cs" />
     <Compile Include="Documentation\MonoDocDocumentationProvider.cs" />
     <Compile Include="Build\BuildCommandBuilder.cs" />

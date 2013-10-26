@@ -21,7 +21,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
@@ -76,8 +75,8 @@ namespace OmniSharp.Solution
         };
 
         private readonly ISolution _solution;
-        private readonly string _assemblyName;
         public string FileName { get; private set; }
+        public string AssemblyName { get; set; }
         public Guid ProjectId { get; private set; }
 
         public string Title { get; private set; }
@@ -95,7 +94,7 @@ namespace OmniSharp.Solution
             Files = new List<CSharpFile>();
 
             var p = new Microsoft.Build.Evaluation.Project(FileName);
-            _assemblyName = p.GetPropertyValue("AssemblyName");
+            AssemblyName = p.GetPropertyValue("AssemblyName");
 
             _compilerSettings = new CompilerSettings()
                 {
@@ -171,7 +170,7 @@ namespace OmniSharp.Solution
                 AddReference(new ProjectReference(_solution, item.GetMetadataValue("Name")));
 
             this.ProjectContent = new CSharpProjectContent()
-                .SetAssemblyName(this._assemblyName)
+                .SetAssemblyName(AssemblyName)
                 .AddAssemblyReferences(References)
                 .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
             
@@ -211,7 +210,7 @@ namespace OmniSharp.Solution
         
         public override string ToString()
         {
-            return string.Format("[CSharpProject AssemblyName={0}]", _assemblyName);
+            return string.Format("[CSharpProject AssemblyName={0}]", AssemblyName);
         }
 
         static ConcurrentDictionary<string, IUnresolvedAssembly> assemblyDict = new ConcurrentDictionary<string, IUnresolvedAssembly>(Platform.FileNameComparer);
