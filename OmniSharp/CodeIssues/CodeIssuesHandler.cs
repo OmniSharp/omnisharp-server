@@ -30,7 +30,7 @@ namespace OmniSharp.CodeIssues
                 {
                     Column = a.Start.Column,
                     Line = a.Start.Line,
-                    FileName = "",
+                    FileName = req.FileName,
                     Text = GetLine(doc, a) + "(" + a.Description.Replace("'", "''") + ")"
                 }));
         }
