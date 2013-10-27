@@ -235,5 +235,28 @@ public class Handler
     }
 }");
         }
+
+        [Test]
+        public void Should_rename_variable_multiple_times_within_line()
+        {
+            Rename(@"
+            public class MultipleTimes
+            {
+                public void SomeMethod()
+                {
+                    float test;
+                    test = te$st * 10;
+                }
+            }", "testing")
+            .ShouldEqual(@"
+            public class MultipleTimes
+            {
+                public void SomeMethod()
+                {
+                    float testing;
+                    testing = testing * 10;
+                }
+            }");
+        }
     }
 }
