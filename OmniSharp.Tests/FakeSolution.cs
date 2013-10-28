@@ -30,7 +30,7 @@ namespace OmniSharp.Tests
 
         public IProject ProjectContainingFile(string filename)
         {
-            return Projects.FirstOrDefault(p => p.Files.Any(f => f.FileName.Equals(filename, StringComparison.InvariantCultureIgnoreCase)));
+            return Projects.FirstOrDefault(p => p.Files.Any(f => f.FileName.FixPath().Equals(filename.FixPath(), StringComparison.InvariantCultureIgnoreCase)));
         }
 
         public void Reload()
