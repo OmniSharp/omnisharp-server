@@ -9,7 +9,9 @@
 *.user
 *.sln.docstates
 *.sublime-workspace
+*.userprefs
 
+*/test-results/
 # Build results
 
 [Dd]ebug*/
