@@ -116,7 +116,7 @@ namespace OmniSharp.FindUsages
 
                     foreach (var file in interesting)
                     {
-                        string text = _solution.GetFile(file.FileName).Content.Text;
+                        string text = _solution.GetFile(file.FileName.FixPath()).Content.Text;
                         var unit = new CSharpParser().Parse(text, file.FileName);
                         foreach (var scope in searchScopes)
                         {
