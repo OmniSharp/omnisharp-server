@@ -247,7 +247,7 @@ public class Handler
                     float test;
                     test = te$st * 10;
                 }
-            }", "aaaaaaaaaaaaaaaaaaaaa")
+            }", "testing")
             .ShouldEqual(@"
             public class MultipleTimes
             {
