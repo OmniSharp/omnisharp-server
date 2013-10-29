@@ -56,7 +56,12 @@ namespace OmniSharp.Rename
                     context = OmniSharpRefactoringContext.GetContext(_bufferParser, req);
                 }
                 string modifiedBuffer = null;
-                foreach (var node in groupedNodes.Where(n => n.GetText() == originalName))
+
+                var lastToFirstNodes = groupedNodes.Where(n => n.GetText() == originalName)
+                                                   .OrderByDescending(n => n.EndLocation.Line)
+                                                   .ThenByDescending(n => n.EndLocation.Column);
+
+                foreach (var node in lastToFirstNodes)
                 {
                     using (var script = new OmniSharpScript(context))
                     {

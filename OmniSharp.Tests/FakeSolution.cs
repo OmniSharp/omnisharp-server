@@ -24,7 +24,7 @@ namespace OmniSharp.Tests
         {
             return (from project in Projects
                     from file in project.Files
-                    where file.FileName == filename
+                    where file.FileName.FixPath() == filename
                     select file).FirstOrDefault();
         }
 
