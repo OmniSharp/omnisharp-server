@@ -25,11 +25,13 @@ namespace OmniSharp.ProjectManipulation.RemoveFromProject
             }
 
             var project = relativeProject.AsXml();
-
-            var relativeFileName = request.FileName.Replace(relativeProject.FileName.Substring(0, relativeProject.FileName.LastIndexOf(Path.DirectorySeparatorChar) + 1), "")
+			var separator = relativeProject.FileName.Contains ("/") ? "/" : "\\";
+            var relativeFileName = request.FileName.Replace(relativeProject.FileName.Substring(0, relativeProject.FileName.LastIndexOf(separator) + 1), "")
                 .Replace("/", @"\");
 
-            var fileNode = project.CompilationNodes().FirstOrDefault(n => n.Attribute("Include").Value.Equals(relativeFileName, StringComparison.InvariantCultureIgnoreCase));
+            var fileNode = project.CompilationNodes()
+				.FirstOrDefault(n => n.Attribute("Include")
+				                .Value.Equals(relativeFileName, StringComparison.InvariantCultureIgnoreCase));
 
             if (fileNode != null)
             {

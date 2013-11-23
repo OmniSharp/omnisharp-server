@@ -38,7 +38,6 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
         {
             var project = new FakeProject(fileName: @"c:\test\code\fake.csproj");
             project.XmlRepresentation = XDocument.Parse(@"<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003""><ItemGroup><Compile Include=""Hello.cs""/></ItemGroup></Project>");
-            var expectedXml = XDocument.Parse(@"<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003""><ItemGroup><Compile Include=""Hello.cs""/><Compile Include=""files\Test.cs""/></ItemGroup></Project>");
 
             project.AddFile("some content", @"c:\test\code\files\Test.cs");
             
@@ -52,6 +51,9 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
 
             var handler = new AddToProjectHandler(solution);
             handler.AddToProject(request);
+
+			var expectedXml = XDocument.Parse(
+				@"<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003""><ItemGroup><Compile Include=""Hello.cs""/><Compile Include=""files\Test.cs""/></ItemGroup></Project>");
 
             project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
         }

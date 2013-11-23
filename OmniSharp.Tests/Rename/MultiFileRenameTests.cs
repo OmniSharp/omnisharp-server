@@ -60,7 +60,8 @@ namespace OmniSharp.Tests.Rename
     }
 }", "Handler.cs");
 
-            var changedFiles = Rename("ColumnRenamed", request, findUsagesRequest, handler).ToList();
+            var changedFiles = Rename("ColumnRenamed", request, findUsagesRequest, handler)
+				.OrderBy(f => f.FileName).ToList();
             changedFiles[1].Buffer.ShouldEqual(
 @"public class Request
 {

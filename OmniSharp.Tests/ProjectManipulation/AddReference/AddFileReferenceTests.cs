@@ -41,7 +41,8 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
             handler.AddReference(request);
 
             project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
-            ((FakeAssembly)project.References.First(r => r.GetType() == typeof(FakeAssembly))).AssemblyPath.ShouldEqual(@"c:\test\packages\SomeTest\lib\net40\Some.Test.dll");
+            ((FakeAssembly)project.References.First(r => r.GetType() == typeof(FakeAssembly)))
+				.AssemblyPath.ShouldEqual(@"c:\test\packages\SomeTest\lib\net40\Some.Test.dll");
         }
 
         [Test]

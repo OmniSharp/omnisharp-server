@@ -18,7 +18,7 @@ namespace OmniSharp.Solution
 
         /// <summary>
         /// Changes a path's directory separator from Windows-style to the native
-        /// separator if necessary and expands it to the full path name.
+        /// separator if necessary
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -29,7 +29,7 @@ namespace OmniSharp.Solution
             else
                 // TODO: fix hack - vim sends drive letter as uppercase. usually lower case in project files
                 return path.Replace(@"C:\", @"c:\").Replace(@"D:\", @"d:\");
-            return Path.GetFullPath(path);
+			return path;
         }
 
         /// <summary>

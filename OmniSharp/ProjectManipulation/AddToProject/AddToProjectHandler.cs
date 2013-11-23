@@ -32,10 +32,11 @@ namespace OmniSharp.ProjectManipulation.AddToProject
 
             var project = relativeProject.AsXml();
 
-            var requestFile = new FileInfo(request.FileName).FullName;
+            var requestFile = request.FileName;
             var projectDirectory = new FileInfo(relativeProject.FileName).Directory;
 
-            var relativeFileName = requestFile.Replace(projectDirectory.FullName, "").Replace("/", @"\").Substring(1);
+			var relativeFileName = relativeProject.FileName.GetRelativePath(requestFile)
+												.Replace("/", @"\");
 
             var compilationNodes = project.Element(_msBuildNameSpace + "Project")
                                           .Elements(_msBuildNameSpace + "ItemGroup")
