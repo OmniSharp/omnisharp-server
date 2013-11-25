@@ -85,24 +85,25 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
         [Test]
         public void ShouldAlwaysUseWindowsFileSeparatorWhenAddingToProject()
         {
-            var project = new FakeProject(fileName: @"/test/code/fake.csproj");
-            project.XmlRepresentation = XDocument.Parse(@"<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003""><ItemGroup><Compile Include=""Hello.cs""/></ItemGroup></Project>");
-            var expectedXml = XDocument.Parse(@"<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003""><ItemGroup><Compile Include=""Hello.cs""/><Compile Include=""folder\Test.cs""/></ItemGroup></Project>");
+			if (PlatformService.IsUnix) {
+				var project = new FakeProject (fileName: @"/test/code/fake.csproj");
+				project.XmlRepresentation = XDocument.Parse (@"<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003""><ItemGroup><Compile Include=""Hello.cs""/></ItemGroup></Project>");
+				var expectedXml = XDocument.Parse (@"<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003""><ItemGroup><Compile Include=""Hello.cs""/><Compile Include=""folder\Test.cs""/></ItemGroup></Project>");
 
-            project.AddFile("some content", @"/test/code/folder/Test.cs");
+				project.AddFile ("some content", @"/test/code/folder/Test.cs");
 
-            var solution = new FakeSolution(@"/test/fake.sln");
-            solution.Projects.Add(project);
+				var solution = new FakeSolution (@"/test/fake.sln");
+				solution.Projects.Add (project);
 
-            var request = new AddToProjectRequest
-            {
-                FileName = @"/test/code/folder/Test.cs"
-            };
+				var request = new AddToProjectRequest {
+					FileName = @"/test/code/folder/Test.cs"
+				};
 
-            var handler = new AddToProjectHandler(solution);
-            handler.AddToProject(request);
+				var handler = new AddToProjectHandler (solution);
+				handler.AddToProject (request);
 
-            project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
+				project.AsXml ().ToString ().ShouldEqual (expectedXml.ToString ());
+			}
         }
 
         [Test, ExpectedException(typeof(ProjectNotFoundException))]
