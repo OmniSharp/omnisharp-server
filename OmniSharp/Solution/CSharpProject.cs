@@ -21,7 +21,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
@@ -61,9 +60,11 @@ namespace OmniSharp.Solution
             @"C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies",
             
             //Unix Paths
+            @"/usr/local/lib/mono/4.5",
             @"/usr/local/lib/mono/4.0",
             @"/usr/local/lib/mono/3.5",
             @"/usr/local/lib/mono/2.0",
+            @"/usr/lib/mono/4.5",
             @"/usr/lib/mono/4.0",
             @"/usr/lib/mono/3.5",
             @"/usr/lib/mono/2.0",
@@ -114,8 +115,9 @@ namespace OmniSharp.Solution
                     if (File.Exists(path))
                         Files.Add(new CSharpFile(this, new FileInfo(path).FullName));
                 }
-                catch (NullReferenceException)
+                catch (NullReferenceException e)
                 {
+                    Console.WriteLine(e);
                 }
             }
 
