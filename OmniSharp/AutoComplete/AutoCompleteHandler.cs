@@ -25,13 +25,12 @@ namespace OmniSharp.AutoComplete
         public IEnumerable<ICompletionData> CreateProvider(AutoCompleteRequest request)
         {
             request.Column = request.Column - request.WordToComplete.Length;
-
             var completionContext = new BufferContext (request, _parser);
 
             var partialWord = request.WordToComplete;
 
             var project = _solution.ProjectContainingFile(request.FileName);
-
+	    
             ICompletionContextProvider contextProvider = new DefaultCompletionContextProvider
                 (completionContext.Document, completionContext.ParsedContent.UnresolvedFile);
 
@@ -50,7 +49,6 @@ namespace OmniSharp.AutoComplete
                 {
                     EolMarker = Environment.NewLine
                 };
-
             _logger.Debug("Getting Completion Data");
 
             IEnumerable<ICompletionData> data = engine.GetCompletionData(completionContext.CursorPosition, true);

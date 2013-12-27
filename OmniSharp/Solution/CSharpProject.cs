@@ -220,6 +220,10 @@ namespace OmniSharp.Solution
 
         public static IUnresolvedAssembly LoadAssembly(string assemblyFileName)
         {
+			if (!File.Exists (assemblyFileName)) 
+			{
+				throw new FileNotFoundException ("Assembly does not exist!", assemblyFileName);
+			}
             return assemblyDict.GetOrAdd(assemblyFileName, file => new CecilLoader().LoadAssemblyFile(file));
         }
 

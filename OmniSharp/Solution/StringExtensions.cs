@@ -32,6 +32,11 @@ namespace OmniSharp.Solution
 			return path;
         }
 
+		public static string ForceWindowsPathSeparator(this string path)
+		{
+			return path.Replace ('/', '\\');
+		}
+
         /// <summary>
         /// Returns the relative path of a file to another file
         /// </summary>
@@ -42,5 +47,7 @@ namespace OmniSharp.Solution
         {
             return new Uri(path).MakeRelativeUri(new Uri(pathToMakeRelative)).ToString().Replace("/", @"\");
         }
+
+
     }
 }
