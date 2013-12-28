@@ -38,7 +38,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                     </ItemGroup>
                 </Project>");
 
-            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddFileReferenceProcessor() }, new FakeFileSystem()));
+            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddFileReferenceProcessor() }, new FakeWindowsFileSystem()));
             handler.AddReference(request);
 
             project.AsXml().ToString().ShouldEqual(expectedXml.ToString());

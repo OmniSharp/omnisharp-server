@@ -27,7 +27,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
                      FileName = @"c:\test\code\test.cs"
                  };
 
-             var handler = new AddToProjectHandler(solution);
+             var handler = new AddToProjectHandler(solution, new FakeWindowsFileSystem());
              handler.AddToProject(request);
 
              project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
@@ -49,7 +49,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
                 FileName = @"c:\test\code\files\Test.cs"
             };
 
-            var handler = new AddToProjectHandler(solution);
+            var handler = new AddToProjectHandler(solution, new FakeWindowsFileSystem());
             handler.AddToProject(request);
 
 			var expectedXml = XDocument.Parse(
@@ -76,7 +76,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
                 FileName = @"c:\test\code\foo.txt"
             };
 
-            var handler = new AddToProjectHandler(solution);
+            var handler = new AddToProjectHandler(solution, new FakeWindowsFileSystem());
             handler.AddToProject(request);
 
             project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
@@ -99,7 +99,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
 					FileName = @"/test/code/folder/Test.cs"
 				};
 
-				var handler = new AddToProjectHandler (solution);
+				var handler = new AddToProjectHandler (solution, new FakeUnixFileSystem());
 				handler.AddToProject (request);
 
 				project.AsXml ().ToString ().ShouldEqual (expectedXml.ToString ());
@@ -118,7 +118,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
                 FileName = @"/test/folder/Test.cs"
             };
 
-            var handler = new AddToProjectHandler(solution);
+            var handler = new AddToProjectHandler(solution, new FakeUnixFileSystem());
             handler.AddToProject(request);
         }
 
@@ -135,7 +135,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
                 FileName = @"/test/folder/Test.cs"
             };
 
-            var handler = new AddToProjectHandler(solution);
+            var handler = new AddToProjectHandler(solution, new FakeUnixFileSystem());
             handler.AddToProject(request);
         }
     }
