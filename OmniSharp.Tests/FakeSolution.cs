@@ -24,13 +24,13 @@ namespace OmniSharp.Tests
         {
             return (from project in Projects
                     from file in project.Files
-                    where file.FileName.FixPath() == filename
+                    where file.FileName.LowerCaseDriveLetter() == filename
                     select file).FirstOrDefault();
         }
 
         public IProject ProjectContainingFile(string filename)
         {
-            return Projects.FirstOrDefault(p => p.Files.Any(f => f.FileName.FixPath().Equals(filename.FixPath(), StringComparison.InvariantCultureIgnoreCase)));
+            return Projects.FirstOrDefault(p => p.Files.Any(f => f.FileName.LowerCaseDriveLetter().Equals(filename.LowerCaseDriveLetter(), StringComparison.InvariantCultureIgnoreCase)));
         }
 
         public void Reload()

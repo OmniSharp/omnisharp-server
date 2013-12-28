@@ -39,7 +39,7 @@ namespace OmniSharp.Rename
             var modfiedFiles = new List<ModifiedFileResponse>();
             response.Changes = modfiedFiles;
 
-            foreach (IGrouping<string, AstNode> groupedNodes in nodes.GroupBy(n => n.GetRegion().FileName.FixPath()))
+            foreach (IGrouping<string, AstNode> groupedNodes in nodes.GroupBy(n => n.GetRegion().FileName.LowerCaseDriveLetter()))
             {
                 string fileName = groupedNodes.Key;
                 OmniSharpRefactoringContext context;

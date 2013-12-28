@@ -40,7 +40,7 @@ namespace OmniSharp.Tests
 
         public CSharpFile GetFile(string fileName)
         {
-            return this.Files.SingleOrDefault(f => f.ParsedFile.FileName.FixPath().Equals(fileName.FixPath(), StringComparison.InvariantCultureIgnoreCase));
+            return this.Files.SingleOrDefault(f => f.ParsedFile.FileName.LowerCaseDriveLetter().Equals(fileName.LowerCaseDriveLetter(), StringComparison.InvariantCultureIgnoreCase));
         }
 
         public IProjectContent ProjectContent { get; set; }

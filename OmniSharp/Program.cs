@@ -4,6 +4,7 @@ using System.Threading;
 using NDesk.Options;
 using Nancy.Hosting.Self;
 using OmniSharp.Solution;
+using OmniSharp.Common;
 
 namespace OmniSharp
 {
@@ -77,7 +78,7 @@ namespace OmniSharp
                                 e.Cancel = true;
                             };
 
-                    var nancyHost = new NancyHost(new Bootstrapper(solution, verbose), new Uri("http://localhost:" + port));
+					var nancyHost = new NancyHost(new Bootstrapper(solution, new NativeFileSystem(), verbose), new Uri("http://localhost:" + port));
 
                     nancyHost.Start();
 

@@ -1,0 +1,8 @@
+language: c
+
+install:
+      - sudo apt-get install mono-devel mono-gmcs nunit-console
+
+script:
+      - xbuild OmniSharp.sln
+      - nunit-console ./OmniSharp.Tests/bin/Debug/OmniSharp.Tests.dll
