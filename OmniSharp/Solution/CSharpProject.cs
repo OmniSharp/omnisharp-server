@@ -238,13 +238,13 @@ namespace OmniSharp.Solution
             if (evaluatedInclude.IndexOf(',') >= 0)
                 evaluatedInclude = evaluatedInclude.Substring(0, evaluatedInclude.IndexOf(','));
             
-            string directAssemblyFile = (evaluatedInclude + ".dll").LowerCaseDriveLetter();
+            string directAssemblyFile = (evaluatedInclude + ".dll").ForceNativePathSeparator();
             if (File.Exists(directAssemblyFile))
                 return directAssemblyFile;
 
             foreach (string searchPath in assemblySearchPaths)
             {
-                string assemblyFile = Path.Combine(searchPath, evaluatedInclude + ".dll").LowerCaseDriveLetter();
+                string assemblyFile = Path.Combine(searchPath, evaluatedInclude + ".dll").ForceNativePathSeparator();
                 if (File.Exists(assemblyFile))
                     return assemblyFile;
             }
