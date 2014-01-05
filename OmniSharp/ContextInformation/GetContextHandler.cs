@@ -39,8 +39,9 @@ namespace OmniSharp.ContextInformation
                 typeName = namespaceDeclaration.FullName + "." + typeName;
 
             var project = _solution.ProjectContainingFile(request.FileName);
-            var directory = new FileInfo(project.FileName).Directory.GetDirectories("bin/Debug").First().FullName;
-            var assemblyName = Path.Combine(directory, project.ProjectContent.FullAssemblyName + ".dll");
+            var directory = new FileInfo(project.FileName).Directory.FullName;
+			
+            var assemblyName = Path.Combine(directory, "bin", "Debug", project.ProjectContent.FullAssemblyName + ".dll");
 
             return new GetContextResponse
                 {

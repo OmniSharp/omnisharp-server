@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using OmniSharp.Solution;
+using OmniSharp.Common;
 
 namespace OmniSharp.ProjectManipulation.AddToProject
 {
@@ -10,9 +11,11 @@ namespace OmniSharp.ProjectManipulation.AddToProject
     {
         private readonly ISolution _solution;
         private readonly XNamespace _msBuildNameSpace = "http://schemas.microsoft.com/developer/msbuild/2003";
+		private readonly IFileSystem _fileSystem;
 
-        public AddToProjectHandler(ISolution solution)
+        public AddToProjectHandler(ISolution solution, IFileSystem fileSystem)
         {
+			_fileSystem = fileSystem;
             _solution = solution;
         }
 
@@ -32,10 +35,9 @@ namespace OmniSharp.ProjectManipulation.AddToProject
 
             var project = relativeProject.AsXml();
 
-            var requestFile = new FileInfo(request.FileName).FullName;
-            var projectDirectory = new FileInfo(relativeProject.FileName).Directory;
-
-            var relativeFileName = requestFile.Replace(projectDirectory.FullName, "").Replace("/", @"\").Substring(1);
+            var requestFile = request.FileName;
+            var projectDirectory = _fileSystem.GetDirectoryName(relativeProject.FileName);
+			var relativeFileName = requestFile.Replace(projectDirectory, "").ForceWindowsPathSeparator().Substring(1);
 
             var compilationNodes = project.Element(_msBuildNameSpace + "Project")
                                           .Elements(_msBuildNameSpace + "ItemGroup")

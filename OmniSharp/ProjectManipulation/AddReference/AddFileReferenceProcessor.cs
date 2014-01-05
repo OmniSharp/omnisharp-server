@@ -17,7 +17,7 @@ namespace OmniSharp.ProjectManipulation.AddReference
 
             var relativeReferencePath = project.FileName.GetRelativePath(reference);
 
-            var referenceName = reference.Substring(reference.LastIndexOf(Path.DirectorySeparatorChar) + 1).Replace(".dll", "");
+            var referenceName = reference.Substring(reference.LastIndexOf("\\") + 1).Replace(".dll", "");
 
             var referenceAlreadyAdded = referenceNodes.Any(n => n.Attribute("Include").Value.Equals(referenceName));
 
@@ -36,7 +36,7 @@ namespace OmniSharp.ProjectManipulation.AddReference
                     projectXml.Element(MsBuildNameSpace + "Project").Add(projectItemGroup);
                 }
 
-                project.AddReference(reference.FixPath());
+                project.AddReference(reference.LowerCaseDriveLetter());
                 project.Save(projectXml);
 
                 response.Message = string.Format("Reference to {0} added successfully", referenceName);

@@ -69,7 +69,7 @@ namespace OmniSharp.Solution
                 {
                     string typeGuid = match.Groups["TypeGuid"].Value;
                     string title = match.Groups["Title"].Value;
-                    string location = Path.Combine(Directory, match.Groups["Location"].Value).FixPath();
+                    string location = Path.Combine(Directory, match.Groups["Location"].Value).LowerCaseDriveLetter();
                     string guid = match.Groups["Guid"].Value;
                     switch (typeGuid.ToUpperInvariant())
                     {

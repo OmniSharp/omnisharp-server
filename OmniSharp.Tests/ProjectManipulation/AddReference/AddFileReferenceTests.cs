@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using NUnit.Framework;
 using OmniSharp.ProjectManipulation.AddReference;
 using Should;
+using OmniSharp.Solution;
 
 namespace OmniSharp.Tests.ProjectManipulation.AddReference
 {
@@ -37,11 +38,12 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                     </ItemGroup>
                 </Project>");
 
-            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddFileReferenceProcessor() }, new FakeFileSystem()));
+            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddFileReferenceProcessor() }, new FakeWindowsFileSystem()));
             handler.AddReference(request);
 
             project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
-            ((FakeAssembly)project.References.First(r => r.GetType() == typeof(FakeAssembly))).AssemblyPath.ShouldEqual(@"c:\test\packages\SomeTest\lib\net40\Some.Test.dll");
+            ((FakeAssembly)project.References.First(r => r.GetType() == typeof(FakeAssembly)))
+				.AssemblyPath.ForceWindowsPathSeparator().ShouldEqual(@"c:\test\packages\SomeTest\lib\net40\Some.Test.dll");
         }
 
         [Test]
@@ -73,7 +75,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
             handler.AddReference(request);
 
             project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
-            ((FakeAssembly)project.References.First(r => r.GetType() == typeof(FakeAssembly))).AssemblyPath.ShouldEqual(@"c:\test\packages\SomeTest\lib\net40\Some.Test.dll");
+			((FakeAssembly)project.References.First(r => r.GetType() == typeof(FakeAssembly))).AssemblyPath.ForceWindowsPathSeparator().ShouldEqual(@"c:\test\packages\SomeTest\lib\net40\Some.Test.dll");
         }
 
         [Test]

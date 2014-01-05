@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Linq;
+using System.Xml.Linq;
 using NUnit.Framework;
 using OmniSharp.ProjectManipulation;
 using OmniSharp.ProjectManipulation.RemoveFromProject;
@@ -64,6 +65,7 @@ namespace OmniSharp.Tests.ProjectManipulation.RemoveFromProject
         [Test]
         public void ShouldRemoveItemGroupWhenRemovingLastFile()
         {
+			XNamespace ns = "http://schemas.microsoft.com/developer/msbuild/2003";
             var project = new FakeProject(fileName: @"c:\test\code\fake.csproj");
             project.AddFile("some content", @"c:\test\code\test.cs");
 
@@ -75,8 +77,6 @@ namespace OmniSharp.Tests.ProjectManipulation.RemoveFromProject
                 </Project>";
 
             project.XmlRepresentation = XDocument.Parse(xml);
-            var expectedXml = XDocument.Parse(@"
-                <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"" />");
 
             var solution = new FakeSolution(@"c:\test\fake.sln");
             solution.Projects.Add(project);
@@ -89,7 +89,7 @@ namespace OmniSharp.Tests.ProjectManipulation.RemoveFromProject
             var handler = new RemoveFromProjectHandler(solution);
             handler.RemoveFromProject(request);
 
-            project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
+			project.AsXml().Descendants(ns + "ItemGroup").Count().ShouldEqual(0);
         }
 
         [Test]

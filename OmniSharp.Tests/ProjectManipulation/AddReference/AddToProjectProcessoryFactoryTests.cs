@@ -27,7 +27,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                                   new AddGacReferenceProcessor()
                               };
 
-            _factory = new AddReferenceProcessorFactory(_solution, _processors, new FileSystem());
+            _factory = new AddReferenceProcessorFactory(_solution, _processors, new NativeFileSystem());
         }
 
         [Test]

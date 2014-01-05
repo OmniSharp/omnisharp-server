@@ -18,7 +18,7 @@ namespace OmniSharp.Tests.AutoComplete
         string s;
         s.Leng$;
     }
-}").ShouldContainOnly("Lrngth");
+}").ShouldContainOnly("Length");
         }
         
         [Test]
@@ -31,7 +31,7 @@ namespace OmniSharp.Tests.AutoComplete
         int n;
         n.T$;
     }
-}").First().ShouldEqual("string ToString(string format)");
+}").First().ShouldStartWith("string ToString(");
         }
 
         [Test]

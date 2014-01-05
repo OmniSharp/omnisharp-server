@@ -60,9 +60,11 @@ namespace OmniSharp.Solution
             @"C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies",
             
             //Unix Paths
+            @"/usr/local/lib/mono/4.5",
             @"/usr/local/lib/mono/4.0",
             @"/usr/local/lib/mono/3.5",
             @"/usr/local/lib/mono/2.0",
+            @"/usr/lib/mono/4.5",
             @"/usr/lib/mono/4.0",
             @"/usr/lib/mono/3.5",
             @"/usr/lib/mono/2.0",
@@ -89,14 +91,14 @@ namespace OmniSharp.Solution
         {
             _solution = solution;
             Title = title;
-            FileName = fileName;
+			FileName = fileName.ForceNativePathSeparator();
             ProjectId = id;
             Files = new List<CSharpFile>();
 
             var p = new Microsoft.Build.Evaluation.Project(FileName);
             AssemblyName = p.GetPropertyValue("AssemblyName");
 
-            _compilerSettings = new CompilerSettings()
+            _compilerSettings = new CompilerSettings 
                 {
                     AllowUnsafeBlocks = GetBoolProperty(p, "AllowUnsafeBlocks") ?? false,
                     CheckForOverflow = GetBoolProperty(p, "CheckForOverflowUnderflow") ?? false,
@@ -109,12 +111,19 @@ namespace OmniSharp.Solution
             {
                 try
                 {
-                    string path = Path.Combine(p.DirectoryPath, item.EvaluatedInclude).FixPath();
+                    string path = Path.Combine(p.DirectoryPath, item.EvaluatedInclude).ForceNativePathSeparator();
                     if (File.Exists(path))
+					{
                         Files.Add(new CSharpFile(this, new FileInfo(path).FullName));
+					}
+					else
+					{
+						Console.WriteLine("File does not exist - " + path);
+					}
                 }
-                catch (NullReferenceException)
+                catch (NullReferenceException e)
                 {
+                    Console.WriteLine(e);
                 }
             }
 
@@ -132,7 +141,7 @@ namespace OmniSharp.Solution
                 string assemblyFileName = null;
                 if (item.HasMetadata("HintPath"))
                 {
-                    assemblyFileName = Path.Combine(p.DirectoryPath, item.GetMetadataValue("HintPath")).FixPath();
+                    assemblyFileName = Path.Combine(p.DirectoryPath, item.GetMetadataValue("HintPath")).ForceNativePathSeparator();
                     if (!File.Exists(assemblyFileName))
                         assemblyFileName = null;
                 }
@@ -217,6 +226,10 @@ namespace OmniSharp.Solution
 
         public static IUnresolvedAssembly LoadAssembly(string assemblyFileName)
         {
+			if (!File.Exists (assemblyFileName)) 
+			{
+				throw new FileNotFoundException ("Assembly does not exist!", assemblyFileName);
+			}
             return assemblyDict.GetOrAdd(assemblyFileName, file => new CecilLoader().LoadAssemblyFile(file));
         }
 
@@ -225,13 +238,13 @@ namespace OmniSharp.Solution
             if (evaluatedInclude.IndexOf(',') >= 0)
                 evaluatedInclude = evaluatedInclude.Substring(0, evaluatedInclude.IndexOf(','));
             
-            string directAssemblyFile = (evaluatedInclude + ".dll").FixPath();
+            string directAssemblyFile = (evaluatedInclude + ".dll").ForceNativePathSeparator();
             if (File.Exists(directAssemblyFile))
                 return directAssemblyFile;
 
             foreach (string searchPath in assemblySearchPaths)
             {
-                string assemblyFile = Path.Combine(searchPath, evaluatedInclude + ".dll").FixPath();
+                string assemblyFile = Path.Combine(searchPath, evaluatedInclude + ".dll").ForceNativePathSeparator();
                 if (File.Exists(assemblyFile))
                     return assemblyFile;
             }

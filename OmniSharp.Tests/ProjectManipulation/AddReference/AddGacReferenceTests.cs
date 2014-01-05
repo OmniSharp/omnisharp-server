@@ -31,7 +31,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                  FileName = @"c:\test\one\test.cs"
              };
 
-             var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[]{new AddGacReferenceProcessor() }, new FileSystem()));
+             var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[]{new AddGacReferenceProcessor() }, new NativeFileSystem()));
              handler.AddReference(request);
 
              project.AsXml().ToString().ShouldEqual(expectedXml.ToString());
@@ -60,7 +60,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                 FileName = @"c:\test\one\test.cs"
             };
 
-            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddGacReferenceProcessor() }, new FileSystem()));
+            var handler = new AddReferenceHandler(Solution, new AddReferenceProcessorFactory(Solution, new IReferenceProcessor[] { new AddGacReferenceProcessor() }, new NativeFileSystem()));
             handler.AddReference(request);
 
             project.AsXml().ToString().ShouldEqual(expectedXml.ToString());

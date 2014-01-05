@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using Should;
 
 namespace OmniSharp.Tests.UnitTesting

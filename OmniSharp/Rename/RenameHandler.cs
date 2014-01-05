@@ -39,7 +39,7 @@ namespace OmniSharp.Rename
             var modfiedFiles = new List<ModifiedFileResponse>();
             response.Changes = modfiedFiles;
 
-            foreach (IGrouping<string, AstNode> groupedNodes in nodes.GroupBy(n => n.GetRegion().FileName.FixPath()))
+            foreach (IGrouping<string, AstNode> groupedNodes in nodes.GroupBy(n => n.GetRegion().FileName.LowerCaseDriveLetter()))
             {
                 string fileName = groupedNodes.Key;
                 OmniSharpRefactoringContext context;
@@ -56,7 +56,12 @@ namespace OmniSharp.Rename
                     context = OmniSharpRefactoringContext.GetContext(_bufferParser, req);
                 }
                 string modifiedBuffer = null;
-                foreach (var node in groupedNodes.Where(n => n.GetText() == originalName))
+
+                var lastToFirstNodes = groupedNodes.Where(n => n.GetText() == originalName)
+                                                   .OrderByDescending(n => n.EndLocation.Line)
+                                                   .ThenByDescending(n => n.EndLocation.Column);
+
+                foreach (var node in lastToFirstNodes)
                 {
                     using (var script = new OmniSharpScript(context))
                     {
