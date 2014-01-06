@@ -24,7 +24,8 @@ namespace OmniSharp.ContextInformation
             string methodName = null;
             string typeName = null;
 
-            var node = new BufferContext(request, _parser).NodeCurrentlyUnderCursor;
+            var bufferContext = new BufferContext(request, _parser);
+			var node = bufferContext.NodeCurrentlyUnderCursor;
             var method = (MethodDeclaration) node.AncestorsAndSelf.FirstOrDefault(n => n is MethodDeclaration);
             if (method != null)
                 methodName = method.Name;
@@ -32,9 +33,12 @@ namespace OmniSharp.ContextInformation
             var type = (TypeDeclaration)node.AncestorsAndSelf.FirstOrDefault(n => n is TypeDeclaration);
             var namespaceDeclaration = (NamespaceDeclaration)node.AncestorsAndSelf.FirstOrDefault(n => n is NamespaceDeclaration);
 
-            if (type != null)
-                typeName = type.Name;
+            if (type == null)
+			{
+				type = (TypeDeclaration)bufferContext.ParsedContent.SyntaxTree.DescendantsAndSelf.FirstOrDefault(n => n is TypeDeclaration);
+			}
 
+			typeName = type.Name;
             if (namespaceDeclaration != null)
                 typeName = namespaceDeclaration.FullName + "." + typeName;
 

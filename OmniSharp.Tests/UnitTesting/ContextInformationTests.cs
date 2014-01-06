@@ -108,19 +108,20 @@ namespace Namespace.Something
         }
 
         [Test]
-        public void Should_get_assembly_name()
+        public void Should_get_fully_qualified_type_name_with_cursor_above_class_definition()
         {
             @"
 namespace Namespace.Something
-{
+{$
     public class TestClass
     {
-        [$Test]
+        [Test]
         public void ThisIsATest()
         {
         }
     }
-}".GetContextInformation().AssemblyName.ShouldEqual("Namespace.Something.TestClass");
+}".GetContextInformation().TypeName.ShouldEqual("Namespace.Something.TestClass");
         }
+
     }
 }
