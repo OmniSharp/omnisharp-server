@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
 using ICSharpCode.NRefactory.CSharp;
 using OmniSharp.AutoComplete;
@@ -26,16 +26,24 @@ namespace OmniSharp.ContextInformation
 
             var bufferContext = new BufferContext(request, _parser);
 			var node = bufferContext.NodeCurrentlyUnderCursor;
-            var method = (MethodDeclaration) node.AncestorsAndSelf.FirstOrDefault(n => n is MethodDeclaration);
-            if (method != null)
-                methodName = method.Name;
 
-            var type = (TypeDeclaration)node.AncestorsAndSelf.FirstOrDefault(n => n is TypeDeclaration);
-            var namespaceDeclaration = (NamespaceDeclaration)node.AncestorsAndSelf.FirstOrDefault(n => n is NamespaceDeclaration);
+            TypeDeclaration type = null;
+			NamespaceDeclaration namespaceDeclaration = null;
+			if(node != null)
+			{
+				var method = (MethodDeclaration) node.AncestorsAndSelf.FirstOrDefault(n => n is MethodDeclaration);
+				if (method != null)
+					methodName = method.Name;
+				type = (TypeDeclaration)node.AncestorsAndSelf.FirstOrDefault(n => n is TypeDeclaration);
+				namespaceDeclaration = (NamespaceDeclaration)node.AncestorsAndSelf.FirstOrDefault(n => n is NamespaceDeclaration);
+			}
+
 
             if (type == null)
 			{
-				type = (TypeDeclaration)bufferContext.ParsedContent.SyntaxTree.DescendantsAndSelf.FirstOrDefault(n => n is TypeDeclaration);
+				var tree = bufferContext.ParsedContent.SyntaxTree;
+				type = (TypeDeclaration)tree.DescendantsAndSelf.FirstOrDefault(n => n is TypeDeclaration);
+				namespaceDeclaration = (NamespaceDeclaration)tree.DescendantsAndSelf.FirstOrDefault(n => n is NamespaceDeclaration);
 			}
 
 			typeName = type.Name;

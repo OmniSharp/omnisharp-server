@@ -4,7 +4,7 @@ using Should;
 namespace OmniSharp.Tests.UnitTesting
 {
     [TestFixture]
-    public class ContextInformationTests
+    public class TestContextInformationTests
     {
         [Test]
         public void Should_get_method_name_with_cursor_on_method_name()
@@ -113,6 +113,22 @@ namespace Namespace.Something
             @"
 namespace Namespace.Something
 {$
+    public class TestClass
+    {
+        [Test]
+        public void ThisIsATest()
+        {
+        }
+    }
+}".GetContextInformation().TypeName.ShouldEqual("Namespace.Something.TestClass");
+        }
+
+        [Test]
+        public void Should_get_fully_qualified_type_name_with_cursor_above_namespace()
+        {
+            @"$
+namespace Namespace.Something
+{
     public class TestClass
     {
         [Test]
