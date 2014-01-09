@@ -5,7 +5,7 @@ OmniSharpServer
 HTTP wrapper around NRefactory allowing C# editor plugins to be written for any editor in any language.
 
 
-This is the server component for the [Vim OmniSharp plugin](https://github.com/nosami/OmniSharp), [YouCompleteMe](https://github.com/Valloric/YouCompleteMe), [Sublime OmniSharp plugin](https://github.com/PaulCampbell/OmniSharpSublimePlugin)
+This is the server component for the [Vim OmniSharp plugin](https://github.com/nosami/OmniSharp), [YouCompleteMe](https://github.com/Valloric/YouCompleteMe), [Sublime Text 2 OmniSharp plugin](https://github.com/PaulCampbell/OmniSharpSublimePlugin), [Sublime Text 3](https://github.com/n-yoda/OmniSharpSublime)
 and [Emacs OmniSharp plugin](https://github.com/sp3ctum/omnisharp-emacs).
 
 
