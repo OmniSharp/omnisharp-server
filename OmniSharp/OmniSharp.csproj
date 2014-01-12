@@ -250,6 +250,7 @@
     <Compile Include="GotoRegion\GotoRegionHandler.cs" />
     <Compile Include="GotoRegion\GotoRegionModule.cs" />
     <Compile Include="GotoRegion\GetDirectivesAstVisitor.cs" />
+    <Compile Include="UpdateBuffer\UpdateBufferModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -271,4 +272,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="UpdateBuffer\" />
+  </ItemGroup>
 </Project>
