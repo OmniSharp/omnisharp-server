@@ -8,20 +8,24 @@ namespace OmniSharp.Solution
     {
         readonly ISolution _solution;
         readonly string _projectTitle;
+		readonly Guid _projectGuid;
 
-        public ProjectReference(ISolution solution, string projectTitle)
+        public ProjectReference(ISolution solution, string projectTitle, Guid projectGuid)
         {
             _solution = solution;
             _projectTitle = projectTitle;
+			_projectGuid = projectGuid;
         }
 
         public string ProjectTitle { get { return _projectTitle; } }
+        public Guid ProjectGuid { get { return _projectGuid; } }
 
         public IAssembly Resolve(ITypeResolveContext context)
         {
-            var project = _solution.Projects.FirstOrDefault(p => string.Equals(p.Title, _projectTitle, StringComparison.OrdinalIgnoreCase));
+            var project = _solution.Projects.FirstOrDefault(p => p.ProjectId == _projectGuid);
             if (project != null) 
                 return project.ProjectContent.Resolve(context);
+			Console.WriteLine("Could not find project " + _projectTitle);
             return null;
         }
     }

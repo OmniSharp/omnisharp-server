@@ -176,7 +176,12 @@ namespace OmniSharp.Solution
                 AddReference(LoadAssembly(FindAssembly(AssemblySearchPaths, "System.Core")));
 
             foreach (var item in p.GetItems("ProjectReference"))
-                AddReference(new ProjectReference(_solution, item.GetMetadataValue("Name")));
+			{
+				var projectName = item.GetMetadataValue("Name");
+				var referenceGuid = Guid.Parse(item.GetMetadataValue("Project"));
+				Console.WriteLine("Adding project reference {0}, {1}",  projectName, referenceGuid);
+                AddReference(new ProjectReference(_solution, projectName, referenceGuid));
+			}
 
             this.ProjectContent = new CSharpProjectContent()
                 .SetAssemblyName(AssemblyName)

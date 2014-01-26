@@ -97,7 +97,7 @@ namespace OmniSharp.Solution
 
         public void LoadProject(string title, string location, string id)
         {
-            Console.WriteLine("Loading project - " + title);
+            Console.WriteLine("Loading project - {0}, {1}, {2}", title, location, id);
             Projects.Add(new CSharpProject(this, title, location, new Guid(id)));
         }
 

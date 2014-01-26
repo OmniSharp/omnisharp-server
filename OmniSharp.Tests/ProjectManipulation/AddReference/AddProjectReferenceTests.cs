@@ -161,7 +161,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
             var projectTwo = new FakeProject("faketwo", @"c:\test\two\fake2.csproj", projectTwoId);
             projectTwo.Title = "Project Two";
             projectTwo.AddFile("some content", @"c:\test\two\test.cs");
-            projectTwo.AddReference(new ProjectReference(Solution, "Project One"));
+            projectTwo.AddReference(new ProjectReference(Solution, "Project One", projectOne.ProjectId));
 
             var xml = string.Format(@"
                 <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">

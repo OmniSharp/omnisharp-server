@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Xml.Linq;
 using OmniSharp.Solution;
 
@@ -50,7 +51,7 @@ namespace OmniSharp.ProjectManipulation.AddReference
                     projectXml.Element(MsBuildNameSpace + "Project").Add(projectItemGroup);
                 }
 
-                project.AddReference(new ProjectReference(_solution, projectToReference.Title));
+                project.AddReference(new ProjectReference(_solution, projectToReference.Title, projectToReference.ProjectId));
                 project.Save(projectXml);
                 response.Message = string.Format("Reference to {0} added successfully", projectToReference.Title);
             }
@@ -79,7 +80,7 @@ namespace OmniSharp.ProjectManipulation.AddReference
 
         bool IsCircularReference(IProject project, IProject projectToReference)
         {
-            return projectToReference.References.Cast<ProjectReference>().Any(r => r.ProjectTitle == project.Title);
+            return projectToReference.References.Cast<ProjectReference>().Any(r => r.ProjectGuid == project.ProjectId);
         }
     }
 }
