@@ -47,12 +47,7 @@ namespace OmniSharp.Solution
 
         public bool Terminated { get; set; }
 
-        public CSharpSolution(string fileName)
-        {
-            new Action<string>(LoadSolution).BeginInvoke(fileName, null, null);
-        }
-
-        private void LoadSolution(string fileName)
+        public void LoadSolution(string fileName)
         {
             FileName = fileName;
             _orphanProject = new OrphanProject();

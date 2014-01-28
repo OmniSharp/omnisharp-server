@@ -69,7 +69,7 @@ namespace OmniSharp
             {
                 using (new FileStream(lockfile, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None))
                 {
-                    var solution = new CSharpSolution(solutionPath);
+                    var solution = new CSharpSolution();
                     Console.CancelKeyPress +=
                         (sender, e) =>
                             {
@@ -81,7 +81,9 @@ namespace OmniSharp
 					var nancyHost = new NancyHost(new Bootstrapper(solution, new NativeFileSystem(), verbose), new Uri("http://localhost:" + port));
 
                     nancyHost.Start();
-
+					Console.WriteLine("OmniSharp server is listening");
+					solution.LoadSolution(solutionPath);
+					Console.WriteLine("Solution has finished loading");
                     while (!solution.Terminated)
                     {
                         Thread.Sleep(1000);
