@@ -38,6 +38,7 @@ namespace OmniSharp.Tests.AutoComplete
                     Buffer = editorText,
                     Line = cursorPosition.Line,
                     Column = cursorPosition.Column,
+					WantDocumentationForEveryCompletionResult = false
                 };
 
             return provider.CreateProvider(request);
