@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using OmniSharp.CodeFormat;
-using OmniSharp.Common;
 using Should;
 
 namespace OmniSharp.Tests.CodeFormat
@@ -9,7 +8,6 @@ namespace OmniSharp.Tests.CodeFormat
     class CodeFormatTest
     {
         [Test]
-        [Ignore("TODO - This test fails on Travis for some reason")]
         public void Should_format_code()
         {
             string code =
@@ -22,7 +20,7 @@ namespace OmniSharp.Tests.CodeFormat
 }";
             var handler = new CodeFormatHandler();
             var buffer = handler.Format(new CodeFormatRequest {Buffer = code}).Buffer;
-            buffer.ShouldEqual(expected);
+			buffer.Replace("\r\n", "\n").ShouldEqual(expected);
         }
     }
 }

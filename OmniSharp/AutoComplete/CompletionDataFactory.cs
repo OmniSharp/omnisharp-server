@@ -13,6 +13,23 @@ namespace OmniSharp.AutoComplete
 {
     public class CompletionDataFactory : ICompletionDataFactory
     {
+
+
+		public ICompletionData CreateImportCompletionData (IType type, bool useFullName, bool addForTypeCreation)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public ICompletionData CreateFormatItemCompletionData (string format, string description, object example)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public ICompletionData CreateXmlDocCompletionData (string tag, string description = null, string tagInsertionText = null)
+		{
+			throw new NotImplementedException ();
+		}
+
         private readonly string _partialWord;
         private readonly bool _instantiating;
         private readonly CSharpAmbience _ambience = new CSharpAmbience { ConversionFlags = AmbienceFlags };
@@ -40,7 +57,7 @@ namespace OmniSharp.AutoComplete
 
             _completionText = _signature = entity.Name;
 
-            _completionText = _ambience.ConvertEntity(entity).Replace(";", "");
+			_completionText = _ambience.ConvertSymbol(entity).Replace(";", "");
             if (!_completionText.IsValidCompletionFor(_partialWord))
                 return new CompletionData("~~");
 
@@ -52,7 +69,7 @@ namespace OmniSharp.AutoComplete
 
             if (entity is IField || entity is IProperty)
             {
-                _signature = _signatureAmbience.ConvertEntity(entity).Replace(";", "");
+				_signature = _signatureAmbience.ConvertSymbol(entity).Replace(";", "");
             }
 
             ICompletionData completionData = CompletionData(entity);
@@ -83,7 +100,7 @@ namespace OmniSharp.AutoComplete
                                       ConversionFlags.ShowTypeParameterList
                 };
 
-                var documentationSignature = ambience.ConvertEntity(entity);
+				var documentationSignature = ambience.ConvertSymbol(entity);
                 if (_wantDocumentation)
                 {
                     string documentation = new DocumentationFetcher().GetDocumentation(_project, entity);
@@ -101,8 +118,8 @@ namespace OmniSharp.AutoComplete
 
         private void GenerateMethodSignature(IMethod method)
         {
-            _signature = _signatureAmbience.ConvertEntity(method).Replace(";", "");
-            _completionText = _ambience.ConvertEntity(method);
+			_signature = _signatureAmbience.ConvertSymbol(method).Replace(";", "");
+			_completionText = _ambience.ConvertSymbol(method);
             _completionText = _completionText.Remove(_completionText.IndexOf('(') + 1);
             var zeroParameterCount = method.IsExtensionMethod ? 1 : 0;
             if (method.Parameters.Count == zeroParameterCount)
@@ -113,8 +130,8 @@ namespace OmniSharp.AutoComplete
 
         private void GenerateGenericMethodSignature(IMethod method)
         {
-            _signature = _signatureAmbience.ConvertEntity(method).Replace(";", "");
-            _completionText = _ambience.ConvertEntity(method);
+			_signature = _signatureAmbience.ConvertSymbol(method).Replace(";", "");
+			_completionText = _ambience.ConvertSymbol(method);
             _completionText = _completionText.Remove(_completionText.IndexOf('(')) + "<";
         }
 
@@ -123,7 +140,7 @@ namespace OmniSharp.AutoComplete
             return new CompletionData(text);
         }
 
-        public ICompletionData CreateTypeCompletionData(IType type, bool showFullName, bool isInAttributeContext)
+		public ICompletionData CreateTypeCompletionData (IType type, bool showFullName, bool isInAttributeContext, bool addForTypeCreation)
         {
             if (!type.Name.IsValidCompletionFor(_partialWord))
             {
@@ -158,7 +175,7 @@ namespace OmniSharp.AutoComplete
             return new CompletionData(type.Name);
         }
 
-        public ICompletionData CreateLiteralCompletionData(string title, string description, string insertText)
+		public ICompletionData CreateLiteralCompletionData(string title, string description = null, string insertText = null)
         {
             return new CompletionData(title, description);
         }

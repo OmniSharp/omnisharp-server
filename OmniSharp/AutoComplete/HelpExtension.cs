@@ -128,7 +128,7 @@ namespace MonoDevelop.Projects
 
         public static XmlNode GetMonodocDocumentation(this IEntity member)
         {
-            if (member.EntityType == EntityType.TypeDefinition)
+			if (member.SymbolKind == SymbolKind.TypeDefinition)
             {
 #pragma warning disable 612,618
                 var helpXml = HelpService.HelpTree != null ? HelpService.HelpTree.GetHelpXml(member.GetIdString()) : null;
@@ -144,9 +144,9 @@ namespace MonoDevelop.Projects
             if (declaringXml == null)
                 return null;
 
-            switch (member.EntityType)
+			switch (member.SymbolKind)
             {
-                case EntityType.Method:
+			case SymbolKind.Method:
                     {
                         var nodes = declaringXml.SelectNodes("/Type/Members/Member[@MemberName='" + member.Name + "']");
                         XmlNode node = nodes.Count == 1 ? nodes[0] : FindMatch((IMethod)member, nodes);
@@ -157,7 +157,7 @@ namespace MonoDevelop.Projects
                         }
                         return null;
                     }
-                case EntityType.Constructor:
+			case SymbolKind.Constructor:
                     {
                         var nodes = declaringXml.SelectNodes("/Type/Members/Member[@MemberName='.ctor']");
                         XmlNode node = nodes.Count == 1 ? nodes[0] : FindMatch((IMethod)member, nodes);

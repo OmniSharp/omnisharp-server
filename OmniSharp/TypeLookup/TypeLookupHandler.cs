@@ -52,7 +52,7 @@ namespace OmniSharp.TypeLookup
                 {
                     var result = resolveResult as CSharpInvocationResolveResult;
                     entity = result.Member;
-                    response.Type = ambience.ConvertEntity(result.Member);
+					response.Type = ambience.ConvertSymbol(result.Member);
                 }
                 else if (resolveResult is LocalResolveResult)
                 {
@@ -63,7 +63,7 @@ namespace OmniSharp.TypeLookup
                 {
                     var result = resolveResult as MemberResolveResult;
                     entity = result.Member;
-                    response.Type = ambience.ConvertEntity(result.Member);
+					response.Type = ambience.ConvertSymbol(result.Member);
                 }
                 else if (resolveResult is TypeResolveResult)
                 {

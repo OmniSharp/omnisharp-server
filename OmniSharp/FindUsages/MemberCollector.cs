@@ -88,7 +88,7 @@ namespace MonoDevelop.Ide.FindInFiles
 
             // Filter out shadowed members.
             // class A { public string Foo { get; set; } } class B : A { public string Foo { get; set; } }
-            if (member.EntityType == EntityType.Property || !(member is IParameterizedMember))
+			if (member.SymbolKind == SymbolKind.Property || !(member is IParameterizedMember))
             {
                 members = members.Where(m => m == member || m.DeclaringType.Kind == TypeKind.Interface);
             }
@@ -111,13 +111,13 @@ namespace MonoDevelop.Ide.FindInFiles
         //                                                   bool includeOverloads = true, bool matchDeclaringType = false)
         public static IEnumerable<IMember> CollectMembers(ISolution solution, IMember member, bool includeOverloads = true, bool matchDeclaringType = false)
         {
-            if (solution == null || member.EntityType == EntityType.Destructor || member.EntityType == EntityType.Operator)
+			if (solution == null || member.SymbolKind == SymbolKind.Destructor || member.SymbolKind == SymbolKind.Operator)
                 return new[] { member };
 
-            if (member.EntityType == EntityType.Constructor)
+			if (member.SymbolKind == SymbolKind.Constructor)
             {
                 if (includeOverloads)
-                    return member.DeclaringType.GetMembers(m => m.EntityType == EntityType.Constructor, GetMemberOptions.IgnoreInheritedMembers);
+					return member.DeclaringType.GetMembers(m => m.SymbolKind == SymbolKind.Constructor, GetMemberOptions.IgnoreInheritedMembers);
                 return new[] { member };
             }
 

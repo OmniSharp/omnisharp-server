@@ -86,7 +86,7 @@ namespace OmniSharp.FindUsages
                 if (resolveResult is MemberResolveResult)
                 {
                     entity = (resolveResult as MemberResolveResult).Member;
-                    if (entity.EntityType == EntityType.Constructor)
+					if (entity.SymbolKind == SymbolKind.Constructor)
                     {
                         // process type instead
                         var type = entity.DeclaringType;
