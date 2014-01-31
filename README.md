@@ -1,7 +1,7 @@
 OmniSharpServer
 ===============
-[![Build Status](https://travis-ci.org/nosami/OmniSharpServer.png)](https://travis-ci.org/nosami/OmniSharpServer)
 
+[![Build Status](https://travis-ci.org/nosami/OmniSharpServer.png?branch=master)](https://travis-ci.org/nosami/OmniSharpServer)
 HTTP wrapper around NRefactory allowing C# editor plugins to be written for any editor in any language.
 
 
