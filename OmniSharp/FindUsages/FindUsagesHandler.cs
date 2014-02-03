@@ -109,19 +109,11 @@ namespace OmniSharp.FindUsages
 
                 foreach (var project in _solution.Projects)
                 {
-
-                    var interesting = new List<CSharpUnresolvedFile>();
                     var pctx = project.ProjectContent.CreateCompilation();
+                    var interesting = (from file in project.Files
+                                    select (file.ParsedFile as CSharpUnresolvedFile)).ToList();
 
-                    foreach(var scope in searchScopes)
-                    {
-                        foreach(var innerScope in scope)
-                        {
-                            interesting.AddRange(findReferences.GetInterestingFiles(innerScope, pctx));
-                        }
-                    }
-
-                    Parallel.ForEach(interesting, file =>
+                    Parallel.ForEach(interesting.Distinct(), file =>
                     {
                         string text = _solution.GetFile(file.FileName.LowerCaseDriveLetter()).Content.Text;
                         var unit = new CSharpParser().Parse(text, file.FileName);
