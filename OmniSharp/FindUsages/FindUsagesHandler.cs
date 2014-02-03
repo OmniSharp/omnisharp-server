@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using ICSharpCode.NRefactory;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Resolver;
@@ -58,18 +59,18 @@ namespace OmniSharp.FindUsages
             var loc = new TextLocation(request.Line, request.Column);
             _result = new ConcurrentBag<AstNode>();
             var findReferences = new FindReferences
-                {
-                    FindCallsThroughInterface = true,
-                    FindCallsThroughVirtualBaseMethod = true,
-                    FindTypeReferencesEvenIfAliased = true,
-                };
+            {
+                FindCallsThroughInterface = true,
+                FindCallsThroughVirtualBaseMethod = true,
+                FindTypeReferencesEvenIfAliased = false,
+            };
 
             ResolveResult resolveResult = ResolveAtLocation.Resolve(res.Compilation, res.UnresolvedFile, res.SyntaxTree, loc);
             if (resolveResult is LocalResolveResult)
             {
                 var variable = (resolveResult as LocalResolveResult).Variable;
                 findReferences.FindLocalReferences(variable, res.UnresolvedFile, res.SyntaxTree, res.Compilation,
-                                                   (node, rr) => _result.Add(node.GetDefinition()), CancellationToken.None);
+                    (node, rr) => _result.Add(node.GetDefinition()), CancellationToken.None);
             }
             else
             {
@@ -80,7 +81,7 @@ namespace OmniSharp.FindUsages
                     var type = (resolveResult as TypeResolveResult).Type;
                     entity = type.GetDefinition();
                     ProcessTypeResults(type);
-                    searchScopes = new[] {findReferences.GetSearchScopes(entity)};
+                    searchScopes = new[] { findReferences.GetSearchScopes(entity) };
                 }
 
                 if (resolveResult is MemberResolveResult)
@@ -92,13 +93,13 @@ namespace OmniSharp.FindUsages
                         var type = entity.DeclaringType;
                         entity = entity.DeclaringTypeDefinition;
                         ProcessTypeResults(type);
-                        searchScopes = new[] {findReferences.GetSearchScopes(entity)};
+                        searchScopes = new[] { findReferences.GetSearchScopes(entity) };
                     }
                     else
                     {
                         ProcessMemberResults(resolveResult);
                         var members = MemberCollector.CollectMembers(_solution,
-                                                                     (resolveResult as MemberResolveResult).Member);
+                                          (resolveResult as MemberResolveResult).Member);
                         searchScopes = members.Select(findReferences.GetSearchScopes);
                     }
                 }
@@ -106,26 +107,25 @@ namespace OmniSharp.FindUsages
                 if (entity == null)
                     return _result;
 
-                var interesting = new List<CSharpUnresolvedFile>();
-
                 foreach (var project in _solution.Projects)
                 {
                     var pctx = project.ProjectContent.CreateCompilation();
-                    interesting = (from file in project.Files
-                                   select (file.ParsedFile as CSharpUnresolvedFile)).ToList();
+                    var interesting = (from file in project.Files
+                                    select (file.ParsedFile as CSharpUnresolvedFile)).ToList();
 
-                    foreach (var file in interesting)
+                    Parallel.ForEach(interesting.Distinct(), file =>
                     {
                         string text = _solution.GetFile(file.FileName.LowerCaseDriveLetter()).Content.Text;
                         var unit = new CSharpParser().Parse(text, file.FileName);
-                        foreach (var scope in searchScopes)
+
+                        foreach(var scope in searchScopes)
                         {
                             findReferences.FindReferencesInFile(scope, file, unit,
-                                                                pctx,
-                                                                (node, rr) => _result.Add(node.GetIdentifier()),
-                                                                CancellationToken.None);
+                                pctx,
+                                (node, rr) => _result.Add(node.GetIdentifier()),
+                                CancellationToken.None);
                         }
-                    }
+                    });
                 }
             }
             return _result;
@@ -141,7 +141,7 @@ namespace OmniSharp.FindUsages
 
         private void ProcessRegion(DomRegion definition)
         {
-            var file =_solution.GetFile(definition.FileName);
+            var file = _solution.GetFile(definition.FileName);
             if (file == null)
                 return;
             var syntaxTree = file.SyntaxTree;
