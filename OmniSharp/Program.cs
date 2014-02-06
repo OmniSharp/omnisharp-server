@@ -63,7 +63,7 @@ namespace OmniSharp
 
         private static void StartServer(string solutionPath, int port, bool verbose)
         {
-            var lockfile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "lockfile-" + port);
+            var lockfile = Path.Combine(System.IO.Path.GetTempPath(), "lockfile-" + port);
 
             try
             {
