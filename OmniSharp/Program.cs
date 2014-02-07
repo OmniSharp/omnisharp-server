@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
+using System.Net.Sockets;
 using NDesk.Options;
 using Nancy.Hosting.Self;
 using OmniSharp.Solution;
@@ -63,47 +63,36 @@ namespace OmniSharp
 
         private static void StartServer(string solutionPath, int port, bool verbose)
         {
-            var lockfile = Path.Combine(System.IO.Path.GetTempPath(), "lockfile-" + port);
-
             try
             {
-                using (new FileStream(lockfile, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None))
+                var solution = new CSharpSolution();
+                Console.CancelKeyPress +=
+                    (sender, e) =>
+                        {
+                            solution.Terminated = true;
+                            Console.WriteLine("Ctrl-C pressed");
+                            e.Cancel = true;
+                        };
+
+                var nancyHost = new NancyHost(new Bootstrapper(solution, new NativeFileSystem(), verbose), new Uri("http://localhost:" + port));
+
+                nancyHost.Start();
+                Console.WriteLine("OmniSharp server is listening");
+                solution.LoadSolution(solutionPath);
+                Console.WriteLine("Solution has finished loading");
+                while (!solution.Terminated)
                 {
-                    var solution = new CSharpSolution();
-                    Console.CancelKeyPress +=
-                        (sender, e) =>
-                            {
-                                solution.Terminated = true;
-                                Console.WriteLine("Ctrl-C pressed");
-                                e.Cancel = true;
-                            };
-
-					var nancyHost = new NancyHost(new Bootstrapper(solution, new NativeFileSystem(), verbose), new Uri("http://localhost:" + port));
-
-                    nancyHost.Start();
-					Console.WriteLine("OmniSharp server is listening");
-					solution.LoadSolution(solutionPath);
-					Console.WriteLine("Solution has finished loading");
-                    while (!solution.Terminated)
-                    {
-                        Thread.Sleep(1000);
-                    }
-                    
-                    Console.WriteLine("Quit gracefully");
-                    nancyHost.Stop();
+                    Thread.Sleep(1000);
                 }
-                DeleteLockFile(lockfile);
+                
+                Console.WriteLine("Quit gracefully");
+                nancyHost.Stop();
             }
-            catch (IOException)
+            catch(SocketException)
             {
-                Console.WriteLine("Detected an OmniSharp instance already running on port " + port + ". Press a key.");
+                Console.Error.WriteLine("Detected an OmniSharp instance already running on port " + port + ". Press a key.");
                 Console.ReadKey();
             }
-        }
-
-        private static void DeleteLockFile(string lockfile)
-        {
-            File.Delete(lockfile);
         }
 
         static void ShowHelp(OptionSet p)
