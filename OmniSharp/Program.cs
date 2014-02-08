@@ -74,7 +74,7 @@ namespace OmniSharp
                             e.Cancel = true;
                         };
 
-                var nancyHost = new NancyHost(new Bootstrapper(solution, new NativeFileSystem(), verbose), new Uri("http://localhost:" + port));
+                var nancyHost = new NancyHost(new Bootstrapper(solution, new NativeFileSystem(), verbose), new HostConfiguration{RewriteLocalhost=false}, new Uri("http://localhost:" + port));
 
                 nancyHost.Start();
                 Console.WriteLine("OmniSharp server is listening");
