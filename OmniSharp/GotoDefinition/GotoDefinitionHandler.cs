@@ -2,6 +2,7 @@
 using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.NRefactory.Semantics;
 using OmniSharp.Parser;
+using OmniSharp.Solution;
 
 namespace OmniSharp.GotoDefinition
 {
@@ -25,7 +26,7 @@ namespace OmniSharp.GotoDefinition
             if (resolveResult != null)
             {
                 var region = resolveResult.GetDefinitionRegion();
-                response.FileName = region.FileName;
+                response.FileName = region.FileName.LowerCaseDriveLetter();
                 response.Line = region.BeginLine;
                 response.Column = region.BeginColumn;
             }
