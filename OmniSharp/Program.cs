@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
 using System.Net.Sockets;
 using NDesk.Options;
@@ -88,10 +89,15 @@ namespace OmniSharp
                 Console.WriteLine("Quit gracefully");
                 nancyHost.Stop();
             }
-            catch(SocketException)
+            catch(Exception e)
             {
-                Console.Error.WriteLine("Detected an OmniSharp instance already running on port " + port + ". Press a key.");
-                Console.ReadKey();
+				if(e is SocketException || e is HttpListenerException)
+				{
+					Console.Error.WriteLine("Detected an OmniSharp instance already running on port " + port + ". Press a key.");
+					Console.ReadKey();
+					return;
+				}
+				throw;
             }
         }
 
