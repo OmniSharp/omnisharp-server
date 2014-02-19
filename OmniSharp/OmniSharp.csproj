@@ -171,6 +171,7 @@
     <Compile Include="FindUsages\FindUsagesRequest.cs" />
     <Compile Include="FindUsages\MemberCollector.cs" />
     <Compile Include="Common\QuickFix.cs" />
+    <Compile Include="CheckReadyStatus\CheckReadyStatusModule.cs" />
     <Compile Include="CodeActions\CodeActionProviders.cs" />
     <Compile Include="CodeActions\GetCodeActionsHandler.cs" />
     <Compile Include="CodeActions\GetCodeActionsModule.cs" />

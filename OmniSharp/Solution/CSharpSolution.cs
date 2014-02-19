@@ -28,6 +28,7 @@ namespace OmniSharp.Solution
 {
     public interface ISolution
     {
+        bool Loaded { get; }
         List<IProject> Projects { get; }
         string FileName { get; }
         CSharpFile GetFile(string filename);
@@ -47,8 +48,11 @@ namespace OmniSharp.Solution
 
         public bool Terminated { get; set; }
 
+        public bool Loaded { get; private set; }
+
         public void LoadSolution(string fileName)
         {
+            Loaded = false;
             FileName = fileName;
             _orphanProject = new OrphanProject();
             Projects = new List<IProject>();
@@ -88,6 +92,7 @@ namespace OmniSharp.Solution
                     }
                 }
             }
+            Loaded = true;
         }
 
         public void LoadProject(string title, string location, string id)
