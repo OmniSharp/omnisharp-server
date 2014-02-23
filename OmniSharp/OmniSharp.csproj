@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -115,6 +115,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AutoComplete\HelpService.cs" />
+    <Compile Include="Configuration\PathReplacement.cs" />
     <Compile Include="Documentation\DocumentationFetcher.cs" />
     <Compile Include="Documentation\MonoDocDocumentationProvider.cs" />
     <Compile Include="ContextInformation\GetContextModule.cs" />
@@ -255,6 +256,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -273,7 +277,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <Folder Include="UpdateBuffer\" />
-  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 </Project>

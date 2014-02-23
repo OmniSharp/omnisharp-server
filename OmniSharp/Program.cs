@@ -38,6 +38,7 @@ namespace OmniSharp
                             h => showHelp = h != null
                         },
                     };
+           
 
             try
             {
@@ -66,6 +67,7 @@ namespace OmniSharp
         {
             try
             {
+                Configuration.ConfigurationLoader.Load();
                 var solution = new CSharpSolution();
                 Console.CancelKeyPress +=
                     (sender, e) =>

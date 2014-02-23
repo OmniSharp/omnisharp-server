@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.Solution
 {
@@ -40,6 +41,24 @@ namespace OmniSharp.Solution
         public static string GetRelativePath(this string path, string pathToMakeRelative)
         {
             return new Uri(path).MakeRelativeUri(new Uri(pathToMakeRelative)).ToString().ForceWindowsPathSeparator();
+        }
+
+        public static string ApplyPathReplacementsForServer(this string path)
+        {
+            foreach (var pathReplacement in ConfigurationLoader.Config.PathReplacements)
+            {
+                path = path.Replace(pathReplacement.From, pathReplacement.To);
+            }
+            return path;
+        }
+
+        public static string ApplyPathReplacementsForClient(this string path)
+        {
+            foreach (var pathReplacement in ConfigurationLoader.Config.PathReplacements)
+            {
+                path = path.Replace(pathReplacement.To, pathReplacement.From);
+            }
+            return path;
         }
     }
 }
