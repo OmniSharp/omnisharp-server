@@ -24,6 +24,7 @@ namespace OmniSharp.Configuration
             PathReplacements = new List<PathReplacement>();
         }
         public IEnumerable<PathReplacement> PathReplacements { get; set; }
+        public bool? UseCygpath { get; set; }
     }
 
     public class PathReplacement

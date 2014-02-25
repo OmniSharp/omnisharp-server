@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 using OmniSharp.Configuration;
 
 namespace OmniSharp.Solution
@@ -45,6 +47,10 @@ namespace OmniSharp.Solution
 
         public static string ApplyPathReplacementsForServer(this string path)
         {
+            if (ConfigurationLoader.Config.UseCygpath.GetValueOrDefault(false))
+            {
+                path = ApplyCygpath(path, false);
+            }
             foreach (var pathReplacement in ConfigurationLoader.Config.PathReplacements)
             {
                 path = path.Replace(pathReplacement.From, pathReplacement.To);
@@ -54,11 +60,50 @@ namespace OmniSharp.Solution
 
         public static string ApplyPathReplacementsForClient(this string path)
         {
+            if (ConfigurationLoader.Config.UseCygpath.GetValueOrDefault(false))
+            {
+                path = ApplyCygpath(path, true);
+            }
             foreach (var pathReplacement in ConfigurationLoader.Config.PathReplacements)
             {
                 path = path.Replace(pathReplacement.To, pathReplacement.From);
             }
             return path;
+        }
+
+        private static IDictionary<bool,Process> CygpathProcesses = new Dictionary<bool,Process>();
+        private static IDictionary<bool,IDictionary<String,String>> CygpathCache = new Dictionary<bool,IDictionary<String,String>>
+        {
+            {true, new Dictionary<String,String>()},
+            {false, new Dictionary<String,String>()},
+        };
+
+        private static string ApplyCygpath(string path, bool toUnix)
+        {
+            string convertedPath;
+            if (!CygpathCache[toUnix].TryGetValue(path, out convertedPath))
+            {
+                lock(CygpathProcesses)
+                {
+                    Process process;
+                    if (!CygpathProcesses.TryGetValue(toUnix, out process) || process.HasExited)
+                    {
+                        var processStartInfo = new ProcessStartInfo("cygpath", "-f - "+(toUnix?"-u":"-w"))
+                        {
+                            CreateNoWindow = true,
+                            UseShellExecute = false,
+                            RedirectStandardInput = true,
+                            RedirectStandardOutput = true,
+                        };
+
+                        process = CygpathProcesses[toUnix] = Process.Start(processStartInfo);
+                    }
+
+                    process.StandardInput.WriteLine(path);
+                    convertedPath = process.StandardOutput.ReadLine();
+                }
+            }
+            return convertedPath;
         }
     }
 }
