@@ -81,7 +81,7 @@ namespace OmniSharp
 
                 nancyHost.Start();
                 Console.WriteLine("OmniSharp server is listening");
-                solution.LoadSolution(solutionPath);
+                solution.LoadSolution(solutionPath.ApplyPathReplacementsForServer());
                 Console.WriteLine("Solution has finished loading");
                 while (!solution.Terminated)
                 {
