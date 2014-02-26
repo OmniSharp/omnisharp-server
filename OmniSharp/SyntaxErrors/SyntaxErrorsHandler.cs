@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using ICSharpCode.NRefactory.CSharp;
 using OmniSharp.Common;
+using OmniSharp.Solution;
 
 namespace OmniSharp.SyntaxErrors
 {
@@ -10,12 +11,14 @@ namespace OmniSharp.SyntaxErrors
         {
             var syntaxTree = new CSharpParser().Parse(request.Buffer, request.FileName);
 
+            var filename = request.FileName.ApplyPathReplacementsForClient();
+
             var errors = syntaxTree.Errors.Select(error => new Error
                 {
                     Message = error.Message.Replace("'", "''"),
                     Column = error.Region.BeginColumn,
                     Line = error.Region.BeginLine,
-                    FileName = request.FileName
+                    FileName = filename
                 });
 
             return new SyntaxErrorsResponse {Errors = errors};
