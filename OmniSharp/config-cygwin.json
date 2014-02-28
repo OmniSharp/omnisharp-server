@@ -1,0 +1,12 @@
+﻿{
+  "PathReplacements":[
+    {
+      "From":"/cygdrive/c/",
+      "To":"c:\\"
+    },
+    {
+      "From":"/",
+      "To":"\\"
+    }
+  ]
+}

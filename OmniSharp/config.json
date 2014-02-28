@@ -1,14 +1,3 @@
 ﻿{
-  "PathReplacements":[
-		/* Example cygwin path replacements
-    {
-      "From":"/cygdrive/c/",
-      "To":"c:\\"
-    },
-    {
-      "From":"/",
-      "To":"\\"
-    }
-		*/
-  ]
+
 }
