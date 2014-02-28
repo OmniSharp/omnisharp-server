@@ -48,27 +48,52 @@ namespace OmniSharp.Solution
 
         public static string ApplyPathReplacementsForServer(this string path)
         {
-            if (ConfigurationLoader.Config.UseCygpath.GetValueOrDefault(false))
+            var config = ConfigurationLoader.Config;
+
+            if (config.UseCygpath != null)
             {
-                path = CygPathWrapper.GetCygpath(path, false);
+                if (config.UseCygpath.GetValueOrDefault(false))
+                {
+                    path = CygPathWrapper.GetCygpath(path, false);
+                }
             }
-            foreach (var pathReplacement in ConfigurationLoader.Config.PathReplacements)
+            else if (config.ServerPathMode != null && config.ClientPathMode != null)
+            {
+                if (config.ClientPathMode == PathMode.Cygwin) {
+                    path = CygPathWrapper.GetCygpath(path, config.ServerPathMode != PathMode.Windows);
+                }
+            }
+
+            foreach (var pathReplacement in config.PathReplacements)
             {
                 path = path.Replace(pathReplacement.From, pathReplacement.To);
             }
+
             return path;
         }
 
         public static string ApplyPathReplacementsForClient(this string path)
         {
-            if (ConfigurationLoader.Config.UseCygpath.GetValueOrDefault(false))
-            {
-                path = CygPathWrapper.GetCygpath(path, true);
+            var config = ConfigurationLoader.Config;
+
+            if (config.UseCygpath != null) {
+                if (config.UseCygpath.GetValueOrDefault(false))
+                {
+                    path = CygPathWrapper.GetCygpath(path, true);
+                }
             }
-            foreach (var pathReplacement in ConfigurationLoader.Config.PathReplacements)
+            else if (config.ServerPathMode != null && config.ClientPathMode != null)
+            {
+                if (config.ClientPathMode == PathMode.Cygwin) {
+                    path = CygPathWrapper.GetCygpath(path, true);
+                }
+            }
+
+            foreach (var pathReplacement in config.PathReplacements)
             {
                 path = path.Replace(pathReplacement.To, pathReplacement.From);
             }
+
             return path;
         }
 

@@ -116,6 +116,7 @@
     <Compile Include="AutoComplete\HelpService.cs" />
     <Compile Include="Common\CygPathWrapper.cs" />
     <Compile Include="Configuration\OmniSharpConfiguration.cs" />
+    <Compile Include="Configuration\PathMode.cs" />
     <Compile Include="Configuration\PathReplacement.cs" />
     <Compile Include="Configuration\TestCommands.cs" />
     <Compile Include="TestContextInformation\GetContextResponse.cs" />

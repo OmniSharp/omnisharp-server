@@ -15,6 +15,7 @@ namespace OmniSharp
         {
             bool showHelp = false;
             string solutionPath = null;
+            string clientPathMode = null;
 
             var port = 2000;
             bool verbose = false;
@@ -28,6 +29,10 @@ namespace OmniSharp
                         {
                             "p|port=", "Port number to listen on",
                             (int p) => port = p
+                        },
+                        {
+                            "c|client-path-mode=", "The path mode of the client (Cygwin, Windows or Unix)",
+                            c => clientPathMode = c
                         },
                         {
                             "v|verbose", "Output debug information",
@@ -59,15 +64,16 @@ namespace OmniSharp
                 return;
             }
 
-            StartServer(solutionPath, port, verbose);
+            StartServer(solutionPath, clientPathMode, port, verbose);
             
         }
 
-        private static void StartServer(string solutionPath, int port, bool verbose)
+        private static void StartServer(string solutionPath, string clientPathMode, int port, bool verbose)
         {
             try
             {
-                Configuration.ConfigurationLoader.Load();
+                Configuration.ConfigurationLoader.Load(clientPathMode);
+
                 var solution = new CSharpSolution();
                 Console.CancelKeyPress +=
                     (sender, e) =>
