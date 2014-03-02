@@ -20,6 +20,10 @@ and [Emacs OmniSharp plugin](https://github.com/sp3ctum/omnisharp-emacs).
 ####Windows
     git clone https://github.com/nosami/OmniSharpServer.git
     cd OmniSharpServer
+
+    # (if using Cygwin, overwrite the default config file config.json with config-cygwin.json)
+    copy OmniSharp\config-cygwin.json OmniSharp\config.json
+
     msbuild /p:Platform="Any CPU"
     
 
