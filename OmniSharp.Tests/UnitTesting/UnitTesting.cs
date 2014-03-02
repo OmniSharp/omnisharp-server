@@ -1,7 +1,6 @@
 ﻿using System;
-using OmniSharp.Common;
-using OmniSharp.ContextInformation;
 using OmniSharp.Parser;
+using OmniSharp.TestContextInformation;
 
 namespace OmniSharp.Tests.UnitTesting
 {
@@ -18,8 +17,8 @@ namespace OmniSharp.Tests.UnitTesting
             project.AddFile(editorText);
             solution.Projects.Add(project);
 
-            var handler = new GetContextHandler(solution, new BufferParser(solution));
-            var request = new Request
+            var handler = new GetTestContextHandler(solution, new BufferParser(solution));
+            var request = new TestCommandRequest
             {
                 Buffer = editorText,
                 FileName = "myfile",

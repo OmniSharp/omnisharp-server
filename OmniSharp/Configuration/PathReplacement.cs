@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
 
 namespace OmniSharp.Configuration
@@ -16,15 +15,6 @@ namespace OmniSharp.Configuration
         }
 
         public static OmniSharpConfiguration Config { get { return _config; }}
-    }
-    public class OmniSharpConfiguration
-    {
-        public OmniSharpConfiguration()
-        {
-            PathReplacements = new List<PathReplacement>();
-        }
-        public IEnumerable<PathReplacement> PathReplacements { get; set; }
-        public bool? UseCygpath { get; set; }
     }
 
     public class PathReplacement

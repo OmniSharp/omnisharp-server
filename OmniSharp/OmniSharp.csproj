@@ -11,8 +11,7 @@
     <RootNamespace>OmniSharp</RootNamespace>
     <AssemblyName>OmniSharp</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkProfile></TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
@@ -116,12 +115,16 @@
     </Compile>
     <Compile Include="AutoComplete\HelpService.cs" />
     <Compile Include="Common\CygPathWrapper.cs" />
+    <Compile Include="Configuration\OmniSharpConfiguration.cs" />
     <Compile Include="Configuration\PathReplacement.cs" />
+    <Compile Include="Configuration\TestCommands.cs" />
+    <Compile Include="TestContextInformation\GetContextResponse.cs" />
+    <Compile Include="TestContextInformation\TestCommandRequest.cs" />
     <Compile Include="Documentation\DocumentationFetcher.cs" />
     <Compile Include="Documentation\MonoDocDocumentationProvider.cs" />
-    <Compile Include="ContextInformation\GetContextModule.cs" />
-    <Compile Include="ContextInformation\GetContextHandler.cs" />
-    <Compile Include="ContextInformation\GetContextResponse.cs" />
+    <Compile Include="TestContextInformation\GetTestContextModule.cs" />
+    <Compile Include="TestContextInformation\GetTestContextHandler.cs" />
+    <Compile Include="TestContextInformation\GetTestContextResponse.cs" />
     <Compile Include="Build\BuildCommandBuilder.cs" />
     <Compile Include="Build\BuildCommandModule.cs" />
     <Compile Include="Common\FileSystem.cs" />

@@ -13,7 +13,7 @@ namespace OmniSharp.Common
             get { return _fileName; }
             set
             {
-                _fileName = value.LowerCaseDriveLetter().ApplyPathReplacementsForServer();
+                _fileName = value.ApplyPathReplacementsForServer().LowerCaseDriveLetter();
             }
         }
     }
