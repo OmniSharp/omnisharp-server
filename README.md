@@ -30,7 +30,3 @@ and [Emacs OmniSharp plugin](https://github.com/sp3ctum/omnisharp-emacs).
 To start the Omnisharp server manually (The Vim OmniSharp client and YouCompleteMe may start this for you automatically):
 
 	[mono] OmniSharp.exe -s (path\to\sln)
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/nosami/omnisharpserver/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
