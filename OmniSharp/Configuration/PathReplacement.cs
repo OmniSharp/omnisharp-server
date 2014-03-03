@@ -19,7 +19,7 @@ namespace OmniSharp.Configuration
             }
             if (_config.ServerPathMode == null)
             {
-                _config.ServerPathMode = Type.GetType("Mono.Runtime") != null ? PathMode.Unix : PathMode.Windows;
+                _config.ServerPathMode = PlatformService.IsUnix ? PathMode.Unix : PathMode.Windows;
             }
         }
 
