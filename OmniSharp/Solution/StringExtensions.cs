@@ -48,30 +48,50 @@ namespace OmniSharp.Solution
 
         public static string ApplyPathReplacementsForServer(this string path)
         {
-            if (ConfigurationLoader.Config.UseCygpath.GetValueOrDefault(false))
-            {
-                path = CygPathWrapper.GetCygpath(path, false);
-            }
+            path = ApplyCygpathForServer(path);
+
             foreach (var pathReplacement in ConfigurationLoader.Config.PathReplacements)
             {
                 path = path.Replace(pathReplacement.From, pathReplacement.To);
             }
+
             return path;
         }
 
         public static string ApplyPathReplacementsForClient(this string path)
         {
-            if (ConfigurationLoader.Config.UseCygpath.GetValueOrDefault(false))
-            {
-                path = CygPathWrapper.GetCygpath(path, true);
-            }
+            path = ApplyCygpathForClient(path);
+
             foreach (var pathReplacement in ConfigurationLoader.Config.PathReplacements)
             {
                 path = path.Replace(pathReplacement.To, pathReplacement.From);
             }
+
             return path;
         }
 
-        
+        private static string ApplyCygpathForServer(string path)
+        {
+            var config = ConfigurationLoader.Config;
+
+            if (config.UseCygpath.GetValueOrDefault(config.ClientPathMode == PathMode.Cygwin))
+            {
+                path = CygPathWrapper.GetCygpath(path, config.ServerPathMode.Value);
+            }
+
+            return path;
+        }
+
+        private static string ApplyCygpathForClient(string path)
+        {
+            var config = ConfigurationLoader.Config;
+
+            if (config.UseCygpath.GetValueOrDefault(config.ClientPathMode == PathMode.Cygwin))
+            {
+                path = CygPathWrapper.GetCygpath(path, config.ClientPathMode.GetValueOrDefault(PathMode.Unix));
+            }
+
+            return path;
+        }
     }
 }
