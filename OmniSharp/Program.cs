@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Net;
-using System.Threading;
 using System.Net.Sockets;
-using NDesk.Options;
+using System.Threading;
 using Nancy.Hosting.Self;
-using OmniSharp.Solution;
+using NDesk.Options;
+using OmniSharp;
 using OmniSharp.Common;
+using OmniSharp.Solution;
 
 namespace OmniSharp
 {
@@ -18,7 +19,7 @@ namespace OmniSharp
             string clientPathMode = null;
 
             var port = 2000;
-            bool verbose = false;
+            Verbosity verbosity = Verbosity.Debug;
 
             var options = new OptionSet
                     {
@@ -35,8 +36,10 @@ namespace OmniSharp
                             c => clientPathMode = c
                         },
                         {
-                            "v|verbose", "Output debug information",
-                            v => verbose = v != null
+                            "v|verbose=", "Output debug information (Quiet, Debug, Verbose)",
+                            v => verbosity = v != null 
+                                                ? (Verbosity)Enum.Parse(typeof(Verbosity), v)
+                                                : Verbosity.Debug
                         },
                         {
                             "h|help", "show this message and exit",
@@ -64,17 +67,19 @@ namespace OmniSharp
                 return;
             }
 
-            StartServer(solutionPath, clientPathMode, port, verbose);
+            StartServer(solutionPath, clientPathMode, port, verbosity);
             
         }
 
-        private static void StartServer(string solutionPath, string clientPathMode, int port, bool verbose)
+        private static void StartServer(string solutionPath, string clientPathMode, int port, Verbosity verbosity)
         {
+            
+            var logger = new Logger(verbosity);
             try
             {
                 Configuration.ConfigurationLoader.Load(clientPathMode);
 
-                var solution = new CSharpSolution();
+                var solution = new CSharpSolution(logger);
                 Console.CancelKeyPress +=
                     (sender, e) =>
                         {
@@ -82,13 +87,17 @@ namespace OmniSharp
                             Console.WriteLine("Ctrl-C pressed");
                             e.Cancel = true;
                         };
-
-                var nancyHost = new NancyHost(new Bootstrapper(solution, new NativeFileSystem(), verbose), new HostConfiguration{RewriteLocalhost=false}, new Uri("http://localhost:" + port));
+                var nancyHost = new NancyHost(new Bootstrapper(
+                                                solution, 
+                                                new NativeFileSystem(), 
+                                                logger), 
+                                                new HostConfiguration{RewriteLocalhost=false}, 
+                                                new Uri("http://localhost:" + port));
 
                 nancyHost.Start();
-                Console.WriteLine("OmniSharp server is listening");
+                logger.Debug("OmniSharp server is listening");
                 solution.LoadSolution(solutionPath.ApplyPathReplacementsForServer());
-                Console.WriteLine("Solution has finished loading");
+                logger.Debug("Solution has finished loading");
                 while (!solution.Terminated)
                 {
                     Thread.Sleep(1000);
@@ -101,7 +110,7 @@ namespace OmniSharp
             {
 				if(e is SocketException || e is HttpListenerException)
 				{
-					Console.Error.WriteLine("Detected an OmniSharp instance already running on port " + port + ". Press a key.");
+					logger.Error("Detected an OmniSharp instance already running on port " + port + ". Press a key.");
 					Console.ReadKey();
 					return;
 				}

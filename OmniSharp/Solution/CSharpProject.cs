@@ -86,9 +86,11 @@ namespace OmniSharp.Solution
         public List<CSharpFile> Files { get; private set; }
 
         private readonly CompilerSettings _compilerSettings;
+        private readonly Logger _logger;
 
-        public CSharpProject(ISolution solution, string title, string fileName, Guid id)
+        public CSharpProject(ISolution solution, Logger logger, string title, string fileName, Guid id)
         {
+            _logger = logger;
             _solution = solution;
             Title = title;
 			FileName = fileName.ForceNativePathSeparator();
@@ -114,16 +116,18 @@ namespace OmniSharp.Solution
                     string path = Path.Combine(p.DirectoryPath, item.EvaluatedInclude).ForceNativePathSeparator();
                     if (File.Exists(path))
 					{
-                        Files.Add(new CSharpFile(this, new FileInfo(path).FullName));
+                        string file = new FileInfo(path).FullName;
+                        _logger.Debug("Loading " + file);
+                        Files.Add(new CSharpFile(this, file));
 					}
 					else
 					{
-						Console.WriteLine("File does not exist - " + path);
+						_logger.Debug("File does not exist - " + path);
 					}
                 }
                 catch (NullReferenceException e)
                 {
-                    Console.WriteLine(e);
+                    _logger.Error(e);
                 }
             }
 
@@ -132,7 +136,7 @@ namespace OmniSharp.Solution
             if (mscorlib != null)
                 AddReference(LoadAssembly(mscorlib));
             else
-                Console.WriteLine("Could not find mscorlib");
+                _logger.Debug("Could not find mscorlib");
 
             bool hasSystemCore = false;
             foreach (var item in p.GetItems("Reference"))
@@ -158,19 +162,19 @@ namespace OmniSharp.Solution
                     if (Path.GetFileName(assemblyFileName).Equals("System.Core.dll", StringComparison.OrdinalIgnoreCase))
                         hasSystemCore = true;
 
-                    Console.WriteLine("Loading assembly " + item.EvaluatedInclude);
+                    _logger.Debug("Loading assembly " + item.EvaluatedInclude);
                     try
                     {
                         AddReference(LoadAssembly(assemblyFileName));
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e);
+                        _logger.Error(e);
                     }
 
                 }
                 else
-                    Console.WriteLine("Could not find referenced assembly " + item.EvaluatedInclude);
+                    _logger.Debug("Could not find referenced assembly " + item.EvaluatedInclude);
             }
             if (!hasSystemCore && FindAssembly(AssemblySearchPaths, "System.Core") != null)
                 AddReference(LoadAssembly(FindAssembly(AssemblySearchPaths, "System.Core")));
@@ -179,7 +183,7 @@ namespace OmniSharp.Solution
 			{
 				var projectName = item.GetMetadataValue("Name");
 				var referenceGuid = Guid.Parse(item.GetMetadataValue("Project"));
-				Console.WriteLine("Adding project reference {0}, {1}",  projectName, referenceGuid);
+				_logger.Debug("Adding project reference {0}, {1}",  projectName, referenceGuid);
                 AddReference(new ProjectReference(_solution, projectName, referenceGuid));
 			}
 
@@ -256,7 +260,7 @@ namespace OmniSharp.Solution
             return null;
         }
 
-        public static string FindAssemblyInNetGac(string evaluatedInclude)
+        string FindAssemblyInNetGac(string evaluatedInclude)
         {
             try
             {
@@ -265,7 +269,7 @@ namespace OmniSharp.Solution
             }
             catch(TypeInitializationException) 
             {
-                Console.WriteLine ("Fusion not available - cannot get {0} from the gac.", evaluatedInclude);
+                _logger.Debug("Fusion not available - cannot get {0} from the gac.", evaluatedInclude);
                 return null;
             }
         }

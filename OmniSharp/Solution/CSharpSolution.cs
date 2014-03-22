@@ -39,16 +39,17 @@ namespace OmniSharp.Solution
 
     public class CSharpSolution : ISolution
     {
-        public string Directory;
-        public List<IProject> Projects { get; private set; }
-
         private OrphanProject _orphanProject;
-
+        private Logger _logger;
+        public List<IProject> Projects { get; private set; }
         public string FileName { get; private set; }
-
         public bool Terminated { get; set; }
-
         public bool Loaded { get; private set; }
+
+        public CSharpSolution(Logger logger)
+        {
+            _logger = logger;
+        }
 
         public void LoadSolution(string fileName)
         {
@@ -56,7 +57,7 @@ namespace OmniSharp.Solution
             FileName = fileName;
             _orphanProject = new OrphanProject();
             Projects = new List<IProject>();
-            Directory = Path.GetDirectoryName(fileName);
+            var directory = Path.GetDirectoryName(fileName);
             var projectLinePattern =
                 new Regex(
                     "Project\\(\"(?<TypeGuid>.*)\"\\)\\s+=\\s+\"(?<Title>.*)\",\\s*\"(?<Location>.*)\",\\s*\"(?<Guid>.*)\"");
@@ -68,7 +69,7 @@ namespace OmniSharp.Solution
                 {
                     string typeGuid = match.Groups["TypeGuid"].Value;
                     string title = match.Groups["Title"].Value;
-                    string location = Path.Combine(Directory, match.Groups["Location"].Value).LowerCaseDriveLetter();
+                    string location = Path.Combine(directory, match.Groups["Location"].Value).LowerCaseDriveLetter();
                     string guid = match.Groups["Guid"].Value;
                     switch (typeGuid.ToUpperInvariant())
                     {
@@ -86,7 +87,7 @@ namespace OmniSharp.Solution
                             }
                             else
                             {
-                                Console.WriteLine("Project {0} has unsupported type {1}", location, typeGuid);
+                                _logger.Debug("Project {0} has unsupported type {1}", location, typeGuid);
                             }
                             break;
                     }
@@ -97,8 +98,8 @@ namespace OmniSharp.Solution
 
         public void LoadProject(string title, string location, string id)
         {
-            Console.WriteLine("Loading project - {0}, {1}, {2}", title, location, id);
-            Projects.Add(new CSharpProject(this, title, location, new Guid(id)));
+            _logger.Debug("Loading project - {0}, {1}, {2}", title, location, id);
+            Projects.Add(new CSharpProject(this, _logger, title, location, new Guid(id)));
         }
 
         public CSharpFile GetFile(string filename)

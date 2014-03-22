@@ -15,15 +15,15 @@ namespace OmniSharp
     public class Bootstrapper : DefaultNancyBootstrapper
     {
         private readonly ISolution _solution;
-        private readonly bool _verbose;
 
 		readonly IFileSystem _fileSystem;
+		readonly Logger _logger;
 
-        public Bootstrapper(ISolution solution, IFileSystem fileSystem, bool verbose)
+        public Bootstrapper(ISolution solution, IFileSystem fileSystem, Logger logger)
         {
+			_logger = logger;
 			_fileSystem = fileSystem;
             _solution = solution;
-            _verbose = verbose;
             JsonSettings.MaxJsonLength = int.MaxValue;
         }
 
@@ -37,7 +37,7 @@ namespace OmniSharp
             pipelines.BeforeRequest.AddItemToStartOfPipeline(StopWatchStart);
             pipelines.AfterRequest.AddItemToEndOfPipeline(StopWatchStop);
 
-            if (_verbose)
+            if (_logger.Verbosity == Verbosity.Verbose)
             {
                 pipelines.BeforeRequest.AddItemToStartOfPipeline(LogRequest);
                 pipelines.AfterRequest.AddItemToStartOfPipeline(LogResponse);
@@ -45,25 +45,25 @@ namespace OmniSharp
 
             pipelines.OnError.AddItemToEndOfPipeline((ctx, ex) =>
                 {
-                    Console.WriteLine(ex);
+                    _logger.Error(ex);
                     return null;
                 });
         }
 
         private Response LogRequest(NancyContext ctx)
         {
-            Console.WriteLine("****** Request ******");
+            _logger.Debug("****** Request ******");
             var form = ctx.Request.Form;
             foreach (var field in form)
             {
-                Console.WriteLine(field + " = " + form[field]);
+                _logger.Debug(field + " = " + form[field]);
             }
             return null;
         }
 
         private void LogResponse(NancyContext ctx)
         {
-            Console.WriteLine("****** Response ******");
+            _logger.Debug("****** Response ******");
 
             var stream = new MemoryStream();
             ctx.Response.Contents.Invoke(stream);
@@ -72,7 +72,7 @@ namespace OmniSharp
             using (var reader = new StreamReader(stream))
             {
                 var content = reader.ReadToEnd();
-                Console.WriteLine(content);
+                _logger.Debug(content);
             }
         }
 
@@ -88,7 +88,7 @@ namespace OmniSharp
         {
             var stopwatch = (Stopwatch) ctx.Items["stopwatch"];
             stopwatch.Stop();
-            Console.WriteLine(ctx.Request.Path + " " + stopwatch.ElapsedMilliseconds + "ms");
+            _logger.Debug(ctx.Request.Path + " " + stopwatch.ElapsedMilliseconds + "ms");
         }
 
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
@@ -96,6 +96,7 @@ namespace OmniSharp
             base.ConfigureApplicationContainer(container);
 			container.Register(_solution);
 			container.Register(_fileSystem);
+            container.Register(_logger);
 			container.RegisterMultiple<IReferenceProcessor>(new []{typeof(AddProjectReferenceProcessor), typeof(AddFileReferenceProcessor), typeof(AddGacReferenceProcessor)});			
         }
     }
