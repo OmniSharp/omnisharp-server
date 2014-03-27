@@ -30,7 +30,6 @@ namespace OmniSharp.Rename
             var sourceNode = syntaxTree.GetNodeAt(req.Line, req.Column);
             if(sourceNode == null)
                 return new RenameResponse();
-            var originalName = sourceNode.GetText();
 
             IEnumerable<AstNode> nodes = _findUsagesHandler.FindUsageNodes(req).ToArray();
 
