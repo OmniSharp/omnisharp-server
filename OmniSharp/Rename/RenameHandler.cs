@@ -57,8 +57,7 @@ namespace OmniSharp.Rename
                 }
                 string modifiedBuffer = null;
 
-                var lastToFirstNodes = groupedNodes.Where(n => n.GetText() == originalName)
-                                                   .OrderByDescending(n => n.EndLocation.Line)
+                var lastToFirstNodes = groupedNodes.OrderByDescending(n => n.EndLocation.Line)
                                                    .ThenByDescending(n => n.EndLocation.Column);
 
                 foreach (var node in lastToFirstNodes)

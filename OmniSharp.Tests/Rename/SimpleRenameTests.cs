@@ -258,5 +258,34 @@ public class Handler
                 }
             }");
         }
+
+        [Test]
+        public void Should_rename_generic_field()
+        {
+            Rename(@"
+            using System.Collections.Generic;
+
+            class SampleClass
+            {
+                public List<string> Test$Field = new List<string>();
+
+                public SampleClass()
+                {
+                    TestField.Add(""value1"");
+                }
+            }", "Renamed")
+              .ShouldEqual(@"
+            using System.Collections.Generic;
+
+            class SampleClass
+            {
+                public List<string> Renamed = new List<string>();
+
+                public SampleClass()
+                {
+                    Renamed.Add(""value1"");
+                }
+            }");
+        }
     }
 }
