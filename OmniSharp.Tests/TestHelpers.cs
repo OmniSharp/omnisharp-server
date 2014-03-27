@@ -1,4 +1,5 @@
 ﻿using ICSharpCode.NRefactory;
+using System;
 
 namespace OmniSharp.Tests
 {
@@ -6,7 +7,12 @@ namespace OmniSharp.Tests
     {
         public static TextLocation GetLineAndColumnFromDollar(string text)
         {
-            return GetLineAndColumnFromIndex(text, text.IndexOf("$"));
+            var indexOfDollar = text.IndexOf("$");
+            
+            if (indexOfDollar == -1)
+                throw new ArgumentException("Expected a $ sign in test input");
+
+            return GetLineAndColumnFromIndex(text, indexOfDollar);
         }
 
         public static TextLocation GetLineAndColumnFromIndex(string text, int index)

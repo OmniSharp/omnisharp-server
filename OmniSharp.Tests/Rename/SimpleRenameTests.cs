@@ -287,5 +287,34 @@ public class Handler
                 }
             }");
         }
+
+        [Test]
+        public void Should_not_rename_wrong_overloads()
+        {
+            Rename(@"
+            class OverloadTest
+            {
+                public void Overload$edFunction(int a)
+                {
+                    OverloadedFunction(""test"");
+                }
+                public void OverloadedFunction(string str)
+                {
+                    OverloadedFunction(1);
+                }
+            }", "IntOverload")
+            .ShouldEqual(@"
+            class OverloadTest
+            {
+                public void IntOverload(int a)
+                {
+                    OverloadedFunction(""test"");
+                }
+                public void OverloadedFunction(string str)
+                {
+                    IntOverload(1);
+                }
+            }");
+        }
     }
 }
