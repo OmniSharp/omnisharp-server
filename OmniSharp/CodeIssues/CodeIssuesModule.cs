@@ -16,10 +16,10 @@ namespace OmniSharp.CodeIssues
                     return Response.AsJson(res);
                 };
 
-            Post["/runcodeissue"] = x =>
+            Post["/fixcodeissue"] = x =>
             {
                 var req = this.Bind<RunCodeActionRequest>();
-                var res = codeIssuesHandler.RunCodeIssue(req);
+                var res = codeIssuesHandler.FixCodeIssue(req);
                 return Response.AsJson(res);
             };
         }

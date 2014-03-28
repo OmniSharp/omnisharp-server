@@ -9,7 +9,7 @@ namespace OmniSharp.CodeActions
 {
     public class GetCodeActionsHandler
     {
-        private readonly BufferParser _bufferParser;
+        readonly BufferParser _bufferParser;
 
         public GetCodeActionsHandler(BufferParser bufferParser)
         {

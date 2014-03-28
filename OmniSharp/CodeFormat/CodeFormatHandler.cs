@@ -1,7 +1,6 @@
 ﻿using System;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.Editor;
-using OmniSharp.Common;
 
 namespace OmniSharp.CodeFormat
 {
@@ -24,3 +23,4 @@ namespace OmniSharp.CodeFormat
         }
     }
 }
+
