@@ -1,0 +1,262 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Nancy.Authentication.Forms</name>
+    </assembly>
+    <members>
+        <member name="T:Nancy.Authentication.Forms.FormsAuthentication">
+            <summary>
+            Nancy forms authentication implementation
+            </summary>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthentication.Enable(Nancy.Bootstrapper.IPipelines,Nancy.Authentication.Forms.FormsAuthenticationConfiguration)">
+            <summary>
+            Enables forms authentication for the application
+            </summary>
+            <param name="pipelines">Pipelines to add handlers to (usually "this")</param>
+            <param name="configuration">Forms authentication configuration</param>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthentication.UserLoggedInRedirectResponse(Nancy.NancyContext,System.Guid,System.Nullable{System.DateTime},System.String)">
+            <summary>
+            Creates a response that sets the authentication cookie and redirects
+            the user back to where they came from.
+            </summary>
+            <param name="context">Current context</param>
+            <param name="userIdentifier">User identifier guid</param>
+            <param name="cookieExpiry">Optional expiry date for the cookie (for 'Remember me')</param>
+            <param name="fallbackRedirectUrl">Url to redirect to if none in the querystring</param>
+            <returns>Nancy response with redirect.</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthentication.UserLoggedInResponse(System.Guid,System.Nullable{System.DateTime})">
+            <summary>
+            Logs the user in.
+            </summary>
+            <param name="userIdentifier">User identifier guid</param>
+            <param name="cookieExpiry">Optional expiry date for the cookie (for 'Remember me')</param>
+            <returns>Nancy response with status <see cref="F:Nancy.HttpStatusCode.OK"/></returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthentication.LogOutAndRedirectResponse(Nancy.NancyContext,System.String)">
+            <summary>
+            Logs the user out and redirects them to a URL
+            </summary>
+            <param name="context">Current context</param>
+            <param name="redirectUrl">URL to redirect to</param>
+            <returns>Nancy response</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthentication.LogOutResponse">
+            <summary>
+            Logs the user out.
+            </summary>
+            <returns>Nancy response</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthentication.GetLoadAuthenticationHook(Nancy.Authentication.Forms.FormsAuthenticationConfiguration)">
+            <summary>
+            Gets the pre request hook for loading the authenticated user's details
+            from the cookie.
+            </summary>
+            <param name="configuration">Forms authentication configuration to use</param>
+            <returns>Pre request hook delegate</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthentication.GetRedirectToLoginHook(Nancy.Authentication.Forms.FormsAuthenticationConfiguration)">
+            <summary>
+            Gets the post request hook for redirecting to the login page
+            </summary>
+            <param name="configuration">Forms authentication configuration to use</param>
+            <returns>Post request hook delegate</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthentication.GetAuthenticatedUserFromCookie(Nancy.NancyContext,Nancy.Authentication.Forms.FormsAuthenticationConfiguration)">
+            <summary>
+            Gets the authenticated user GUID from the incoming request cookie if it exists
+            and is valid.
+            </summary>
+            <param name="context">Current context</param>
+            <param name="configuration">Current configuration</param>
+            <returns>Returns user guid, or Guid.Empty if not present or invalid</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthentication.BuildCookie(System.Guid,System.Nullable{System.DateTime},Nancy.Authentication.Forms.FormsAuthenticationConfiguration)">
+            <summary>
+            Build the forms authentication cookie
+            </summary>
+            <param name="userIdentifier">Authenticated user identifier</param>
+            <param name="cookieExpiry">Optional expiry date for the cookie (for 'Remember me')</param>
+            <param name="configuration">Current configuration</param>
+            <returns>Nancy cookie instance</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthentication.BuildLogoutCookie(Nancy.Authentication.Forms.FormsAuthenticationConfiguration)">
+            <summary>
+            Builds a cookie for logging a user out
+            </summary>
+            <param name="configuration">Current configuration</param>
+            <returns>Nancy cookie instance</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthentication.EncryptAndSignCookie(System.String,Nancy.Authentication.Forms.FormsAuthenticationConfiguration)">
+            <summary>
+            Encrypt and sign the cookie contents
+            </summary>
+            <param name="cookieValue">Plain text cookie value</param>
+            <param name="configuration">Current configuration</param>
+            <returns>Encrypted and signed string</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthentication.GenerateHmac(System.String,Nancy.Authentication.Forms.FormsAuthenticationConfiguration)">
+            <summary>
+            Generate a hmac for the encrypted cookie string
+            </summary>
+            <param name="encryptedCookie">Encrypted cookie string</param>
+            <param name="configuration">Current configuration</param>
+            <returns>Hmac byte array</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthentication.DecryptAndValidateAuthenticationCookie(System.String,Nancy.Authentication.Forms.FormsAuthenticationConfiguration)">
+            <summary>
+            Decrypt and validate an encrypted and signed cookie value
+            </summary>
+            <param name="cookieValue">Encrypted and signed cookie value</param>
+            <param name="configuration">Current configuration</param>
+            <returns>Decrypted value, or empty on error or if failed validation</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthentication.GetRedirectQuerystringKey(Nancy.Authentication.Forms.FormsAuthenticationConfiguration)">
+            <summary>
+            Gets the redirect query string key from <see cref="T:Nancy.Authentication.Forms.FormsAuthenticationConfiguration"/>
+            </summary>
+            <param name="configuration">The forms authentication configuration.</param>
+            <returns>Redirect Querystring key</returns>
+        </member>
+        <member name="P:Nancy.Authentication.Forms.FormsAuthentication.FormsAuthenticationCookieName">
+            <summary>
+            Gets or sets the forms authentication cookie name
+            </summary>
+        </member>
+        <member name="T:Nancy.Authentication.Forms.FormsAuthenticationConfiguration">
+            <summary>
+            Configuration options for forms authentication
+            </summary>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthenticationConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Nancy.Authentication.Forms.FormsAuthenticationConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.FormsAuthenticationConfiguration.#ctor(Nancy.Cryptography.CryptographyConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Nancy.Authentication.Forms.FormsAuthenticationConfiguration"/> class.
+            </summary>
+            <param name="cryptographyConfiguration">Cryptography configuration</param>
+        </member>
+        <member name="P:Nancy.Authentication.Forms.FormsAuthenticationConfiguration.RedirectQuerystringKey">
+            <summary>
+            Gets or sets the forms authentication query string key for storing the return url
+            </summary>
+        </member>
+        <member name="P:Nancy.Authentication.Forms.FormsAuthenticationConfiguration.RedirectUrl">
+            <summary>
+            Gets or sets the redirect url for pages that require authentication
+            </summary>
+        </member>
+        <member name="P:Nancy.Authentication.Forms.FormsAuthenticationConfiguration.UserMapper">
+            <summary>
+            Gets or sets the username/identifier mapper
+            </summary>
+        </member>
+        <member name="P:Nancy.Authentication.Forms.FormsAuthenticationConfiguration.RequiresSSL">
+            <summary>
+            Gets or sets RequiresSSL property
+            </summary>
+            <value>The flag that indicates whether SSL is required</value>
+        </member>
+        <member name="P:Nancy.Authentication.Forms.FormsAuthenticationConfiguration.DisableRedirect">
+            <summary>
+            Gets or sets whether to redirect to login page during unauthorized access.
+            </summary>
+        </member>
+        <member name="P:Nancy.Authentication.Forms.FormsAuthenticationConfiguration.Domain">
+            <summary>
+            Gets or sets the domain of the auth cookie
+            </summary>
+        </member>
+        <member name="P:Nancy.Authentication.Forms.FormsAuthenticationConfiguration.Path">
+            <summary>
+            Gets or sets the path of the auth cookie
+            </summary>
+        </member>
+        <member name="P:Nancy.Authentication.Forms.FormsAuthenticationConfiguration.CryptographyConfiguration">
+            <summary>
+            Gets or sets the cryptography configuration
+            </summary>
+        </member>
+        <member name="P:Nancy.Authentication.Forms.FormsAuthenticationConfiguration.IsValid">
+            <summary>
+            Gets a value indicating whether the configuration is valid or not.
+            </summary>
+        </member>
+        <member name="T:Nancy.Authentication.Forms.IUserMapper">
+            <summary>
+            Provides a mapping between forms auth guid identifiers and
+            real usernames
+            </summary>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.IUserMapper.GetUserFromIdentifier(System.Guid,Nancy.NancyContext)">
+            <summary>
+            Get the real username from an identifier
+            </summary>
+            <param name="identifier">User identifier</param>
+            <param name="context">The current NancyFx context</param>
+            <returns>Matching populated IUserIdentity object, or empty</returns>
+        </member>
+        <member name="T:Nancy.Authentication.Forms.ModuleExtensions">
+            <summary>
+            Module extensions for login/logout of forms auth
+            </summary>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.ModuleExtensions.Login(Nancy.INancyModule,System.Guid,System.Nullable{System.DateTime},System.String)">
+            <summary>
+            Logs the user in and returns either an empty 200 response for ajax requests, or a redirect response for non-ajax. <seealso cref="M:Nancy.Extensions.RequestExtensions.IsAjaxRequest(Nancy.Request)"/>
+            </summary>
+            <param name="module">Nancy module</param>
+            <param name="userIdentifier">User identifier guid</param>
+            <param name="cookieExpiry">Optional expiry date for the cookie (for 'Remember me')</param>
+            <param name="fallbackRedirectUrl">Url to redirect to if none in the querystring</param>
+            <returns>Nancy response with redirect if request was not ajax, otherwise with OK.</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.ModuleExtensions.LoginAndRedirect(Nancy.INancyModule,System.Guid,System.Nullable{System.DateTime},System.String)">
+            <summary>
+            Logs the user in with the given user guid and redirects.
+            </summary>
+            <param name="module">Nancy module</param>
+            <param name="userIdentifier">User identifier guid</param>
+            <param name="cookieExpiry">Optional expiry date for the cookie (for 'Remember me')</param>
+            <param name="fallbackRedirectUrl">Url to redirect to if none in the querystring</param>
+            <returns>Nancy response instance</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.ModuleExtensions.LoginWithoutRedirect(Nancy.INancyModule,System.Guid,System.Nullable{System.DateTime})">
+            <summary>
+            Logs the user in with the given user guid and returns ok response.
+            </summary>
+            <param name="module">Nancy module</param>
+            <param name="userIdentifier">User identifier guid</param>
+            <param name="cookieExpiry">Optional expiry date for the cookie (for 'Remember me')</param>
+            <returns>Nancy response instance</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.ModuleExtensions.Logout(Nancy.INancyModule,System.String)">
+            <summary>
+            Logs the user out and returns either an empty 200 response for ajax requests, or a redirect response for non-ajax. <seealso cref="M:Nancy.Extensions.RequestExtensions.IsAjaxRequest(Nancy.Request)"/>
+            </summary>
+            <param name="module">Nancy module</param>
+            <param name="redirectUrl">URL to redirect to</param>
+            <returns>Nancy response with redirect if request was not ajax, otherwise with OK.</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.ModuleExtensions.LogoutAndRedirect(Nancy.INancyModule,System.String)">
+            <summary>
+            Logs the user out and redirects
+            </summary>
+            <param name="module">Nancy module</param>
+            <param name="redirectUrl">URL to redirect to</param>
+            <returns>Nancy response instance</returns>
+        </member>
+        <member name="M:Nancy.Authentication.Forms.ModuleExtensions.LogoutWithoutRedirect(Nancy.INancyModule)">
+            <summary>
+            Logs the user out without a redirect
+            </summary>
+            <param name="module">Nancy module</param>
+            <returns>Nancy response instance</returns>
+        </member>
+    </members>
+</doc>

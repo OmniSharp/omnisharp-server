@@ -19,10 +19,22 @@ namespace OmniSharp
             _verbosity = verbosity;
         }
 
-        public void Debug(string format, params object[] arg)
+        public void Debug(string message)
         {
             if(_verbosity != Verbosity.Quiet)
-                Console.WriteLine(format, arg);
+                Console.WriteLine(message);
+		}
+
+        public void Info(string message)
+        {
+            if(_verbosity == Verbosity.Verbose)
+                Console.WriteLine(message);
+		}
+
+        public void Debug(string message, params object[] arg)
+        {
+            if(_verbosity != Verbosity.Quiet)
+                Console.WriteLine(message, arg);
 		}
 
         public void Error(object message)

@@ -112,6 +112,7 @@ namespace OmniSharp.Solution
 
         public IProject ProjectContainingFile(string filename)
         {
+            _logger.Info("Looking for project containing file " + filename);
             var project = Projects.FirstOrDefault(p => p.Files.Any(f => f.FileName.Equals(filename, StringComparison.InvariantCultureIgnoreCase)));
             if (project == null)
             {
@@ -140,12 +141,13 @@ namespace OmniSharp.Solution
                     }
                 }
             }
+            _logger.Info(filename + " belongs to " + project.FileName);
             return project ?? _orphanProject;
         }
 
         public void Reload()
         {
-            LoadSolution(this.FileName);
+            LoadSolution(FileName);
         }
 
         public void Terminate()
@@ -161,5 +163,4 @@ namespace OmniSharp.Solution
         }
     }
 }
-
 

@@ -21,6 +21,7 @@ namespace OmniSharp
             var port = 2000;
             Verbosity verbosity = Verbosity.Debug;
 
+            
             var options = new OptionSet
                     {
                         {
