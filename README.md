@@ -33,7 +33,7 @@ To start the Omnisharp server manually (The Vim OmniSharp client and YouComplete
 
 ###Problems (or just want to see what's going on)?
 
-    Try adding an extra ```-v Verbose``` to the end of the command line. You should see something like the following.
+Try adding an extra ```-v Verbose``` to the end of the command line. You should see something like the following.
 
 ```
 
