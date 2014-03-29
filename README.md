@@ -30,3 +30,42 @@ and [Emacs OmniSharp plugin](https://github.com/sp3ctum/omnisharp-emacs).
 To start the Omnisharp server manually (The Vim OmniSharp client and YouCompleteMe may start this for you automatically):
 
 	[mono] OmniSharp.exe -s (path\to\sln)
+
+###Problems (or just want to see what's going on)?
+
+    Try adding an extra ```-v Verbose``` to the end of the command line. You should see something like the following.
+
+```
+
+************ Request ************
+POST - /autocomplete
+************ Headers ************
+Accept-Encoding - identity
+Content-Length - 378
+Host - localhost:2000
+Content-Type - application/x-www-form-urlencoded
+Connection - close
+User-Agent - Python-urllib/2.7
+************  Body ************
+column=22&filename=/Users/jason/.vim/bundle/Omnisharp/server/OmniSharp/Logger.cs&buffer=using System;
+
+namespace OmniSharp
+{
+    class Test
+    {
+        public Test()
+        {
+            Console.B
+        }
+    }
+}&WantDocumentationForEveryCompletionResult=False&line=9&wordToComplete=B
+Looking for project containing file /Users/jason/.vim/bundle/Omnisharp/server/OmniSharp/Logger.cs
+/Users/jason/.vim/bundle/Omnisharp/server/OmniSharp/Logger.cs belongs to /Users/jason/.vim/bundle/Omnisharp/server/OmniSharp/OmniSharp.csproj
+Looking for project containing file /Users/jason/.vim/bundle/Omnisharp/server/OmniSharp/Logger.cs
+/Users/jason/.vim/bundle/Omnisharp/server/OmniSharp/Logger.cs belongs to /Users/jason/.vim/bundle/Omnisharp/server/OmniSharp/OmniSharp.csproj
+Getting Completion Data
+Got Completion Data
+************  Response ************
+[{"CompletionText":"BackgroundColor","Description":"ConsoleColor BackgroundColor { get; set; }","DisplayText":"ConsoleColor BackgroundColor"},{"CompletionText":"Beep(","Description":"void Beep(int frequency, int duration);","DisplayText":"void Beep(int frequency, int duration)"},{"CompletionText":"Beep()","Description":"void Beep();","DisplayText":"void Beep()"},{"CompletionText":"BufferHeight","Description":"int BufferHeight { get; set; }","DisplayText":"int BufferHeight"},{"CompletionText":"BufferWidth","Description":"int BufferWidth { get; set; }","DisplayText":"int BufferWidth"},{"CompletionText":"CursorVisible","Description":"bool CursorVisible { get; set; }","DisplayText":"bool CursorVisible"},{"CompletionText":"KeyAvailable","Description":"bool KeyAvailable { get; }","DisplayText":"bool KeyAvailable"},{"CompletionText":"MoveBufferArea(","Description":"void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop);","DisplayText":"void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop)"},{"CompletionText":"MoveBufferArea(","Description":"void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop, char sourceChar, ConsoleColor sourceForeColor, ConsoleColor sourceBackColor);","DisplayText":"void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop, char sourceChar, ConsoleColor sourceForeColor, ConsoleColor sourceBackColor)"},{"CompletionText":"NumberLock","Description":"bool NumberLock { get; }","DisplayText":"bool NumberLock"},{"CompletionText":"SetBufferSize(","Description":"void SetBufferSize(int width, int height);","DisplayText":"void SetBufferSize(int width, int height)"}]
+/autocomplete 7ms
+```
