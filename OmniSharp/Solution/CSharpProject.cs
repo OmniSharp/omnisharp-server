@@ -15,7 +15,6 @@
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -26,13 +25,14 @@ using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
 using ICSharpCode.NRefactory.Utils;
 using Mono.Cecil;
+using Microsoft.Build.Evaluation;
 
 namespace OmniSharp.Solution
 {
     public class CSharpProject : IProject
     {
         public static readonly string[] AssemblySearchPaths = {
-            //Windows Paths
+        //Windows Paths
             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5",
             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0",
             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.5",
@@ -59,7 +59,7 @@ namespace OmniSharp.Solution
             @"C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE\ReferenceAssemblies\v2.0",
             @"C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies",
             
-            //Unix Paths
+        //Unix Paths
             @"/usr/local/lib/mono/4.5",
             @"/usr/local/lib/mono/4.0",
             @"/usr/local/lib/mono/3.5",
@@ -69,20 +69,24 @@ namespace OmniSharp.Solution
             @"/usr/lib/mono/3.5",
             @"/usr/lib/mono/2.0",
 
-            //OS X Paths
+        //OS X Paths
             @"/Library/Frameworks/Mono.Framework/Libraries/mono/4.5",
             @"/Library/Frameworks/Mono.Framework/Libraries/mono/4.0",
             @"/Library/Frameworks/Mono.Framework/Libraries/mono/3.5",
             @"/Library/Frameworks/Mono.Framework/Libraries/mono/2.0",
         };
-
         private readonly ISolution _solution;
+
         public string FileName { get; private set; }
+
         public string AssemblyName { get; set; }
+
         public Guid ProjectId { get; private set; }
 
         public string Title { get; private set; }
+
         public IProjectContent ProjectContent { get; set; }
+
         public List<CSharpFile> Files { get; private set; }
 
         private readonly CompilerSettings _compilerSettings;
@@ -93,11 +97,11 @@ namespace OmniSharp.Solution
             _logger = logger;
             _solution = solution;
             Title = title;
-			FileName = fileName.ForceNativePathSeparator();
+            FileName = fileName.ForceNativePathSeparator();
             ProjectId = id;
             Files = new List<CSharpFile>();
 
-            var p = new Microsoft.Build.Evaluation.Project(FileName);
+            var p = new Project(FileName);
             AssemblyName = p.GetPropertyValue("AssemblyName");
 
             _compilerSettings = new CompilerSettings 
@@ -111,23 +115,33 @@ namespace OmniSharp.Solution
 
             foreach (var item in p.GetItems("Compile"))
             {
-                try
+                if (item.EvaluatedInclude.Contains("**"))
                 {
-                    string path = Path.Combine(p.DirectoryPath, item.EvaluatedInclude).ForceNativePathSeparator();
-                    if (File.Exists(path))
-					{
-                        string file = new FileInfo(path).FullName;
-                        _logger.Debug("Loading " + file);
-                        Files.Add(new CSharpFile(this, file));
-					}
-					else
-					{
-						_logger.Debug("File does not exist - " + path);
-					}
-                }
-                catch (NullReferenceException e)
+                    // Project includes src files via wildcards
+                    _logger.Debug("Loading all files under project root recursively");
+                    foreach (var path in Directory.GetFiles (p.DirectoryPath, "*.cs", SearchOption.AllDirectories))
+                    {
+                        _logger.Debug("Loading " + path);
+                        Files.Add(new CSharpFile(this, path));
+                    }
+                } else
                 {
-                    _logger.Error(e);
+                    try
+                    {
+                        string path = Path.Combine(p.DirectoryPath, item.EvaluatedInclude).ForceNativePathSeparator();
+                        if (File.Exists(path))
+                        {
+                            string file = new FileInfo(path).FullName;
+                            _logger.Debug("Loading " + file);
+                            Files.Add(new CSharpFile(this, file));
+                        } else
+                        {
+                            _logger.Debug("File does not exist - " + path);
+                        }
+                    } catch (NullReferenceException e)
+                    {
+                        _logger.Error(e);
+                    }
                 }
             }
 
@@ -166,26 +180,24 @@ namespace OmniSharp.Solution
                     try
                     {
                         AddReference(LoadAssembly(assemblyFileName));
-                    }
-                    catch (Exception e)
+                    } catch (Exception e)
                     {
                         _logger.Error(e);
                     }
 
-                }
-                else
+                } else
                     _logger.Debug("Could not find referenced assembly " + item.EvaluatedInclude);
             }
             if (!hasSystemCore && FindAssembly(AssemblySearchPaths, "System.Core") != null)
                 AddReference(LoadAssembly(FindAssembly(AssemblySearchPaths, "System.Core")));
 
             foreach (var item in p.GetItems("ProjectReference"))
-			{
-				var projectName = item.GetMetadataValue("Name");
-				var referenceGuid = Guid.Parse(item.GetMetadataValue("Project"));
-				_logger.Debug("Adding project reference {0}, {1}",  projectName, referenceGuid);
+            {
+                var projectName = item.GetMetadataValue("Name");
+                var referenceGuid = Guid.Parse(item.GetMetadataValue("Project"));
+                _logger.Debug("Adding project reference {0}, {1}", projectName, referenceGuid);
                 AddReference(new ProjectReference(_solution, projectName, referenceGuid));
-			}
+            }
 
             this.ProjectContent = new CSharpProjectContent()
                 .SetAssemblyName(AssemblyName)
@@ -235,10 +247,10 @@ namespace OmniSharp.Solution
 
         public static IUnresolvedAssembly LoadAssembly(string assemblyFileName)
         {
-			if (!File.Exists (assemblyFileName)) 
-			{
-				throw new FileNotFoundException ("Assembly does not exist!", assemblyFileName);
-			}
+            if (!File.Exists(assemblyFileName))
+            {
+                throw new FileNotFoundException("Assembly does not exist!", assemblyFileName);
+            }
             return assemblyDict.GetOrAdd(assemblyFileName, file => new CecilLoader().LoadAssemblyFile(file));
         }
 
@@ -266,16 +278,14 @@ namespace OmniSharp.Solution
             {
                 AssemblyNameReference assemblyNameReference = AssemblyNameReference.Parse(evaluatedInclude);
                 return GacInterop.FindAssemblyInNetGac(assemblyNameReference);
-            }
-            catch(TypeInitializationException) 
+            } catch (TypeInitializationException)
             {
                 _logger.Debug("Fusion not available - cannot get {0} from the gac.", evaluatedInclude);
                 return null;
             }
         }
 
-
-        static bool? GetBoolProperty(Microsoft.Build.Evaluation.Project p, string propertyName)
+        static bool? GetBoolProperty(Project p, string propertyName)
         {
             string val = p.GetPropertyValue(propertyName);
             if (val.Equals("true", StringComparison.OrdinalIgnoreCase))
