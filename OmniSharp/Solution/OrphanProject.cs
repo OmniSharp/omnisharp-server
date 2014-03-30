@@ -41,7 +41,7 @@ namespace OmniSharp.Solution
 
             References = new List<IAssemblyReference>();
 
-            string mscorlib = CSharpProject.FindAssembly(CSharpProject.AssemblySearchPaths, "mscorlib");
+            string mscorlib = CSharpProject.FindAssembly("mscorlib");
             ProjectContent = new CSharpProjectContent()
                 .SetAssemblyName("OrphanProject")
                 .AddAssemblyReferences(CSharpProject.LoadAssembly(mscorlib));

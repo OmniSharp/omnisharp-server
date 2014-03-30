@@ -133,7 +133,7 @@ namespace OmniSharp.Solution
             }
 
             References = new List<IAssemblyReference>();
-            string mscorlib = FindAssembly(AssemblySearchPaths, "mscorlib");
+            string mscorlib = FindAssembly("mscorlib");
             if (mscorlib != null)
                 AddReference(LoadAssembly(mscorlib));
             else
@@ -147,15 +147,19 @@ namespace OmniSharp.Solution
                 if (item.HasMetadata("HintPath"))
                 {
                     assemblyFileName = Path.Combine(p.DirectoryPath, item.GetMetadataValue("HintPath")).ForceNativePathSeparator();
+                    _logger.Info("Looking for assembly from HintPath at " + assemblyFileName);
                     if (!File.Exists(assemblyFileName))
+                    {
+                        _logger.Info("Did not find assembly from HintPath");
                         assemblyFileName = null;
+                    }
                 }
                 //If there isn't a path hint or it doesn't exist, try searching
                 if (assemblyFileName == null)
-                    assemblyFileName = FindAssembly(AssemblySearchPaths, item.EvaluatedInclude);
+                    assemblyFileName = FindAssembly(item.EvaluatedInclude);
 
                 //If it isn't in the search paths, try the GAC
-                if (assemblyFileName == null)
+                if (assemblyFileName == null && PlatformService.IsWindows)
                     assemblyFileName = FindAssemblyInNetGac(item.EvaluatedInclude);
 
                 if (assemblyFileName != null)
@@ -175,8 +179,8 @@ namespace OmniSharp.Solution
                 } else
                     _logger.Debug("Could not find referenced assembly " + item.EvaluatedInclude);
             }
-            if (!hasSystemCore && FindAssembly(AssemblySearchPaths, "System.Core") != null)
-                AddReference(LoadAssembly(FindAssembly(AssemblySearchPaths, "System.Core")));
+            if (!hasSystemCore && FindAssembly("System.Core") != null)
+                AddReference(LoadAssembly(FindAssembly("System.Core")));
 
             foreach (var item in p.GetItems("ProjectReference"))
             {
@@ -241,8 +245,9 @@ namespace OmniSharp.Solution
             return assemblyDict.GetOrAdd(assemblyFileName, file => new CecilLoader().LoadAssemblyFile(file));
         }
 
-        public static string FindAssembly(IEnumerable<string> assemblySearchPaths, string evaluatedInclude)
+        public static string FindAssembly(string evaluatedInclude)
         {
+
             if (evaluatedInclude.IndexOf(',') >= 0)
                 evaluatedInclude = evaluatedInclude.Substring(0, evaluatedInclude.IndexOf(','));
             
@@ -250,7 +255,7 @@ namespace OmniSharp.Solution
             if (File.Exists(directAssemblyFile))
                 return directAssemblyFile;
 
-            foreach (string searchPath in assemblySearchPaths)
+            foreach (string searchPath in AssemblySearchPaths)
             {
                 string assemblyFile = Path.Combine(searchPath, evaluatedInclude + ".dll").ForceNativePathSeparator();
                 if (File.Exists(assemblyFile))

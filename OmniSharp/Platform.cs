@@ -12,5 +12,10 @@ namespace OmniSharp
                 return (p == 4) || (p == 6) || (p == 128);
             }
         }
+
+        public static bool IsWindows
+        {
+            get { return !IsUnix; }
+        }
     }
 }
