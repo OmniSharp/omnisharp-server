@@ -1,4 +1,4 @@
-// Copyright (c) AlphaSierraPapa for the SharpDevelop Team
+﻿// Copyright (c) AlphaSierraPapa for the SharpDevelop Team
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this
 // software and associated documentation files (the "Software"), to deal in the Software
@@ -67,6 +67,7 @@ namespace OmniSharp.Solution
             @"/usr/lib/mono/4.0",
             @"/usr/lib/mono/3.5",
             @"/usr/lib/mono/2.0",
+            @"/opt/mono",
 
         //OS X Paths
             @"/Library/Frameworks/Mono.Framework/Libraries/mono/4.5",
