@@ -35,17 +35,22 @@ namespace OmniSharp.CodeIssues
             var issues = GetContextualCodeActions(req).ToList();
 
             var issue = issues.FirstOrDefault(i => i.Start.Line == req.Line);
-            if(issue == null)
+            if (issue == null)
                 return new RunCodeIssuesResponse { Text = req.Buffer };
 
             var context = OmniSharpRefactoringContext.GetContext(_bufferParser, req);
             
             using (var script = new OmniSharpScript(context))
             {
-                issue.Actions.FirstOrDefault().Run(script);
+                var action = issue.Actions.FirstOrDefault();
+                if (action != null)
+                {
+                    action.Run(script);
+                    return new RunCodeIssuesResponse {Text = context.Document.Text};
+                }
             }
 
-            return new RunCodeIssuesResponse {Text = context.Document.Text};
+            return new RunCodeIssuesResponse {Text = req.Buffer};
         }
 
         private IEnumerable<CodeIssue> GetContextualCodeActions(Request req)
@@ -60,7 +65,7 @@ namespace OmniSharp.CodeIssues
                 {
                     var codeIssues = provider.GetIssues(refactoringContext);
                     actions.AddRange(codeIssues);
-                }
+                } 
                 catch (Exception)
                 {
                 }
