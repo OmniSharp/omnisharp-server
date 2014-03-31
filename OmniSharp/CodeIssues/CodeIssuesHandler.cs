@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.NRefactory.CSharp.Refactoring;
 using OmniSharp.Common;
+using OmniSharp.Configuration;
 using OmniSharp.Parser;
 using OmniSharp.Refactoring;
 using OmniSharp.Solution;
@@ -56,7 +57,7 @@ namespace OmniSharp.CodeIssues
         private IEnumerable<CodeIssue> GetContextualCodeActions(Request req)
         {
             var refactoringContext = OmniSharpRefactoringContext.GetContext(_bufferParser, req);
-
+            var ignoredCodeIssues = ConfigurationLoader.Config.IgnoredCodeIssues;
             var actions = new List<CodeIssue>();
             var providers = new CodeIssueProviders().GetProviders();
             foreach (var provider in providers)
@@ -64,7 +65,7 @@ namespace OmniSharp.CodeIssues
                 try
                 {
                     var codeIssues = provider.GetIssues(refactoringContext);
-                    actions.AddRange(codeIssues);
+                    actions.AddRange(codeIssues.Where(issue => !ignoredCodeIssues.Contains(issue.Description)));
                 } 
                 catch (Exception)
                 {

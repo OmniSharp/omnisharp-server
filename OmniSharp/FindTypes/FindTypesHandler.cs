@@ -8,7 +8,7 @@ namespace OmniSharp.FindTypes
 {
     public class FindTypesHandler
     {
-        private readonly ISolution _solution;
+        readonly ISolution _solution;
 
         public FindTypesHandler(ISolution solution)
         {
