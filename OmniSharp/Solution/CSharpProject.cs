@@ -67,7 +67,10 @@ namespace OmniSharp.Solution
             @"/usr/lib/mono/4.0",
             @"/usr/lib/mono/3.5",
             @"/usr/lib/mono/2.0",
-            @"/opt/mono",
+            @"/opt/mono/lib/mono/4.5",
+            @"/opt/mono/lib/mono/4.0",
+            @"/opt/mono/lib/mono/3.5",
+            @"/opt/mono/lib/mono/2.0",
 
         //OS X Paths
             @"/Library/Frameworks/Mono.Framework/Libraries/mono/4.5",
