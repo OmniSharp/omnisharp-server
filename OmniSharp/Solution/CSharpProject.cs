@@ -210,9 +210,14 @@ namespace OmniSharp.Solution
 
         public List<IAssemblyReference> References { get; set; }
 
-        public void AddAssemblyReference(IAssemblyReference reference)
+        public void AddReference(IAssemblyReference reference)
         {
             References.Add(reference);
+        }
+
+        public void AddReference(string reference)
+        {
+            References.Add(LoadAssembly(reference));
         }
 
         public CSharpFile GetFile(string fileName)
