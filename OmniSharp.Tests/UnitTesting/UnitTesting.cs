@@ -8,8 +8,7 @@ namespace OmniSharp.Tests.UnitTesting
     {
         public static GetContextResponse GetContextInformation(this string editorText)
         {
-            int cursorOffset = editorText.IndexOf("$", StringComparison.Ordinal);
-            var cursorPosition = TestHelpers.GetLineAndColumnFromIndex(editorText, cursorOffset);
+            var cursorPosition = TestHelpers.GetLineAndColumnFromDollar(editorText);
             editorText = editorText.Replace("$", "");
 
             var solution = new FakeSolution();

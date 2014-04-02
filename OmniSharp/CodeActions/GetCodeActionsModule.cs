@@ -10,7 +10,7 @@ namespace OmniSharp.CodeActions
         {
             Post["/getcodeactions"] = x =>
                 {
-                    var req = this.Bind<Request>();
+                    var req = this.Bind<CodeActionRequest>();
                     var res = getCodeActionsHandler.GetCodeActions(req);
                     return Response.AsJson(res);
                 };
