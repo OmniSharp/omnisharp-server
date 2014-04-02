@@ -16,10 +16,10 @@ namespace OmniSharp.ProjectManipulation.AddReference
 
             var referenceAlreadyAdded = referenceNodes.Any(n => n.Attribute("Include").Value.Equals(reference));
 
-            var fileReferenceNode = CreateReferenceNode(reference);
 
             if (!referenceAlreadyAdded)
             {
+				var fileReferenceNode = CreateReferenceNode(reference);
                 if (referenceNodes.Count > 0)
                 {
                     referenceNodes.First().Parent.Add(fileReferenceNode);
