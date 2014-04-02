@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.NRefactory.CSharp.Refactoring;
+using OmniSharp.CodeActions;
 using OmniSharp.Common;
 using OmniSharp.Configuration;
 using OmniSharp.Parser;
