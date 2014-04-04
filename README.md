@@ -1,11 +1,12 @@
 OmniSharpServer
 ===============
-[![Build Status](https://travis-ci.org/nosami/OmniSharpServer.png)](https://travis-ci.org/nosami/OmniSharpServer)
+
+[![Build Status](https://travis-ci.org/nosami/OmniSharpServer.png?branch=master)](https://travis-ci.org/nosami/OmniSharpServer)
 
 HTTP wrapper around NRefactory allowing C# editor plugins to be written for any editor in any language.
 
 
-This is the server component for the [Vim OmniSharp plugin](https://github.com/nosami/OmniSharp), [YouCompleteMe](https://github.com/Valloric/YouCompleteMe), [Sublime Text 2 OmniSharp plugin](https://github.com/PaulCampbell/OmniSharpSublimePlugin), [Sublime Text 3](https://github.com/n-yoda/OmniSharpSublime)
+This is the server component for the [Vim OmniSharp plugin](https://github.com/nosami/OmniSharp), [YouCompleteMe](https://github.com/Valloric/YouCompleteMe), [Sublime Text 2](https://github.com/PaulCampbell/OmniSharpSublimePlugin), [Sublime Text 3](https://github.com/moonrabbit/OmniSharpSublime)
 and [Emacs OmniSharp plugin](https://github.com/sp3ctum/omnisharp-emacs).
 
 
@@ -19,6 +20,10 @@ and [Emacs OmniSharp plugin](https://github.com/sp3ctum/omnisharp-emacs).
 ####Windows
     git clone https://github.com/nosami/OmniSharpServer.git
     cd OmniSharpServer
+
+    # (if using Cygwin, overwrite the default config file config.json with config-cygwin.json)
+    copy OmniSharp\config-cygwin.json OmniSharp\config.json
+
     msbuild /p:Platform="Any CPU"
     
 
@@ -26,6 +31,41 @@ To start the Omnisharp server manually (The Vim OmniSharp client and YouComplete
 
 	[mono] OmniSharp.exe -s (path\to\sln)
 
+###Problems (or just want to see what's going on)?
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/nosami/omnisharpserver/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+Try adding an extra ```-v Verbose``` to the end of the command line. You should see something like the following.
 
+```
+
+************ Request ************
+POST - /autocomplete
+************ Headers ************
+Accept-Encoding - identity
+Content-Length - 378
+Host - localhost:2000
+Content-Type - application/x-www-form-urlencoded
+Connection - close
+User-Agent - Python-urllib/2.7
+************  Body ************
+column=22&filename=/Users/jason/.vim/bundle/Omnisharp/server/OmniSharp/Logger.cs&buffer=using System;
+
+namespace OmniSharp
+{
+    class Test
+    {
+        public Test()
+        {
+            Console.B
+        }
+    }
+}&WantDocumentationForEveryCompletionResult=False&line=9&wordToComplete=B
+Looking for project containing file /Users/jason/.vim/bundle/Omnisharp/server/OmniSharp/Logger.cs
+/Users/jason/.vim/bundle/Omnisharp/server/OmniSharp/Logger.cs belongs to /Users/jason/.vim/bundle/Omnisharp/server/OmniSharp/OmniSharp.csproj
+Looking for project containing file /Users/jason/.vim/bundle/Omnisharp/server/OmniSharp/Logger.cs
+/Users/jason/.vim/bundle/Omnisharp/server/OmniSharp/Logger.cs belongs to /Users/jason/.vim/bundle/Omnisharp/server/OmniSharp/OmniSharp.csproj
+Getting Completion Data
+Got Completion Data
+************  Response ************
+[{"CompletionText":"BackgroundColor","Description":"ConsoleColor BackgroundColor { get; set; }","DisplayText":"ConsoleColor BackgroundColor"},{"CompletionText":"Beep(","Description":"void Beep(int frequency, int duration);","DisplayText":"void Beep(int frequency, int duration)"},{"CompletionText":"Beep()","Description":"void Beep();","DisplayText":"void Beep()"},{"CompletionText":"BufferHeight","Description":"int BufferHeight { get; set; }","DisplayText":"int BufferHeight"},{"CompletionText":"BufferWidth","Description":"int BufferWidth { get; set; }","DisplayText":"int BufferWidth"},{"CompletionText":"CursorVisible","Description":"bool CursorVisible { get; set; }","DisplayText":"bool CursorVisible"},{"CompletionText":"KeyAvailable","Description":"bool KeyAvailable { get; }","DisplayText":"bool KeyAvailable"},{"CompletionText":"MoveBufferArea(","Description":"void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop);","DisplayText":"void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop)"},{"CompletionText":"MoveBufferArea(","Description":"void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop, char sourceChar, ConsoleColor sourceForeColor, ConsoleColor sourceBackColor);","DisplayText":"void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop, char sourceChar, ConsoleColor sourceForeColor, ConsoleColor sourceBackColor)"},{"CompletionText":"NumberLock","Description":"bool NumberLock { get; }","DisplayText":"bool NumberLock"},{"CompletionText":"SetBufferSize(","Description":"void SetBufferSize(int width, int height);","DisplayText":"void SetBufferSize(int width, int height)"}]
+/autocomplete 7ms
+```

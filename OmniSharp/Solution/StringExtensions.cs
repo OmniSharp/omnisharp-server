@@ -1,6 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
+using OmniSharp.Common;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.Solution
 {
@@ -40,6 +44,54 @@ namespace OmniSharp.Solution
         public static string GetRelativePath(this string path, string pathToMakeRelative)
         {
             return new Uri(path).MakeRelativeUri(new Uri(pathToMakeRelative)).ToString().ForceWindowsPathSeparator();
+        }
+
+        public static string ApplyPathReplacementsForServer(this string path)
+        {
+            path = ApplyCygpathForServer(path);
+
+            foreach (var pathReplacement in ConfigurationLoader.Config.PathReplacements)
+            {
+                path = path.Replace(pathReplacement.From, pathReplacement.To);
+            }
+
+            return path;
+        }
+
+        public static string ApplyPathReplacementsForClient(this string path)
+        {
+            path = ApplyCygpathForClient(path);
+
+            foreach (var pathReplacement in ConfigurationLoader.Config.PathReplacements)
+            {
+                path = path.Replace(pathReplacement.To, pathReplacement.From);
+            }
+
+            return path;
+        }
+
+        private static string ApplyCygpathForServer(string path)
+        {
+            var config = ConfigurationLoader.Config;
+
+            if (config.UseCygpath.GetValueOrDefault(config.ClientPathMode == PathMode.Cygwin))
+            {
+                path = CygPathWrapper.GetCygpath(path, config.ServerPathMode.Value);
+            }
+
+            return path;
+        }
+
+        private static string ApplyCygpathForClient(string path)
+        {
+            var config = ConfigurationLoader.Config;
+
+            if (config.UseCygpath.GetValueOrDefault(config.ClientPathMode == PathMode.Cygwin))
+            {
+                path = CygPathWrapper.GetCygpath(path, config.ClientPathMode.GetValueOrDefault(PathMode.Unix));
+            }
+
+            return path;
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
-using OmniSharp.Common;
-using OmniSharp.ContextInformation;
 using OmniSharp.Parser;
+using OmniSharp.TestContextInformation;
 
 namespace OmniSharp.Tests.UnitTesting
 {
@@ -9,8 +8,7 @@ namespace OmniSharp.Tests.UnitTesting
     {
         public static GetContextResponse GetContextInformation(this string editorText)
         {
-            int cursorOffset = editorText.IndexOf("$", StringComparison.Ordinal);
-            var cursorPosition = TestHelpers.GetLineAndColumnFromIndex(editorText, cursorOffset);
+            var cursorPosition = TestHelpers.GetLineAndColumnFromDollar(editorText);
             editorText = editorText.Replace("$", "");
 
             var solution = new FakeSolution();
@@ -18,8 +16,8 @@ namespace OmniSharp.Tests.UnitTesting
             project.AddFile(editorText);
             solution.Projects.Add(project);
 
-            var handler = new GetContextHandler(solution, new BufferParser(solution));
-            var request = new Request
+            var handler = new GetTestContextHandler(solution, new BufferParser(solution));
+            var request = new TestCommandRequest
             {
                 Buffer = editorText,
                 FileName = "myfile",

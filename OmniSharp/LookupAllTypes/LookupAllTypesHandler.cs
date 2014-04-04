@@ -44,7 +44,7 @@ namespace OmniSharp.LookupAllTypes
                 };
         }
 
-        string GetAllTypesAsString(HashSet<string> types)
+        string GetAllTypesAsString(ICollection<string> types)
         {
             // This causes a conflict with the vim keyword 'contains'
             types.Remove("Contains");

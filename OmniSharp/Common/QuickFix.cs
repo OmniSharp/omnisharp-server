@@ -1,5 +1,4 @@
-﻿using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.Editor;
+﻿using ICSharpCode.NRefactory.Editor;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.Solution;
 
@@ -7,7 +6,17 @@ namespace OmniSharp.Common
 {
     public class QuickFix
     {
-        public string FileName { get; set; }
+        private string _fileName;
+
+        public string FileName 
+        {
+            get
+            {
+                return _fileName;
+            }
+            set { _fileName = value.ApplyPathReplacementsForClient(); } 
+        }
+
         public int Line { get; set; }
         public int Column { get; set; }
         public string Text { get; set; }

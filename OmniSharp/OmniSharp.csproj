@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -86,10 +86,13 @@
       <HintPath>..\packages\monodoc.dll</HintPath>
     </Reference>
     <Reference Include="Nancy">
-      <HintPath>..\packages\Nancy.0.16.1\lib\net40\Nancy.dll</HintPath>
+      <HintPath>..\packages\Nancy.0.22.2\lib\net40\Nancy.dll</HintPath>
     </Reference>
     <Reference Include="Nancy.Hosting.Self">
-      <HintPath>..\packages\Nancy.Hosting.Self.0.16.1\lib\net40\Nancy.Hosting.Self.dll</HintPath>
+      <HintPath>..\packages\Nancy.Hosting.Self.0.22.2\lib\net40\Nancy.Hosting.Self.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy.Authentication.Forms">
+      <HintPath>..\packages\Nancy.Authentication.Forms.0.22.2\lib\net40\Nancy.Authentication.Forms.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -97,11 +100,23 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AutoComplete\HelpService.cs" />
+    <Compile Include="CodeIssues\CodeIssueProviders.cs" />
+    <Compile Include="CodeIssues\CodeIssuesHandler.cs" />
+    <Compile Include="CodeIssues\CodeIssuesModule.cs" />
+    <Compile Include="CodeIssues\GetCodeIssuesResponse.cs" />
+    <Compile Include="CodeIssues\RunCodeIssuesResponse.cs" />
+    <Compile Include="Common\CygPathWrapper.cs" />
+    <Compile Include="Configuration\OmniSharpConfiguration.cs" />
+    <Compile Include="Configuration\PathMode.cs" />
+    <Compile Include="Configuration\PathReplacement.cs" />
+    <Compile Include="Configuration\TestCommands.cs" />
+    <Compile Include="TestContextInformation\GetContextResponse.cs" />
+    <Compile Include="TestContextInformation\TestCommandRequest.cs" />
     <Compile Include="Documentation\DocumentationFetcher.cs" />
     <Compile Include="Documentation\MonoDocDocumentationProvider.cs" />
-    <Compile Include="ContextInformation\GetContextModule.cs" />
-    <Compile Include="ContextInformation\GetContextHandler.cs" />
-    <Compile Include="ContextInformation\GetContextResponse.cs" />
+    <Compile Include="TestContextInformation\GetTestContextModule.cs" />
+    <Compile Include="TestContextInformation\GetTestContextHandler.cs" />
+    <Compile Include="TestContextInformation\GetTestContextResponse.cs" />
     <Compile Include="Build\BuildCommandBuilder.cs" />
     <Compile Include="Build\BuildCommandModule.cs" />
     <Compile Include="Common\FileSystem.cs" />
@@ -153,6 +168,7 @@
     <Compile Include="FindUsages\FindUsagesRequest.cs" />
     <Compile Include="FindUsages\MemberCollector.cs" />
     <Compile Include="Common\QuickFix.cs" />
+    <Compile Include="CheckReadyStatus\CheckReadyStatusModule.cs" />
     <Compile Include="CodeActions\CodeActionProviders.cs" />
     <Compile Include="CodeActions\GetCodeActionsHandler.cs" />
     <Compile Include="CodeActions\GetCodeActionsModule.cs" />
@@ -233,9 +249,13 @@
     <Compile Include="GotoRegion\GotoRegionModule.cs" />
     <Compile Include="GotoRegion\GetDirectivesAstVisitor.cs" />
     <Compile Include="UpdateBuffer\UpdateBufferModule.cs" />
+    <Compile Include="CodeActions\GetCodeActionRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -274,7 +294,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <Folder Include="UpdateBuffer\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

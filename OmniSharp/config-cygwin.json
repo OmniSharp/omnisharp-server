@@ -1,0 +1,20 @@
+﻿{
+  "PathReplacements":[
+    {
+      "From":"/cygdrive/c/",
+      "To":"c:\\"
+    },
+    {
+      "From":"/",
+      "To":"\\"
+    }
+  ],
+  "IgnoredCodeIssues":[
+    "Remove redundant 'private' modifier"
+  ],
+  "TestCommands": {
+    "All": "nunit-console.exe -nologo -labels {{AssemblyPath}}",
+    "Fixture": "nunit-console.exe -nologo -labels {{AssemblyPath}} -run={{TypeName}}",
+    "Single": "nunit-console.exe -nologo -labels {{AssemblyPath}} -run={{TypeName}}.{{MethodName}}"
+  } 
+}

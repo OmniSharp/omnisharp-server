@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using OmniSharp;
 using OmniSharp.Common;
 
 namespace OmniSharp.Build
@@ -11,11 +12,13 @@ namespace OmniSharp.Build
         private readonly BuildResponse _response;
         private readonly List<QuickFix> _quickFixes;
         private readonly BuildLogParser _logParser;
+        private readonly Logger _logger;
 
-        public BuildHandler(BuildCommandBuilder commandBuilder)
+        public BuildHandler(BuildCommandBuilder commandBuilder, Logger logger)
         {
             _commandBuilder = commandBuilder;
             _response = new BuildResponse();
+            _logger = logger;
             _quickFixes = new List<QuickFix>();
             _logParser = new BuildLogParser();
         }
@@ -55,7 +58,7 @@ namespace OmniSharp.Build
 
         void OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            Console.WriteLine(e.Data);
+            _logger.Debug(e.Data);
             if (e.Data == null)
                 return;
 
@@ -68,7 +71,7 @@ namespace OmniSharp.Build
 
         void ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
-            Console.WriteLine(e.Data);
+            _logger.Error(e.Data);
         }
     }
 }

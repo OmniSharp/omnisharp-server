@@ -28,7 +28,6 @@ namespace OmniSharp.Solution
 
         private void Parse(IProject project, string fileName, string source)
         {
-            Console.WriteLine("Loading " + fileName);
             this.FileName = fileName;
             this.Content = new StringTextSource(source);
             this.Document = new StringBuilderDocument(this.Content);

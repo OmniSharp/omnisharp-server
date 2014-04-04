@@ -30,7 +30,6 @@ namespace OmniSharp.Rename
             var sourceNode = syntaxTree.GetNodeAt(req.Line, req.Column);
             if(sourceNode == null)
                 return new RenameResponse();
-			var originalName = sourceNode.ToString();
 
             IEnumerable<AstNode> nodes = _findUsagesHandler.FindUsageNodes(req).ToArray();
 
@@ -57,8 +56,7 @@ namespace OmniSharp.Rename
                 }
                 string modifiedBuffer = null;
 
-				var lastToFirstNodes = groupedNodes.Where(n => n.ToString() == originalName)
-                                                   .OrderByDescending(n => n.EndLocation.Line)
+                var lastToFirstNodes = groupedNodes.OrderByDescending(n => n.EndLocation.Line)
                                                    .ThenByDescending(n => n.EndLocation.Column);
 
                 foreach (var node in lastToFirstNodes)

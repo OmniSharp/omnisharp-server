@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.AutoComplete
 {
@@ -35,6 +36,5 @@ namespace OmniSharp.AutoComplete
 				return false;
 			return new string(completion.ToUpper().Intersect(partial.ToUpper()).ToArray()) == partial.ToUpper();
 		}
-
     }
 }

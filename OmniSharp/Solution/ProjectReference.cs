@@ -12,6 +12,7 @@ namespace OmniSharp.Solution
 
         public ProjectReference(ISolution solution, string projectTitle, Guid projectGuid)
         {
+            
             _solution = solution;
             _projectTitle = projectTitle;
 			_projectGuid = projectGuid;
@@ -25,7 +26,6 @@ namespace OmniSharp.Solution
             var project = _solution.Projects.FirstOrDefault(p => p.ProjectId == _projectGuid);
             if (project != null) 
                 return project.ProjectContent.Resolve(context);
-			Console.WriteLine("Could not find project " + _projectTitle);
             return null;
         }
     }

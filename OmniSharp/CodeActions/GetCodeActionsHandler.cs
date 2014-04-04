@@ -9,38 +9,38 @@ namespace OmniSharp.CodeActions
 {
     public class GetCodeActionsHandler
     {
-        private readonly BufferParser _bufferParser;
+        readonly BufferParser _bufferParser;
 
         public GetCodeActionsHandler(BufferParser bufferParser)
         {
             _bufferParser = bufferParser;
         }
 
-        public GetCodeActionsResponse GetCodeActions(Request req)
+        public GetCodeActionsResponse GetCodeActions(CodeActionRequest req)
         {
             var actions = GetContextualCodeActions(req);
 
-            return new GetCodeActionsResponse { CodeActions = actions.Select(a => a.Description) };
+            return new GetCodeActionsResponse { CodeActions = actions.Select(a =>  a.Description) };
         }
 
-        public RunCodeActionsResponse RunCodeAction(RunCodeActionRequest req)
+        public RunCodeActionsResponse RunCodeAction(CodeActionRequest req)
         {
             var actions = GetContextualCodeActions(req).ToList();
             if(req.CodeAction > actions.Count)
                 return new RunCodeActionsResponse();
 
-            CodeAction action = actions[req.CodeAction];
             var context = OmniSharpRefactoringContext.GetContext(_bufferParser, req);
             
             using (var script = new OmniSharpScript(context))
             {
+				CodeAction action = actions[req.CodeAction];
                 action.Run(script);
             }
 
             return new RunCodeActionsResponse {Text = context.Document.Text};
         }
 
-        private IEnumerable<CodeAction> GetContextualCodeActions(Request req)
+        private IEnumerable<CodeAction> GetContextualCodeActions(CodeActionRequest req)
         {
             var refactoringContext = OmniSharpRefactoringContext.GetContext(_bufferParser, req);
 
