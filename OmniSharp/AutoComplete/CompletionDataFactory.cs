@@ -15,8 +15,8 @@ namespace OmniSharp.AutoComplete
     {
         private readonly string _partialWord;
         private readonly bool _instantiating;
-        private readonly CSharpAmbience _ambience = new CSharpAmbience { ConversionFlags = AmbienceFlags };
-        private readonly CSharpAmbience _signatureAmbience = new CSharpAmbience { ConversionFlags = AmbienceFlags | ConversionFlags.ShowReturnType };
+        private readonly CSharpAmbience _ambience = new CSharpAmbience { ConversionFlags = AmbienceFlags }; 
+        private readonly CSharpAmbience _signatureAmbience = new CSharpAmbience { ConversionFlags = AmbienceFlags | ConversionFlags.ShowReturnType | ConversionFlags.ShowBody };
 
         private const ConversionFlags AmbienceFlags =
             ConversionFlags.ShowParameterList |
@@ -40,7 +40,7 @@ namespace OmniSharp.AutoComplete
 
             _completionText = _signature = entity.Name;
 
-            _completionText = _ambience.ConvertEntity(entity).Replace(";", "");
+			_completionText = _ambience.ConvertEntity(entity).TrimEnd(';');
             if (!_completionText.IsValidCompletionFor(_partialWord))
                 return new CompletionData("~~");
 
@@ -52,7 +52,7 @@ namespace OmniSharp.AutoComplete
 
             if (entity is IField || entity is IProperty)
             {
-                _signature = _signatureAmbience.ConvertEntity(entity).Replace(";", "");
+				_signature = _signatureAmbience.ConvertEntity(entity).TrimEnd(';');
             }
 
             ICompletionData completionData = CompletionData(entity);
@@ -101,19 +101,27 @@ namespace OmniSharp.AutoComplete
 
         private void GenerateMethodSignature(IMethod method)
         {
-            _signature = _signatureAmbience.ConvertEntity(method).Replace(";", "");
+			_signature = _signatureAmbience.ConvertEntity (method).TrimEnd(';');
             _completionText = _ambience.ConvertEntity(method);
-            _completionText = _completionText.Remove(_completionText.IndexOf('(') + 1);
-            var zeroParameterCount = method.IsExtensionMethod ? 1 : 0;
-            if (method.Parameters.Count == zeroParameterCount)
+            _completionText = _completionText.Remove(_completionText.IndexOf('('));
+			if(method.TypeParameters.Count > 0 && method.TypeParameters[0].Name != "TSource")
             {
-                _completionText += ")";
+				_completionText += "<";
+            }
+            else
+            {
+				_completionText += "(";
+                var zeroParameterCount = method.IsExtensionMethod ? 1 : 0;
+                if (method.Parameters.Count == zeroParameterCount)
+                {
+                    _completionText += ")";
+                }
             }
         }
 
-        private void GenerateGenericMethodSignature(IMethod method)
+        private void GenerateGenericMethodSignature(IEntity method)
         {
-            _signature = _signatureAmbience.ConvertEntity(method).Replace(";", "");
+			_signature = _signatureAmbience.ConvertEntity(method).TrimEnd(';');
             _completionText = _ambience.ConvertEntity(method);
             _completionText = _completionText.Remove(_completionText.IndexOf('(')) + "<";
         }
@@ -129,9 +137,10 @@ namespace OmniSharp.AutoComplete
             {
                 return new CompletionData("~~");
             }
-            var completion = new CompletionData(type.Name);
+            CompletionData completion;
             if (_instantiating)
             {
+                completion = new CompletionData(type.Name);
                 foreach (var constructor in type.GetConstructors())
                 {
                     if (type.TypeParameterCount > 0)
@@ -148,6 +157,12 @@ namespace OmniSharp.AutoComplete
             }
             else
             {
+                var name = type.Name;
+                if (type.TypeParameterCount > 0)
+                {
+                    name += "<";
+                }
+                completion = new CompletionData(name);
                 completion.AddOverload(completion);
             }
             return completion;
