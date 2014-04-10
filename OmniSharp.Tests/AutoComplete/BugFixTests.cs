@@ -79,7 +79,7 @@ public class MyClass
     {
         var i = ""test"".leng$
     }
-}").ShouldContainOnly("int Length");
+}").ShouldContainOnly("int Length { get; }");
 
         }
 

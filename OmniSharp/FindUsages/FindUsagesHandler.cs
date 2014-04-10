@@ -99,7 +99,7 @@ namespace OmniSharp.FindUsages
                     {
                         ProcessMemberResults(resolveResult);
                         var members = MemberCollector.CollectMembers(_solution,
-                                          (resolveResult as MemberResolveResult).Member);
+							(resolveResult as MemberResolveResult).Member, false);
                         searchScopes = members.Select(findReferences.GetSearchScopes);
                     }
                 }

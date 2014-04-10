@@ -65,5 +65,65 @@ namespace OmniSharp.Tests.AutoComplete
             }")
                 .ShouldContain("List<");
         }
+        
+        [Test]
+        public void Should_add_angle_bracket_to_generic_completion_initialiser()
+        {
+            CompletionsFor(
+                @"using System.Collections.Generic;
+            public class Class1 {
+                public Class1()
+                {
+                    Lis$
+                }
+            }")
+                .ShouldContain("List<");
+        }
+
+        [Test]
+        public void Should_not_add_angle_bracket_to_method_as_generic_type_is_known()
+        {
+            CompletionsFor(
+                @"using System.Collections.Generic;
+            public class Class1 {
+                public Class1()
+                {
+                    var l = new List<int>();
+                    l.Ad$
+                }
+            }")
+                .ShouldContain("Add(");
+        }
+
+        [Test]
+		public void Should_add_angle_bracket_to_method_as_generic_type_is_unknown()
+        {
+            CompletionsFor(
+                @"using System.Collections.Generic;
+            public class Class1 {
+                public Class1()
+                {
+                    var l = new List<int>();
+                    l.Conv$
+                }
+            }")
+				.ShouldContain("ConvertAll<");
+        }
+
+		[Test]
+		public void Should_not_add_angle_bracket_when_TSource_is_same_as_callee()
+		{
+			CompletionsFor(
+				@"using System.Collections.Generic;
+			using System.Linq;
+            public class Class1 {
+                public Class1()
+                {
+                    var l = new List<int>();
+                    l.Distin$
+                }
+            }")
+				.ShouldContain("Distinct(");
+		}
     }
 }
