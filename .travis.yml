@@ -4,5 +4,5 @@ install:
       - sudo apt-get install mono-devel mono-gmcs nunit-console
 
 script:
-      - xbuild /p:Configuration="net_4_5_Debug" /p:Platform="Any CPU"
+      - xbuild /p:Configuration="net_4_0_Debug" /p:Platform="Any CPU"
       - nunit-console ./OmniSharp.Tests/bin/Debug/OmniSharp.Tests.dll
