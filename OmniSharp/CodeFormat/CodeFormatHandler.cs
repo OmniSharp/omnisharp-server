@@ -11,9 +11,9 @@ namespace OmniSharp.CodeFormat
             options.WrapLineLength = 80;
             options.TabsToSpaces = request.ExpandTab;
             var policy = FormattingOptionsFactory.CreateAllman();
-            policy.BlankLinesAfterUsings = 1;
-            policy.BlankLinesBetweenTypes = 1;
-            policy.BlankLinesBetweenMembers = 1;
+			policy.MinimumBlankLinesAfterUsings = 1;
+			policy.MinimumBlankLinesBetweenTypes = 1;
+			policy.MinimumBlankLinesBetweenMembers = 1;
             var formatter = new CSharpFormatter(policy, options);
             formatter.FormattingMode = FormattingMode.Intrusive;
             var output = formatter.Format(request.Buffer);
