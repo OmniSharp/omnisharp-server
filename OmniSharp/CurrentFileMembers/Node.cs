@@ -26,7 +26,7 @@ namespace OmniSharp.CurrentFileMembers {
             // Fields' BodyRegion does not include their name for some
             // reason. To prevent the field's name missing, include
             // the whole region for them.
-            if (member.EntityType == EntityType.Field)
+			if (member.SymbolKind == SymbolKind.Field)
                 this.Location.Text += member.Name;
         }
 

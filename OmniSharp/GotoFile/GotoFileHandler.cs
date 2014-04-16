@@ -1,8 +1,4 @@
-﻿using ICSharpCode.NRefactory;
-using ICSharpCode.NRefactory.CSharp.Resolver;
-using ICSharpCode.NRefactory.Semantics;
-using OmniSharp.Common;
-using OmniSharp.Parser;
+﻿using OmniSharp.Common;
 using OmniSharp.Solution;
 using System.Linq;
 
@@ -10,7 +6,7 @@ namespace OmniSharp.GotoFile
 {
     public class GotoFileHandler
     {
-        ISolution _solution;
+        readonly ISolution _solution;
 
         public GotoFileHandler(ISolution solution) {
             _solution = solution;

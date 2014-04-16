@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -87,7 +87,7 @@ namespace OmniSharp.FindUsages
                 if (resolveResult is MemberResolveResult)
                 {
                     entity = (resolveResult as MemberResolveResult).Member;
-                    if (entity.EntityType == EntityType.Constructor)
+                    if (entity.SymbolKind == SymbolKind.Constructor)
                     {
                         // process type instead
                         var type = entity.DeclaringType;
@@ -99,7 +99,7 @@ namespace OmniSharp.FindUsages
                     {
                         ProcessMemberResults(resolveResult);
                         var members = MemberCollector.CollectMembers(_solution,
-                                          (resolveResult as MemberResolveResult).Member, false);
+							(resolveResult as MemberResolveResult).Member, false);
                         searchScopes = members.Select(findReferences.GetSearchScopes);
                     }
                 }

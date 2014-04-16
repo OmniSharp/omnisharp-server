@@ -34,7 +34,7 @@ namespace OmniSharp.Overrides {
             var builder = new TypeSystemAstBuilder
                 (new CSharpResolver(resolveContext));
 
-            return builder.ConvertEntity(m).GetText()
+			return builder.ConvertEntity(m).ToString()
                 // Builder automatically adds a trailing newline
                 .TrimEnd(Environment.NewLine.ToCharArray());
         }

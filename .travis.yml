@@ -1,8 +1,16 @@
-language: c
+language: objective-c
 
-install:
-      - sudo apt-get install mono-devel mono-gmcs nunit-console
+env:
+ global:
+  - EnableNuGetPackageRestore=true 
+ matrix:
+  - MONO_VER="3.0.12"
+
+before_install:
+ - wget "http://download.mono-project.com/archive/${MONO_VER}/macos-10-x86/MonoFramework-MDK-${MONO_VER}.macos10.xamarin.x86.dmg"
+ - hdid "MonoFramework-MDK-${MONO_VER}.macos10.xamarin.x86.dmg"
+ - sudo installer -pkg "/Volumes/Mono Framework MDK ${MONO_VER}/MonoFramework-MDK-${MONO_VER}.macos10.xamarin.x86.pkg" -target /
 
 script:
-      - xbuild OmniSharp.sln
-      - nunit-console ./OmniSharp.Tests/bin/Debug/OmniSharp.Tests.dll
+ - xbuild 
+ - /Library/Frameworks/Mono.framework/Versions/Current/bin/nunit-console4 -nodots -labels ./OmniSharp.Tests/bin/Debug/OmniSharp.Tests.dll

@@ -6,7 +6,7 @@ namespace OmniSharp.AutoComplete
 {
     public class MyCompletionsCategory : CompletionCategory
     {
-        public MyCompletionsCategory(EntityType entityType)
+		public MyCompletionsCategory(SymbolKind entityType)
         {
             DisplayText = GetVimKind(entityType);
         }
@@ -16,18 +16,18 @@ namespace OmniSharp.AutoComplete
             DisplayText = " ";
         }
 
-        private string GetVimKind(EntityType entityType)
+		private string GetVimKind(SymbolKind entityType)
         {
     //        v	variable
     //f	function or method
     //m	member of a struct or class
             switch(entityType)
             {
-                case(EntityType.Method):
+			case(SymbolKind.Method):
                     return "f";
-                case(EntityType.Field):
+			case(SymbolKind.Field):
                     return "v";
-                case(EntityType.Property):
+			case(SymbolKind.Property):
                     return "m";
             }
             return " ";

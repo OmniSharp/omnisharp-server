@@ -13,6 +13,23 @@ namespace OmniSharp.AutoComplete
 {
     public class CompletionDataFactory : ICompletionDataFactory
     {
+
+
+		public ICompletionData CreateImportCompletionData (IType type, bool useFullName, bool addForTypeCreation)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public ICompletionData CreateFormatItemCompletionData (string format, string description, object example)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public ICompletionData CreateXmlDocCompletionData (string tag, string description = null, string tagInsertionText = null)
+		{
+			throw new NotImplementedException ();
+		}
+
         private readonly string _partialWord;
         private readonly bool _instantiating;
         private readonly CSharpAmbience _ambience = new CSharpAmbience { ConversionFlags = AmbienceFlags }; 
@@ -40,7 +57,7 @@ namespace OmniSharp.AutoComplete
 
             _completionText = _signature = entity.Name;
 
-			_completionText = _ambience.ConvertEntity(entity).TrimEnd(';');
+			_completionText = _ambience.ConvertSymbol(entity).TrimEnd(';');
             if (!_completionText.IsValidCompletionFor(_partialWord))
                 return new CompletionData("~~");
 
@@ -52,7 +69,7 @@ namespace OmniSharp.AutoComplete
 
             if (entity is IField || entity is IProperty)
             {
-				_signature = _signatureAmbience.ConvertEntity(entity).TrimEnd(';');
+				_signature = _signatureAmbience.ConvertSymbol(entity).TrimEnd(';');
             }
 
             ICompletionData completionData = CompletionData(entity);
@@ -83,7 +100,7 @@ namespace OmniSharp.AutoComplete
                                       ConversionFlags.ShowTypeParameterList
                 };
 
-                var documentationSignature = ambience.ConvertEntity(entity);
+				var documentationSignature = ambience.ConvertSymbol(entity);
                 if (_wantDocumentation)
                 {
                     string documentation = new DocumentationFetcher().GetDocumentation(_project, entity);
@@ -101,8 +118,8 @@ namespace OmniSharp.AutoComplete
 
         private void GenerateMethodSignature(IMethod method)
         {
-			_signature = _signatureAmbience.ConvertEntity (method).TrimEnd(';');
-            _completionText = _ambience.ConvertEntity(method);
+			_signature = _signatureAmbience.ConvertSymbol(method).TrimEnd(';');
+			_completionText = _ambience.ConvertSymbol(method);
             _completionText = _completionText.Remove(_completionText.IndexOf('('));
 			if(method.TypeParameters.Count > 0 && method.TypeParameters[0].Name != "TSource")
             {
@@ -121,8 +138,8 @@ namespace OmniSharp.AutoComplete
 
         private void GenerateGenericMethodSignature(IEntity method)
         {
-			_signature = _signatureAmbience.ConvertEntity(method).TrimEnd(';');
-            _completionText = _ambience.ConvertEntity(method);
+			_signature = _signatureAmbience.ConvertSymbol(method).TrimEnd(';');
+			_completionText = _ambience.ConvertSymbol(method);
             _completionText = _completionText.Remove(_completionText.IndexOf('(')) + "<";
         }
 
@@ -131,7 +148,7 @@ namespace OmniSharp.AutoComplete
             return new CompletionData(text);
         }
 
-        public ICompletionData CreateTypeCompletionData(IType type, bool showFullName, bool isInAttributeContext)
+		public ICompletionData CreateTypeCompletionData (IType type, bool showFullName, bool isInAttributeContext, bool addForTypeCreation)
         {
             if (!type.Name.IsValidCompletionFor(_partialWord))
             {
@@ -173,7 +190,7 @@ namespace OmniSharp.AutoComplete
             return new CompletionData(type.Name);
         }
 
-        public ICompletionData CreateLiteralCompletionData(string title, string description, string insertText)
+		public ICompletionData CreateLiteralCompletionData(string title, string description = null, string insertText = null)
         {
             return new CompletionData(title, description);
         }

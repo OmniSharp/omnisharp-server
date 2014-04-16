@@ -16,7 +16,7 @@ namespace OmniSharp.CodeActions
             _bufferParser = bufferParser;
         }
 
-        public GetCodeActionsResponse GetCodeActions(CodeActionRequest req)
+        public GetCodeActionsResponse GetCodeActions(Request req)
         {
             var actions = GetContextualCodeActions(req);
 
@@ -40,7 +40,7 @@ namespace OmniSharp.CodeActions
             return new RunCodeActionsResponse {Text = context.Document.Text};
         }
 
-        private IEnumerable<CodeAction> GetContextualCodeActions(CodeActionRequest req)
+        private IEnumerable<CodeAction> GetContextualCodeActions(Request req)
         {
             var refactoringContext = OmniSharpRefactoringContext.GetContext(_bufferParser, req);
 
