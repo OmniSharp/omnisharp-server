@@ -3,7 +3,7 @@
 		
   ],
   "IgnoredCodeIssues":[
-    "Remove redundant 'private' modifier"
+    "Keyword 'private' is redundant. This is the default modifier."
   ],
   "TestCommands": {
     "All": "nunit-console.exe -nologo -labels {{AssemblyPath}}",

@@ -12,10 +12,11 @@ and [Emacs OmniSharp plugin](https://github.com/sp3ctum/omnisharp-emacs).
 
 #Build
 
-####OSX / Linux
+####OSX / Linux 
+    # Requires a minimum of Mono 3.0.12 - If you absolutely must use mono 2.10 then checkout the mono-2.10.8 tag.)
     git clone https://github.com/nosami/OmniSharpServer.git
     cd OmniSharpServer
-    xbuild /p:Configuration="net_4_0_Debug" /p:Platform="Any CPU"
+    xbuild
 
 ####Windows
     git clone https://github.com/nosami/OmniSharpServer.git
@@ -23,7 +24,7 @@ and [Emacs OmniSharp plugin](https://github.com/sp3ctum/omnisharp-emacs).
 
     # (if using Cygwin, overwrite the default config file config.json with config-cygwin.json)
     copy OmniSharp\config-cygwin.json OmniSharp\config.json
-    xbuild /p:Configuration="net_4_0_Debug" /p:Platform="Any CPU"
+    msbuild
 
 To start the Omnisharp server manually (The Vim OmniSharp client and YouCompleteMe may start this for you automatically):
 

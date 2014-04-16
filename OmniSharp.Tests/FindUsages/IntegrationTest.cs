@@ -1,9 +1,10 @@
 ﻿using System.Linq;
 using NUnit.Framework;
 using Nancy.Testing;
-using OmniSharp.FindUsages;
+using OmniSharp.Common;
 using OmniSharp.Solution;
 using Should;
+using OmniSharp.FindUsages;
 
 namespace OmniSharp.Tests.FindUsages
 {
@@ -29,20 +30,15 @@ namespace OmniSharp.Tests.FindUsages
             project.AddFile(editorText);
             solution.Projects.Add(project);
 
-            var bootstrapper = new ConfigurableBootstrapper(c => c.Dependency<ISolution>(solution));
-            var browser = new Browser(bootstrapper);
+            var handler = new FindUsagesHandler (new OmniSharp.Parser.BufferParser (solution), solution);
+            var usages = handler.FindUsages (new FindUsagesRequest { 
+                FileName = "myfile",
+                Line = 3,
+                Column = 21,
+                Buffer = editorText
+            }).QuickFixes.ToArray();
 
-            var result = browser.Post("/findusages", with =>
-            {
-                with.HttpRequest();
-                with.FormValue("FileName", "myfile");
-                with.FormValue("Line", "3");
-                with.FormValue("Column", "21");
-                with.FormValue("Buffer", editorText);
-            });
-
-            var usages = result.Body.DeserializeJson<FindUsagesResponse>().Usages.ToArray();
-            usages.Count().ShouldEqual(2);
+            usages.Length.ShouldEqual(2);
             usages[0].Text.Trim().ShouldEqual("public void method() { }");
             usages[1].Text.Trim().ShouldEqual("method();");
         }

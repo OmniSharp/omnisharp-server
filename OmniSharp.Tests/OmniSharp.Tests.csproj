@@ -93,6 +93,7 @@
     <Compile Include="GoToImplementation\GoToImplementation.cs" />
     <Compile Include="UnitTesting\ContextInformationTests.cs" />
     <Compile Include="UnitTesting\UnitTesting.cs" />
+    <Compile Include="FindUsages\IntegrationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OmniSharp\OmniSharp.csproj">
