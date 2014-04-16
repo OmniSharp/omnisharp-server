@@ -47,13 +47,19 @@ namespace OmniSharp.Refactoring
             if(request is CodeActionRequest)
             {
                 var car = request as CodeActionRequest;
-                var startLocation
-                    = new TextLocation(car.SelectionStartLine.Value, car.SelectionStartColumn.Value);
-                System.Console.WriteLine(startLocation);
-                var endLocation
-                    = new TextLocation(car.SelectionEndLine.Value, car.SelectionEndColumn.Value);
+                if(car.SelectionStartColumn.HasValue)
+                {
+                    var startLocation
+                        = new TextLocation(car.SelectionStartLine.Value, car.SelectionStartColumn.Value);
+                    var endLocation
+                        = new TextLocation(car.SelectionEndLine.Value, car.SelectionEndColumn.Value);
 
-                refactoringContext = new OmniSharpRefactoringContext(doc, resolver, location, startLocation, endLocation);
+                    refactoringContext = new OmniSharpRefactoringContext(doc, resolver, location, startLocation, endLocation);
+                }
+                else
+                {
+                    refactoringContext = new OmniSharpRefactoringContext(doc, resolver, location);
+                }
             }
             else
             {
