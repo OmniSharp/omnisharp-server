@@ -14,4 +14,4 @@ before_install:
 
 script:
  - xbuild 
- - /Library/Frameworks/Mono.framework/Versions/Current/bin/nunit-console4 -noxml -nodots -labels ./OmniSharp.Tests/bin/Debug/OmniSharp.Tests.dll
+ - /Library/Frameworks/Mono.framework/Versions/Current/bin/nunit-console4 -nodots -labels ./OmniSharp.Tests/bin/Debug/OmniSharp.Tests.dll
