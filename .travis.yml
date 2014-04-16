@@ -5,4 +5,4 @@ install:
 
 script:
       - xbuild
-      - nunit-console ./OmniSharp.Tests/bin/Debug/OmniSharp.Tests.dll
+      - /usr/bin/cli --runtime=v4.0 /usr/lib/nunit/nunit-console.exe ./OmniSharp.Tests/bin/Debug/OmniSharp.Tests.dll
