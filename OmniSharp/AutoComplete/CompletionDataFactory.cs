@@ -8,13 +8,12 @@ using ICSharpCode.NRefactory.Completion;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.Documentation;
 using OmniSharp.Solution;
+using ICSharpCode.NRefactory.TypeSystem.Implementation;
 
 namespace OmniSharp.AutoComplete
 {
     public class CompletionDataFactory : ICompletionDataFactory
     {
-
-
 		public ICompletionData CreateImportCompletionData (IType type, bool useFullName, bool addForTypeCreation)
 		{
 			throw new NotImplementedException ();
@@ -54,7 +53,6 @@ namespace OmniSharp.AutoComplete
 
         public ICompletionData CreateEntityCompletionData(IEntity entity)
         {
-
             _completionText = _signature = entity.Name;
 
 			_completionText = _ambience.ConvertSymbol(entity).TrimEnd(';');
@@ -116,30 +114,70 @@ namespace OmniSharp.AutoComplete
             return completionData;
         }
 
+		private IEnumerable<string> GetMethodParameterTypeNames(IMethod method)
+		{
+            foreach(var parameter in method.Parameters)
+            {
+                //TODO: this logic is far from complete. At the very least it needs some recursion
+                if(parameter.Type is ArrayType)
+                {
+					yield return (parameter.Type as ArrayType).ElementType.Name;
+                }
+                else if(parameter.Type is DefaultTypeParameter)
+                {
+                    yield return (parameter.Type as DefaultTypeParameter).Name;
+                }
+                else if(parameter.Type is ParameterizedType)
+                {
+                    foreach(var typeArgument in (parameter.Type as ParameterizedType).TypeArguments)
+                    {
+                        yield return typeArgument.Name;
+                    }
+                }
+                else if(parameter.Type is UnknownType)
+                {
+                    yield return (parameter.Type as UnknownType).Name;
+                }
+            }
+		}
+
+		private bool MethodTypeParametersCanBeInferred(IMethod method)
+		{
+            if(method.IsExtensionMethod && method.Parameters.Count == 0)
+            {
+                // 'this' extension parameter is intentionally hidden by NRefactory
+                // using ReducedExtensionMethod, so we can't check it
+                return true;
+            }
+			var parameterTypes = GetMethodParameterTypeNames(method);
+			var methodTypeParameters = method.TypeParameters.Select(p => p.FullName).Distinct();
+			return !methodTypeParameters.Except(parameterTypes).Any();
+		}
+
         private void GenerateMethodSignature(IMethod method)
         {
 			_signature = _signatureAmbience.ConvertSymbol(method).TrimEnd(';');
 			_completionText = _ambience.ConvertSymbol(method);
             _completionText = _completionText.Remove(_completionText.IndexOf('('));
-			if(method.TypeParameters.Count > 0 && method.TypeParameters[0].Name != "TSource")
+            var parameterTypesCanBeInferred = MethodTypeParametersCanBeInferred(method);
+			if((method.TypeParameters.Count > 0 && method.TypeParameters[0].Name != "TSource") && !parameterTypesCanBeInferred)
             {
 				_completionText += "<";
             }
             else
             {
 				_completionText += "(";
-                var zeroParameterCount = method.IsExtensionMethod ? 1 : 0;
-                if (method.Parameters.Count == zeroParameterCount)
+                if (method.Parameters.Count == 0)
                 {
                     _completionText += ")";
                 }
             }
         }
 
-        private void GenerateGenericMethodSignature(IEntity method)
+        private void GenerateGenericMethodSignature(ISymbol method)
         {
 			_signature = _signatureAmbience.ConvertSymbol(method).TrimEnd(';');
-			_completionText = _ambience.ConvertSymbol(method);
+			_completionText = _signatureAmbience.ConvertSymbol(method);
             _completionText = _completionText.Remove(_completionText.IndexOf('(')) + "<";
         }
 

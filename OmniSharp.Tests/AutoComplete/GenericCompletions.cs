@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using Should;
 
 namespace OmniSharp.Tests.AutoComplete
 {
@@ -96,7 +97,7 @@ namespace OmniSharp.Tests.AutoComplete
         }
 
         [Test]
-		public void Should_add_angle_bracket_to_method_as_generic_type_is_unknown()
+		public void Should_not_add_bracket_to_method_as_generic_type_is_known()
         {
             CompletionsFor(
                 @"using System.Collections.Generic;
@@ -107,7 +108,7 @@ namespace OmniSharp.Tests.AutoComplete
                     l.Conv$
                 }
             }")
-				.ShouldContain("ConvertAll<");
+				.ShouldContain("ConvertAll(");
         }
 
 		[Test]
@@ -125,5 +126,82 @@ namespace OmniSharp.Tests.AutoComplete
             }")
 				.ShouldContain("Distinct(");
 		}
+
+        [Test]
+        public void Should_not_add_angle_bracket_when_type_can_be_inferred_from_parameter()
+        {
+            CompletionsFor(
+                    @"public class test
+                    {
+                        public void GenericMethod<T>(T whatever)
+                        {
+                        }
+
+                        public void Caller()
+                        {
+                        
+                            GenericMe$
+                    ").ShouldContain("GenericMethod(");
+        }
+
+        [Test]
+        public void Should_add_angle_bracket_when_type_cannot_be_inferred_from_parameter()
+        {
+            CompletionsFor(
+                    @"public class test
+                    {
+                        public void GenericMethod<T2>(T whatever)
+                        {
+                        }
+
+                        public void Caller()
+                        {
+                        
+                            GenericMe$
+                    ").ShouldContain("GenericMethod<");
+        }
+
+        [Test]
+        public void Should_not_add_angle_bracket_to_known_type_extension_method_with_enumerable_parameter()
+        {
+            CompletionsFor(
+                    @"
+                    using System.Collections.Generic;
+                    public static class Extensions
+                    {
+                        public static void ShouldContain<T>(this IEnumerable<T> actual, IEnumerable<T> expected)
+                        {
+                        }
+                    }
+
+                    public class test
+                    {
+                        public void Caller()
+                        {
+                            new string[].ShouldC$
+                    ").ShouldContain("ShouldContain(");
+        }
+
+        [Test]
+        public void Should_not_add_angle_bracket_to_known_type_extension_method_with_no_parameters()
+        {
+            CompletionsFor(
+                    @"
+                    using System.Collections.Generic;
+                    public static class Extensions
+                    {
+                        public static void ShouldNotBeNull<T>(this T expected)
+                        {
+                        }
+                    }
+
+                    public class test
+                    {
+                        public void Caller()
+                        {
+                            1.ShouldN$
+                    ").ShouldContain("ShouldNotBeNull()");
+            "1".ShouldNotBeNull();
+        }
     }
 }
