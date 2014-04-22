@@ -1,5 +1,6 @@
 using System.Linq;
 using NUnit.Framework;
+using OmniSharp.Configuration;
 using OmniSharp.Parser;
 using OmniSharp.Rename;
 using Should;
@@ -19,7 +20,7 @@ namespace OmniSharp.Tests.Rename
                 .Build();
             
             var bufferParser = new BufferParser(solution);
-            var renameHandler = new RenameHandler(solution, bufferParser);
+            var renameHandler = new RenameHandler(solution, bufferParser, new OmniSharpConfiguration());
             var request = new RenameRequest
                 {
                     Buffer = buffer,

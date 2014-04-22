@@ -5,6 +5,7 @@ using ICSharpCode.NRefactory.CSharp.Refactoring;
 using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.NRefactory.Editor;
 using OmniSharp.Common;
+using OmniSharp.Configuration;
 using OmniSharp.Parser;
 using OmniSharp.Refactoring;
 
@@ -12,9 +13,11 @@ namespace OmniSharp.Overrides {
     public class OverrideHandler {
 
         private readonly BufferParser _parser;
+        private readonly OmniSharpConfiguration _config;
 
-        public OverrideHandler(BufferParser parser) {
+        public OverrideHandler(BufferParser parser, OmniSharpConfiguration config) {
             _parser = parser;
+            _config = config;
         }
 
         /// <summary>
@@ -23,7 +26,7 @@ namespace OmniSharp.Overrides {
         /// </summary>
         public IEnumerable<GetOverrideTargetsResponse> GetOverrideTargets
             (Request request) {
-            var overrideContext = new OverrideContext(request, this._parser);
+            var overrideContext = new OverrideContext(request, _parser);
 
             return overrideContext.OverrideTargets;
         }
@@ -39,7 +42,7 @@ namespace OmniSharp.Overrides {
         /// </remarks>
         public RunOverrideTargetResponse RunOverrideTarget
             (RunOverrideTargetRequest request) {
-            var overrideContext = new OverrideContext(request, this._parser);
+            var overrideContext = new OverrideContext(request, _parser);
             var refactoringContext = OmniSharpRefactoringContext.GetContext
                 (overrideContext.BufferParser, request);
 
@@ -63,7 +66,7 @@ namespace OmniSharp.Overrides {
                 ( request
                 , refactoringContext
                 , overrideContext.CompletionContext.ParsedContent
-                , script: new OmniSharpScript(refactoringContext)
+                , script: new OmniSharpScript(refactoringContext, _config)
                 , memberDeclaration:
                     builder.ConvertEntity(memberToOverride));
 

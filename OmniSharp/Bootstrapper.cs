@@ -8,6 +8,7 @@ using Nancy.Json;
 using Nancy.TinyIoc;
 using MonoDevelop.Projects;
 using OmniSharp.Common;
+using OmniSharp.Configuration;
 using OmniSharp.ProjectManipulation.AddReference;
 using OmniSharp.Solution;
 
@@ -118,6 +119,7 @@ namespace OmniSharp
             container.Register(_solution);
             container.Register(_fileSystem);
             container.Register(_logger);
+            container.Register(ConfigurationLoader.Config);
             container.RegisterMultiple<IReferenceProcessor>(new []{typeof(AddProjectReferenceProcessor), typeof(AddFileReferenceProcessor), typeof(AddGacReferenceProcessor)});			
         }
     }

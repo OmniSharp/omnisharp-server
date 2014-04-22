@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using OmniSharp.CodeFormat;
+using OmniSharp.Configuration;
 using Should;
 
 namespace OmniSharp.Tests.CodeFormat
@@ -18,7 +19,8 @@ namespace OmniSharp.Tests.CodeFormat
 @"public class Test
 {
 }";
-            var handler = new CodeFormatHandler();
+           
+            var handler = new CodeFormatHandler(new OmniSharpConfiguration());
             var buffer = handler.Format(new CodeFormatRequest {Buffer = code}).Buffer;
 			buffer.Replace("\r\n", "\n").ShouldEqual(expected);
         }

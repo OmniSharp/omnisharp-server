@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,15 +7,15 @@ using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Refactoring;
 using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.NRefactory.TypeSystem;
-using System;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.Refactoring
 {
     public class OmniSharpScript : DocumentScript
     {
         readonly OmniSharpRefactoringContext _context;
-        public OmniSharpScript(OmniSharpRefactoringContext context)
-            : base(context.Document, FormattingOptionsFactory.CreateAllman(), new TextEditorOptions())
+        public OmniSharpScript(OmniSharpRefactoringContext context, OmniSharpConfiguration config)
+            : base(context.Document, config.CSharpFormattingOptions, config.TextEditorOptions)
         {
             _context = context;
         }

@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.NRefactory.CSharp.Refactoring;
-using OmniSharp.CodeActions;
 using OmniSharp.Common;
 using OmniSharp.Configuration;
 using OmniSharp.Parser;
 using OmniSharp.Refactoring;
-using OmniSharp.Solution;
 
 namespace OmniSharp.CodeIssues
 {
     public class CodeIssuesHandler
     {
         private readonly BufferParser _bufferParser;
+        private readonly OmniSharpConfiguration _config;
 
-        public CodeIssuesHandler(ISolution solution, BufferParser bufferParser)
+        public CodeIssuesHandler(BufferParser bufferParser, OmniSharpConfiguration config)
         {
             _bufferParser = bufferParser;
+            _config = config;
         }
 
         public QuickFixResponse GetCodeIssues(Request req)
@@ -42,7 +42,7 @@ namespace OmniSharp.CodeIssues
 
             var context = OmniSharpRefactoringContext.GetContext(_bufferParser, req);
             
-            using (var script = new OmniSharpScript(context))
+            using (var script = new OmniSharpScript(context, _config))
             {
                 var action = issue.Actions.FirstOrDefault();
                 if (action != null)

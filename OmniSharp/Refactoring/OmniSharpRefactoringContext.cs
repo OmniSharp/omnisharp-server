@@ -176,7 +176,8 @@ namespace OmniSharp.Refactoring
                 yield return new NamingRule(AffectedEntity.Field) {
                     Name = "Fields",
                          NamingStyle = NamingStyle.CamelCaseWithLowerLetterUnderscore,
-                         VisibilityMask = Modifiers.Public | Modifiers.Protected
+                         VisibilityMask = Modifiers.Public | Modifiers.Protected,
+                         RequiredPrefixes = new[] { "_" }
                 };
 
                 yield return new NamingRule(AffectedEntity.ReadonlyField) {
