@@ -10,6 +10,11 @@ namespace OmniSharp.ReloadSolution
             Post["/reloadsolution"] = x =>
                 {
                     solution.Reload();
+                    var config = Configuration.ConfigurationLoader.Config;
+                    string mode = config.ClientPathMode.HasValue
+                        ? config.ClientPathMode.Value.ToString()
+                        : null;
+                    Configuration.ConfigurationLoader.Load(mode);
                     return Response.AsJson(true);
                 };
         }
