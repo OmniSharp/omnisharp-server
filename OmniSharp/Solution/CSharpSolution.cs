@@ -121,7 +121,7 @@ namespace OmniSharp.Solution
                 {
                     var directory = file.Directory;
 
-                    while(project==null && directory!=null)
+                    while(project == null && directory != null)
                     {
                         var projectFiles = directory.GetFiles("*.csproj");
                         directory = directory.Parent;
@@ -141,8 +141,10 @@ namespace OmniSharp.Solution
                     }
                 }
             }
+
+            project = project ?? _orphanProject;
             _logger.Info(filename + " belongs to " + project.FileName);
-            return project ?? _orphanProject;
+            return project;
         }
 
         public void Reload()

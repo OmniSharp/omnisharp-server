@@ -94,6 +94,10 @@
     <Compile Include="UnitTesting\ContextInformationTests.cs" />
     <Compile Include="UnitTesting\UnitTesting.cs" />
     <Compile Include="FindUsages\IntegrationTest.cs" />
+    <Compile Include="Solution\SolutionTest.cs" />
+    <Compile Include="Solution\minimal\minimal\MyClass.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OmniSharp\OmniSharp.csproj">
@@ -115,9 +119,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Solution\minimal\minimal.sln">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Solution\minimal\minimal\minimal.csproj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FindUsages\" />
+    <Folder Include="Solution\" />
+    <Folder Include="Solution\minimal\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!--<Import Condition="HasTrailingSlash('$(SolutionDir)')" Project="$(SolutionDir).nuget\NuGet.targets" />-->
