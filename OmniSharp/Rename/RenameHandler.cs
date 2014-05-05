@@ -82,7 +82,7 @@ namespace OmniSharp.Rename
                     response.Changes = modfiedFiles;
 
                     _bufferParser.ParsedContent(modifiedBuffer, fileName);
-                    _solution.GetFile(fileName).Update(modifiedBuffer);
+                    _solution.ProjectContainingFile(fileName).UpdateFile (fileName, modifiedBuffer);
                 }
             }
 

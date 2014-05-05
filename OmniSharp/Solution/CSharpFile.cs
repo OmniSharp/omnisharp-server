@@ -26,7 +26,7 @@ namespace OmniSharp.Solution
             Parse(project, fileName, source);
         }
 
-        private void Parse(IProject project, string fileName, string source)
+        public void Parse(IProject project, string fileName, string source)
         {
             this.FileName = fileName;
             this.Content = new StringTextSource(source);
@@ -41,10 +41,6 @@ namespace OmniSharp.Solution
 
         protected IProject Project { get; set; }
 
-        public void Update(string source)
-        {
-            this.Content = new StringTextSource(source);
-            Parse(Project, this.FileName, source);
-        }
+
     }
 }

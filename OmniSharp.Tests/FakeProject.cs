@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.Solution;
+using ICSharpCode.NRefactory.Editor;
 
 namespace OmniSharp.Tests
 {
@@ -38,9 +39,16 @@ namespace OmniSharp.Tests
                 .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
         }
 
-        public CSharpFile GetFile(string fileName)
+        private CSharpFile GetFile(string fileName)
         {
             return this.Files.SingleOrDefault(f => f.ParsedFile.FileName.LowerCaseDriveLetter().Equals(fileName.LowerCaseDriveLetter(), StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        public void UpdateFile(string fileName,string source)
+        {
+            var file = GetFile (fileName);
+            file.Content = new StringTextSource(source);
+            file.Parse(this, fileName, source);
         }
 
         public IProjectContent ProjectContent { get; set; }

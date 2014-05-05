@@ -16,7 +16,7 @@ namespace OmniSharp.Parser
         public ParsedResult ParsedContent(string editorText, string filename)
         {
             var project = _solution.ProjectContainingFile(filename);
-            project.GetFile(filename).Update(editorText);
+            project.UpdateFile(filename, editorText);
 
             var syntaxTree = project.CreateParser().Parse(editorText, filename);
 

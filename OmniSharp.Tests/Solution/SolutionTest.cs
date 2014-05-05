@@ -17,16 +17,23 @@ namespace OmniSharp.Tests
         }
 
         [Test]
-        public void Should_contain_one_project()
+        public void Should_contain_one_orphan_project_and_one_real()
         {
-            _solution.Projects.Count.ShouldEqual (1);
-            _solution.Projects [0].Title.ShouldEqual ("minimal");
+            _solution.Projects.Count.ShouldEqual (2);
+            _solution.Projects [1].Title.ShouldEqual ("minimal");
         }
 
         [Test]
         public void Should_put_unknown_file_into_orphan_project()
         {
             _solution.ProjectContainingFile ("test.cs").Title.ShouldEqual ("Orphan Project");
+        }
+
+        [Test]
+        public void Should_put_unknown_file_near_to_close_project_file()
+        {
+            _solution.ProjectContainingFile (Environment.CurrentDirectory + "/Solution/minimal/minimal/test.cs")
+                .Title.ShouldEqual ("minimal");
         }
     }
 }

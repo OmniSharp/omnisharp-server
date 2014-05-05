@@ -13,7 +13,7 @@ namespace OmniSharp.Solution
         string FileName { get; }
         List<CSharpFile> Files { get; }
         List<IAssemblyReference> References { get; set; }
-        CSharpFile GetFile(string fileName);
+        void UpdateFile (string filename, string source);
         CSharpParser CreateParser();
         XDocument AsXml();
         void Save(XDocument project);

@@ -8,6 +8,7 @@ using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
 using ICSharpCode.NRefactory.Utils;
 using Mono.Cecil;
+using ICSharpCode.NRefactory.Editor;
 
 namespace OmniSharp.Solution
 {
@@ -223,6 +224,13 @@ namespace OmniSharp.Solution
         public CSharpFile GetFile(string fileName)
         {
             return Files.Single(f => f.FileName.Equals(fileName, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        public void UpdateFile(string fileName,string source)
+        {
+            var file = GetFile (fileName);
+            file.Content = new StringTextSource(source);
+            file.Parse(this, fileName, source);
         }
 
         public CSharpParser CreateParser()
