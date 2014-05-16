@@ -75,11 +75,13 @@ namespace OmniSharp.FindUsages
             else
             {
                 IEntity entity = null;
+                IAssembly sourceCompilation = null;
                 IEnumerable<IList<IFindReferenceSearchScope>> searchScopes = null;
                 if (resolveResult is TypeResolveResult)
                 {
                     var type = (resolveResult as TypeResolveResult).Type;
                     entity = type.GetDefinition();
+                    sourceCompilation = entity.ParentAssembly;
                     ProcessTypeResults(type);
                     searchScopes = new[] { findReferences.GetSearchScopes(entity) };
                 }
@@ -87,6 +89,7 @@ namespace OmniSharp.FindUsages
                 if (resolveResult is MemberResolveResult)
                 {
                     entity = (resolveResult as MemberResolveResult).Member;
+                    sourceCompilation = entity.ParentAssembly;
                     if (entity.SymbolKind == SymbolKind.Constructor)
                     {
                         // process type instead
@@ -98,8 +101,10 @@ namespace OmniSharp.FindUsages
                     else
                     {
                         ProcessMemberResults(resolveResult);
+                        var member = (resolveResult as MemberResolveResult).Member;
+                        sourceCompilation = member.ParentAssembly;
                         var members = MemberCollector.CollectMembers(_solution,
-							(resolveResult as MemberResolveResult).Member, false);
+                                          member, false);
                         searchScopes = members.Select(findReferences.GetSearchScopes);
                     }
                 }
@@ -107,25 +112,31 @@ namespace OmniSharp.FindUsages
                 if (entity == null)
                     return _result;
 
-                foreach (var project in _solution.Projects)
+                IProject sourceProject = _solution.Projects.FirstOrDefault(p => p.ProjectContent.FullAssemblyName == sourceCompilation.FullAssemblyName);
+                var projectsThatReferenceUsage = from p in _solution.Projects
+                                                 where p.References.Any(r => r.Resolve(res.Compilation.TypeResolveContext).FullAssemblyName == sourceCompilation.FullAssemblyName)
+                                                 || p == sourceProject
+                                                 select p;
+
+                foreach (var project in projectsThatReferenceUsage)
                 {
                     var pctx = project.ProjectContent.CreateCompilation();
                     var interesting = (from file in project.Files
-                                    select (file.ParsedFile as CSharpUnresolvedFile)).ToList();
+                                                      select (file.ParsedFile as CSharpUnresolvedFile)).ToList();
 
                     Parallel.ForEach(interesting.Distinct(), file =>
-                    {
-                        string text = _solution.GetFile(file.FileName.LowerCaseDriveLetter()).Content.Text;
-                        var unit = new CSharpParser().Parse(text, file.FileName);
-
-                        foreach(var scope in searchScopes)
                         {
-                            findReferences.FindReferencesInFile(scope, file, unit,
-                                pctx,
-                                (node, rr) => _result.Add(node.GetIdentifier()),
-                                CancellationToken.None);
-                        }
-                    });
+                            string text = _solution.GetFile(file.FileName.LowerCaseDriveLetter()).Content.Text;
+                            var unit = new CSharpParser().Parse(text, file.FileName);
+
+                            foreach (var scope in searchScopes)
+                            {
+                                findReferences.FindReferencesInFile(scope, file, unit,
+                                    pctx,
+                                    (node, rr) => _result.Add(node.GetIdentifier()),
+                                    CancellationToken.None);
+                            }
+                        });
                 }
             }
             return _result;
