@@ -77,13 +77,11 @@ namespace OmniSharp.FindUsages
             else
             {
                 IEntity entity = null;
-                IAssembly sourceCompilation = null;
                 IEnumerable<IList<IFindReferenceSearchScope>> searchScopes = null;
                 if (resolveResult is TypeResolveResult)
                 {
                     var type = (resolveResult as TypeResolveResult).Type;
                     entity = type.GetDefinition();
-                    sourceCompilation = entity.ParentAssembly;
                     ProcessTypeResults(type);
                     searchScopes = new[] { findReferences.GetSearchScopes(entity) };
                 }
@@ -91,7 +89,6 @@ namespace OmniSharp.FindUsages
                 if (resolveResult is MemberResolveResult)
                 {
                     entity = (resolveResult as MemberResolveResult).Member;
-                    sourceCompilation = entity.ParentAssembly;
                     if (entity.SymbolKind == SymbolKind.Constructor)
                     {
                         // process type instead
@@ -104,7 +101,6 @@ namespace OmniSharp.FindUsages
                     {
                         ProcessMemberResults(resolveResult);
                         var member = (resolveResult as MemberResolveResult).Member;
-                        sourceCompilation = member.ParentAssembly;
                         var members = MemberCollector.CollectMembers(_solution,
                                           member, false);
                         searchScopes = members.Select(findReferences.GetSearchScopes);
@@ -114,7 +110,7 @@ namespace OmniSharp.FindUsages
                 if (entity == null)
                     return _result;
 
-                var projectsThatReferenceUsage = _projectFinder.FindProjectsReferencing(res.Compilation.TypeResolveContext, sourceCompilation);
+                var projectsThatReferenceUsage = _projectFinder.FindProjectsReferencing(entity.Compilation.TypeResolveContext);
 
                 foreach (var project in projectsThatReferenceUsage)
                 {

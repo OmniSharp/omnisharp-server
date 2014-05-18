@@ -88,7 +88,7 @@ namespace OmniSharp.GotoImplementation
 
         private IEnumerable<IUnresolvedTypeDefinition> GetAllTypes(ITypeResolveContext context)
         {
-            var projects = _projectFinder.FindProjectsReferencing(context, context.CurrentAssembly);
+            var projects = _projectFinder.FindProjectsReferencing(context);
             return projects.SelectMany(project => project.ProjectContent.GetAllTypeDefinitions());
         }
     }

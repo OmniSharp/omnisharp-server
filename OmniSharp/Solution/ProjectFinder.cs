@@ -13,11 +13,14 @@ namespace OmniSharp.Solution
             _solution = solution;
         }
 
-        public IEnumerable<IProject> FindProjectsReferencing(ITypeResolveContext context, IAssembly sourceCompilation)
+        public IEnumerable<IProject> FindProjectsReferencing(ITypeResolveContext context)
         {
-            IProject sourceProject = _solution.Projects.FirstOrDefault(p => p.ProjectContent.FullAssemblyName == sourceCompilation.FullAssemblyName);
+            var contextAssemblyName = context.Compilation.MainAssembly.FullAssemblyName;
+            System.Console.WriteLine(contextAssemblyName);
+
+            IProject sourceProject = _solution.Projects.FirstOrDefault(p => p.ProjectContent.FullAssemblyName == contextAssemblyName);
             var projectsThatReferenceUsage = from p in _solution.Projects
-            where p.References.Any(r => r.Resolve(context).FullAssemblyName == sourceCompilation.FullAssemblyName) || p == sourceProject
+            where p.References.Any(r => r.Resolve(context).FullAssemblyName == contextAssemblyName) || p == sourceProject
             select p;
             return projectsThatReferenceUsage;
         }
