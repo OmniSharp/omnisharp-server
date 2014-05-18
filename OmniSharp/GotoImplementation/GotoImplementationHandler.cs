@@ -16,11 +16,13 @@ namespace OmniSharp.GotoImplementation
     {
         private readonly ISolution _solution;
         private readonly BufferParser _bufferParser;
+        private readonly ProjectFinder _projectFinder;
 
-        public GotoImplementationHandler(ISolution solution, BufferParser bufferParser)
+        public GotoImplementationHandler(ISolution solution, BufferParser bufferParser, ProjectFinder projectFinder)
         {
             _solution = solution;
             _bufferParser = bufferParser;
+            _projectFinder = projectFinder;
         }
 
         public QuickFixResponse FindDerivedMembersAsQuickFixes
@@ -37,7 +39,7 @@ namespace OmniSharp.GotoImplementation
 
             if (resolveResult is TypeResolveResult)
             {
-                return GetTypeResponse(rctx, (resolveResult as TypeResolveResult).Type.GetDefinition());
+                return GetTypeResponse(rctx, resolveResult.Type.GetDefinition());
             }
 
             if (resolveResult is MemberResolveResult)
@@ -48,9 +50,9 @@ namespace OmniSharp.GotoImplementation
             return new QuickFixResponse();
         }
 
-        private QuickFixResponse GetTypeResponse(CSharpTypeResolveContext rctx, ITypeDefinition typeDefinition)
+        private QuickFixResponse GetTypeResponse(ITypeResolveContext rctx, ITypeDefinition typeDefinition)
         {
-            var types = GetAllTypes().Select(t => t.Resolve(rctx).GetDefinition());
+            var types = GetAllTypes(rctx).Select(t => t.Resolve(rctx).GetDefinition());
             var quickFixes = from type in types where type != null
                                  && type != typeDefinition
                                  && type.IsDerivedFrom(typeDefinition)
@@ -61,11 +63,11 @@ namespace OmniSharp.GotoImplementation
             return new QuickFixResponse(quickFixes);
         }
 
-        private QuickFixResponse GetMemberResponse(CSharpTypeResolveContext rctx, MemberResolveResult resolveResult)
+        private QuickFixResponse GetMemberResponse(ITypeResolveContext rctx, MemberResolveResult resolveResult)
         {
             var quickFixes = new List<QuickFix>();
             //TODO: we don't need to scan all types in all projects
-            foreach (IUnresolvedTypeDefinition type in GetAllTypes())
+            foreach (IUnresolvedTypeDefinition type in GetAllTypes(rctx))
             {
                 ITypeDefinition resolvedDef = type.Resolve(rctx).GetDefinition();
                 if (resolvedDef != null)
@@ -84,9 +86,10 @@ namespace OmniSharp.GotoImplementation
             return new QuickFixResponse(quickFixes);
         }
 
-        private IEnumerable<IUnresolvedTypeDefinition> GetAllTypes()
+        private IEnumerable<IUnresolvedTypeDefinition> GetAllTypes(ITypeResolveContext context)
         {
-            return _solution.Projects.SelectMany(project => project.ProjectContent.GetAllTypeDefinitions());
+            var projects = _projectFinder.FindProjectsReferencing(context, context.CurrentAssembly);
+            return projects.SelectMany(project => project.ProjectContent.GetAllTypeDefinitions());
         }
     }
 

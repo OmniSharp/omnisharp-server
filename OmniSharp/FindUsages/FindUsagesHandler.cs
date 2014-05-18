@@ -22,9 +22,11 @@ namespace OmniSharp.FindUsages
         private readonly BufferParser _parser;
         private readonly ISolution _solution;
         private ConcurrentBag<AstNode> _result;
+        private ProjectFinder _projectFinder;
 
-        public FindUsagesHandler(BufferParser parser, ISolution solution)
+        public FindUsagesHandler(BufferParser parser, ISolution solution, ProjectFinder projectFinder)
         {
+            _projectFinder = projectFinder;
             _parser = parser;
             _solution = solution;
         }
@@ -112,11 +114,7 @@ namespace OmniSharp.FindUsages
                 if (entity == null)
                     return _result;
 
-                IProject sourceProject = _solution.Projects.FirstOrDefault(p => p.ProjectContent.FullAssemblyName == sourceCompilation.FullAssemblyName);
-                var projectsThatReferenceUsage = from p in _solution.Projects
-                                                 where p.References.Any(r => r.Resolve(res.Compilation.TypeResolveContext).FullAssemblyName == sourceCompilation.FullAssemblyName)
-                                                 || p == sourceProject
-                                                 select p;
+                var projectsThatReferenceUsage = _projectFinder.FindProjectsReferencing(res.Compilation.TypeResolveContext, sourceCompilation);
 
                 foreach (var project in projectsThatReferenceUsage)
                 {

@@ -17,11 +17,11 @@ namespace OmniSharp.Rename
         private readonly FindUsagesHandler _findUsagesHandler;
 		private readonly OmniSharpConfiguration _config;
 
-        public RenameHandler(ISolution solution, BufferParser bufferParser, OmniSharpConfiguration config)
+        public RenameHandler(ISolution solution, BufferParser bufferParser, OmniSharpConfiguration config, FindUsagesHandler findUsagesHandler)
         {
             _solution = solution;
             _bufferParser = bufferParser;
-            _findUsagesHandler = new FindUsagesHandler(bufferParser, solution);
+            _findUsagesHandler = findUsagesHandler;
             _config = config;
         }
 

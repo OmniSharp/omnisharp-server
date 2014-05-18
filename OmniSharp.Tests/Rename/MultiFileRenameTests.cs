@@ -2,8 +2,10 @@
 using System.Linq;
 using NUnit.Framework;
 using OmniSharp.Configuration;
+using OmniSharp.FindUsages;
 using OmniSharp.Parser;
 using OmniSharp.Rename;
+using OmniSharp.Solution;
 using Should;
 
 namespace OmniSharp.Tests.Rename
@@ -35,7 +37,7 @@ namespace OmniSharp.Tests.Rename
             }
             var solution = solutionBuilder.Build();
             var bufferParser = new BufferParser(solution);        
-            var renameHandler = new RenameHandler(solution, bufferParser, new OmniSharpConfiguration());
+            var renameHandler = new RenameHandler(solution, bufferParser, new OmniSharpConfiguration(), new FindUsagesHandler(bufferParser, solution, new ProjectFinder(solution)));
 
             var response = renameHandler.Rename(request);
             return response.Changes;

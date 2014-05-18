@@ -247,6 +247,7 @@
     <Compile Include="GotoRegion\GetDirectivesAstVisitor.cs" />
     <Compile Include="UpdateBuffer\UpdateBufferModule.cs" />
     <Compile Include="CodeActions\GetCodeActionRequest.cs" />
+    <Compile Include="Solution\ProjectFinder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

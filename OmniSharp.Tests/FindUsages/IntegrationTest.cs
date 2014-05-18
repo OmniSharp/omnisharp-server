@@ -30,7 +30,7 @@ namespace OmniSharp.Tests.FindUsages
             project.AddFile(editorText);
             solution.Projects.Add(project);
 
-            var handler = new FindUsagesHandler (new OmniSharp.Parser.BufferParser (solution), solution);
+            var handler = new FindUsagesHandler (new OmniSharp.Parser.BufferParser (solution), solution, new ProjectFinder(solution));
             var usages = handler.FindUsages (new FindUsagesRequest { 
                 FileName = "myfile",
                 Line = 3,
