@@ -26,13 +26,12 @@
 
 //using MonoDevelop.Core;
 //using Mono.Addins;
-using System.Collections.Generic;
 //using MonoDevelop.Projects.Extensions;
-using ICSharpCode.NRefactory.TypeSystem;
+using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using ICSharpCode.NRefactory.Documentation;
-using Monodoc.Generators;
+using ICSharpCode.NRefactory.TypeSystem;
 
 namespace MonoDevelop.Projects
 {
@@ -175,4 +174,3 @@ namespace MonoDevelop.Projects
 
     }
 }
-

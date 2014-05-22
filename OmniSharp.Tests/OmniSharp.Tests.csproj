@@ -98,6 +98,7 @@
     <Compile Include="Solution\minimal\minimal\MyClass.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="FixUsings\FixUsingsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OmniSharp\OmniSharp.csproj">

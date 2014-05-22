@@ -4,7 +4,6 @@ using System.Net.Sockets;
 using System.Threading;
 using Nancy.Hosting.Self;
 using NDesk.Options;
-using OmniSharp;
 using OmniSharp.Common;
 using OmniSharp.Solution;
 

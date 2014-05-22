@@ -1,11 +1,9 @@
-﻿using System;
+﻿
+using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Diagnostics;
 using OmniSharp.Common;
 using OmniSharp.Configuration;
-
 namespace OmniSharp.Solution
 {
     public static class StringExtensions

@@ -15,9 +15,9 @@
   ],
 
   "TestCommands": {
-    "All": "nunit-console.exe -nologo -labels {{AssemblyPath}}",
-    "Fixture": "nunit-console.exe -nologo -labels {{AssemblyPath}} -run={{TypeName}}",
-    "Single": "nunit-console.exe -nologo -labels {{AssemblyPath}} -run={{TypeName}}.{{MethodName}}"
+    "All": "nunit-console.exe -nologo {{AssemblyPath}}",
+    "Fixture": "nunit-console.exe -nologo {{AssemblyPath}} -run={{TypeName}}",
+    "Single": "nunit-console.exe -nologo {{AssemblyPath}} -run={{TypeName}}.{{MethodName}}"
   },
 
   "TextEditorOptions": {

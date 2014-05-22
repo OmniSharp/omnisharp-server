@@ -6,7 +6,6 @@ using ICSharpCode.NRefactory.CSharp.Completion;
 using ICSharpCode.NRefactory.Completion;
 using OmniSharp.Parser;
 using OmniSharp.Solution;
-
 namespace OmniSharp.AutoComplete
 {
     public class AutoCompleteHandler
