@@ -16,16 +16,16 @@ and [Emacs OmniSharp plugin](https://github.com/sp3ctum/omnisharp-emacs).
 Requires a minimum of Mono 3.0.12 - If you absolutely must use mono 2.10 then checkout the mono-2.10.8 tag. [Updating mono on ubuntu](https://github.com/nosami/OmniSharpServer/wiki)
 ```
     git clone https://github.com/nosami/OmniSharpServer.git
-    git submodule update --init --recursive
     cd OmniSharpServer
+    git submodule update --init --recursive
     xbuild
 ```
 
 ####Windows
 ```
     git clone https://github.com/nosami/OmniSharpServer.git
-    git submodule update --init --recursive
     cd OmniSharpServer
+    git submodule update --init --recursive
 
     # (if using Cygwin, overwrite the default config file config.json with config-cygwin.json)
     copy OmniSharp\config-cygwin.json OmniSharp\config.json
