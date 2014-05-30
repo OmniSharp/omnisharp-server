@@ -6,9 +6,9 @@ using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Completion;
 using ICSharpCode.NRefactory.Completion;
 using ICSharpCode.NRefactory.TypeSystem;
+using ICSharpCode.NRefactory.TypeSystem.Implementation;
 using OmniSharp.Documentation;
 using OmniSharp.Solution;
-using ICSharpCode.NRefactory.TypeSystem.Implementation;
 
 namespace OmniSharp.AutoComplete
 {
