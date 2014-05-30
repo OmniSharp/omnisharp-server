@@ -84,60 +84,147 @@ namespace OmniSharp.Solution
             _logger = logger;
             _solution = solution;
             Title = title;
-            FileName = fileName.ForceNativePathSeparator();
-            ProjectId = id;
-            Files = new List<CSharpFile>();
+            bool foldmode = false;
 
-            var p = new Microsoft.Build.Evaluation.Project(FileName);
-            AssemblyName = p.GetPropertyValue("AssemblyName");
-
-            SetCompilerSettings(p);
-
-            AddCSharpFiles(p);
-
-            References = new List<IAssemblyReference>();
-            AddMsCorlib();
-
-            bool hasSystemCore = false;
-            foreach (var item in p.GetItems("Reference"))
-            {
-				var assemblyFileName = GetAssemblyFileNameFromHintPath(p, item);
-                //If there isn't a path hint or it doesn't exist, try searching
-                if (assemblyFileName == null)
-                    assemblyFileName = FindAssembly(item.EvaluatedInclude);
-
-                //If it isn't in the search paths, try the GAC
-                if (assemblyFileName == null && PlatformService.IsWindows)
-                    assemblyFileName = FindAssemblyInNetGac(item.EvaluatedInclude);
-
-                if (assemblyFileName != null)
+            if (!Path.HasExtension( fileName)){
+                if (Directory.Exists(fileName))
                 {
-                    if (Path.GetFileName(assemblyFileName).Equals("System.Core.dll", StringComparison.OrdinalIgnoreCase))
-                        hasSystemCore = true;
-
-                    _logger.Debug("Loading assembly " + item.EvaluatedInclude);
-                    try
-                    {
-                        AddReference(LoadAssembly(assemblyFileName));
-                    } catch (Exception e)
-                    {
-                        _logger.Error(e);
-                    }
-
-                } else
-                    _logger.Debug("Could not find referenced assembly " + item.EvaluatedInclude);
+                    foldmode = true;
+                }
             }
-            if (!hasSystemCore && FindAssembly("System.Core") != null)
-                AddReference(LoadAssembly(FindAssembly("System.Core")));
+            if (foldmode)
+            {
+                ProjectId = id;
+                Files = new List<CSharpFile>();
 
-            AddProjectReferences(p);
+                //var p = new Microsoft.Build.Evaluation.Project(FileName);
+                //AssemblyName = p.GetPropertyValue("AssemblyName");
 
+                //SetCompilerSettings(p);
+
+                _compilerSettings = new CompilerSettings
+                {
+                    AllowUnsafeBlocks =  false,
+                    CheckForOverflow =  false
+                };
+                References = new List<IAssemblyReference>();
+                AssemblyName = Guid.NewGuid().ToString("N") + ".dll";
+                AddFolderCSharpFiles(new DirectoryInfo (fileName));
+
+                AddMsCorlib();
+
+                bool hasSystemCore = false;
+                
+                if (!hasSystemCore && FindAssembly("System.Core") != null)
+                    AddReference(LoadAssembly(FindAssembly("System.Core")));
+
+            }
+            else
+            {
+                FileName = fileName.ForceNativePathSeparator();
+                ProjectId = id;
+                Files = new List<CSharpFile>();
+
+                var p = new Microsoft.Build.Evaluation.Project(FileName);
+                AssemblyName = p.GetPropertyValue("AssemblyName");
+
+                SetCompilerSettings(p);
+
+                AddCSharpFiles(p);
+
+                References = new List<IAssemblyReference>();
+                AddMsCorlib();
+
+                bool hasSystemCore = false;
+                foreach (var item in p.GetItems("Reference"))
+                {
+                    var assemblyFileName = GetAssemblyFileNameFromHintPath(p, item);
+                    //If there isn't a path hint or it doesn't exist, try searching
+                    if (assemblyFileName == null)
+                        assemblyFileName = FindAssembly(item.EvaluatedInclude);
+
+                    //If it isn't in the search paths, try the GAC
+                    if (assemblyFileName == null && PlatformService.IsWindows)
+                        assemblyFileName = FindAssemblyInNetGac(item.EvaluatedInclude);
+
+                    if (assemblyFileName != null)
+                    {
+                        if (Path.GetFileName(assemblyFileName).Equals("System.Core.dll", StringComparison.OrdinalIgnoreCase))
+                            hasSystemCore = true;
+
+                        _logger.Debug("Loading assembly " + item.EvaluatedInclude);
+                        try
+                        {
+                            AddReference(LoadAssembly(assemblyFileName));
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.Error(e);
+                        }
+
+                    }
+                    else
+                        _logger.Debug("Could not find referenced assembly " + item.EvaluatedInclude);
+                }
+                if (!hasSystemCore && FindAssembly("System.Core") != null)
+                    AddReference(LoadAssembly(FindAssembly("System.Core")));
+
+                AddProjectReferences(p);
+            }
             this.ProjectContent = new CSharpProjectContent()
                 .SetAssemblyName(AssemblyName)
                 .AddAssemblyReferences(References)
                 .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
         }
 
+        void AddFolderCSharpFiles(FileSystemInfo objFileInfo)
+        {
+            if (!objFileInfo.Exists)
+            {
+                return;
+            }
+
+            DirectoryInfo objDirInfo = objFileInfo as DirectoryInfo;
+
+            if (objDirInfo == null)
+            {
+                return;
+            }
+
+            FileSystemInfo[] objFiles = objDirInfo.GetFileSystemInfos();
+
+            for (int i = 0; i < objFiles.Length; i++)
+            {
+                FileInfo objFile = objFiles[i] as FileInfo;
+
+                if (objFile != null)
+                {
+                    string file = objFile.FullName;
+                    if (string.Compare(objFile.Extension, ".cs", true) == 0)
+                    {
+                        _logger.Debug("Loading " + file);
+                        Files.Add(new CSharpFile(this, file));
+                    }
+                    if (string.Compare(objFile.Extension, ".dll", true) == 0)
+                    {
+                        try
+                        {
+                            AddReference(LoadAssembly(file));
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.Error(e);
+                        }
+                    }
+                }
+                else
+                {
+                    AddFolderCSharpFiles(objFiles[i]);
+                }
+            }
+
+            return;
+        }
 		string GetAssemblyFileNameFromHintPath(Microsoft.Build.Evaluation.Project p, Microsoft.Build.Evaluation.ProjectItem item)
 		{
             string assemblyFileName = null;
