@@ -34,7 +34,15 @@ Requires a minimum of Mono 3.0.12 - If you absolutely must use mono 2.10 then ch
 
 To start the Omnisharp server manually (The Vim OmniSharp client and YouCompleteMe may start this for you automatically):
 
-	[mono] OmniSharp.exe -s (path\to\sln)
+
+- With a solution file / project files
+```
+[mono] OmniSharp.exe -s (path\to\sln)
+```
+- Without a solution file (OmniSharp will parse all C# files it finds and add references to every dll it finds)
+```
+[mono] OmniSharp.exe -s path
+```
 
 ###Problems (or just want to see what's going on)?
 
