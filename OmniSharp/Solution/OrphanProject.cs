@@ -23,11 +23,19 @@ namespace OmniSharp.Solution
         public void AddReference(IAssemblyReference reference)
         {
             References.Add(reference);
+            ProjectContent.AddAssemblyReferences (new[] { reference });
         }
 
         public void AddReference(string reference)
         {
             AddReference(CSharpProject.LoadAssembly(reference));
+        }
+
+        public void AddFile(string fileName)
+        {
+            var csharpFile = new CSharpFile (this, fileName);
+            Files.Add (csharpFile);
+            ProjectContent.AddOrUpdateFiles (new[] { csharpFile.ParsedFile });
         }
 
         public OrphanProject()

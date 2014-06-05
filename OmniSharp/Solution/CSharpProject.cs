@@ -14,8 +14,9 @@ namespace OmniSharp.Solution
 {
     public class CSharpProject : IProject
     {
-        public static readonly string[] AssemblySearchPaths = {
-        //Windows Paths
+        public static readonly string[] AssemblySearchPaths =
+        {
+            //Windows Paths
             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5",
             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0",
             @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.5",
@@ -42,7 +43,7 @@ namespace OmniSharp.Solution
             @"C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE\ReferenceAssemblies\v2.0",
             @"C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies",
             
-        //Unix Paths
+            //Unix Paths
             @"/usr/local/lib/mono/4.5",
             @"/usr/local/lib/mono/4.0",
             @"/usr/local/lib/mono/3.5",
@@ -56,7 +57,7 @@ namespace OmniSharp.Solution
             @"/opt/mono/lib/mono/3.5",
             @"/opt/mono/lib/mono/2.0",
 
-        //OS X Paths
+            //OS X Paths
             @"/Library/Frameworks/Mono.Framework/Libraries/mono/4.5",
             @"/Library/Frameworks/Mono.Framework/Libraries/mono/4.0",
             @"/Library/Frameworks/Mono.Framework/Libraries/mono/3.5",
@@ -79,6 +80,37 @@ namespace OmniSharp.Solution
         private CompilerSettings _compilerSettings;
         private readonly Logger _logger;
 		
+        public CSharpProject(ISolution solution, Logger logger, string folderPath)
+        {
+            _logger = logger;
+            _solution = solution;
+
+            Files = new List<CSharpFile>();
+            References = new List<IAssemblyReference>();
+
+            var folder = new DirectoryInfo(folderPath);
+            var files = folder.EnumerateFiles("*.cs", SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                _logger.Debug("Loading " + file.FullName);
+                Files.Add(new CSharpFile(this, file.FullName));
+            }
+
+            var dlls = folder.EnumerateFiles("*.dll", SearchOption.AllDirectories);
+            foreach (var dll in dlls)
+            {
+                Console.WriteLine(dll.FullName);
+                AddReference(dll.FullName);
+            }
+
+            AddMsCorlib();
+            AddReference(LoadAssembly(FindAssembly("System.Core")));
+            this.ProjectContent = new CSharpProjectContent()
+                .SetAssemblyName(AssemblyName)
+                .AddAssemblyReferences(References)
+                .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
+        }
+
         public CSharpProject(ISolution solution, Logger logger, string title, string fileName, Guid id)
         {
             _logger = logger;
@@ -101,7 +133,7 @@ namespace OmniSharp.Solution
             bool hasSystemCore = false;
             foreach (var item in p.GetItems("Reference"))
             {
-				var assemblyFileName = GetAssemblyFileNameFromHintPath(p, item);
+                var assemblyFileName = GetAssemblyFileNameFromHintPath(p, item);
                 //If there isn't a path hint or it doesn't exist, try searching
                 if (assemblyFileName == null)
                     assemblyFileName = FindAssembly(item.EvaluatedInclude);
@@ -119,12 +151,14 @@ namespace OmniSharp.Solution
                     try
                     {
                         AddReference(LoadAssembly(assemblyFileName));
-                    } catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         _logger.Error(e);
                     }
 
-                } else
+                }
+                else
                     _logger.Debug("Could not find referenced assembly " + item.EvaluatedInclude);
             }
             if (!hasSystemCore && FindAssembly("System.Core") != null)
@@ -138,42 +172,43 @@ namespace OmniSharp.Solution
                 .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
         }
 
-		string GetAssemblyFileNameFromHintPath(Microsoft.Build.Evaluation.Project p, Microsoft.Build.Evaluation.ProjectItem item)
-		{
+        string GetAssemblyFileNameFromHintPath(Microsoft.Build.Evaluation.Project p, Microsoft.Build.Evaluation.ProjectItem item)
+        {
             string assemblyFileName = null;
-			if (item.HasMetadata("HintPath"))
-			{
-				assemblyFileName = Path.Combine(p.DirectoryPath, item.GetMetadataValue("HintPath")).ForceNativePathSeparator();
-				_logger.Info("Looking for assembly from HintPath at " + assemblyFileName);
-				if (!File.Exists(assemblyFileName))
-				{
-					_logger.Info("Did not find assembly from HintPath");
-					assemblyFileName = null;
-				}
-			}
-			return assemblyFileName;
-		}
+            if (item.HasMetadata("HintPath"))
+            {
+                assemblyFileName = Path.Combine(p.DirectoryPath, item.GetMetadataValue("HintPath")).ForceNativePathSeparator();
+                _logger.Info("Looking for assembly from HintPath at " + assemblyFileName);
+                if (!File.Exists(assemblyFileName))
+                {
+                    _logger.Info("Did not find assembly from HintPath");
+                    assemblyFileName = null;
+                }
+            }
+            return assemblyFileName;
+        }
 
-		void SetCompilerSettings(Microsoft.Build.Evaluation.Project p)
-		{
-			_compilerSettings = new CompilerSettings {
-				AllowUnsafeBlocks = GetBoolProperty(p, "AllowUnsafeBlocks") ?? false,
-				CheckForOverflow = GetBoolProperty(p, "CheckForOverflowUnderflow") ?? false
-			};
-			string[] defines = p.GetPropertyValue("DefineConstants")
-                                .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-			foreach (string define in defines)
-				_compilerSettings.ConditionalSymbols.Add(define);
-		}
+        void SetCompilerSettings(Microsoft.Build.Evaluation.Project p)
+        {
+            _compilerSettings = new CompilerSettings
+            {
+                AllowUnsafeBlocks = GetBoolProperty(p, "AllowUnsafeBlocks") ?? false,
+                CheckForOverflow = GetBoolProperty(p, "CheckForOverflowUnderflow") ?? false
+            };
+            string[] defines = p.GetPropertyValue("DefineConstants")
+                                .Split(new [] {';'}, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string define in defines)
+                _compilerSettings.ConditionalSymbols.Add(define);
+        }
 
-		void AddMsCorlib()
-		{
-			string mscorlib = FindAssembly("mscorlib");
-			if (mscorlib != null)
-				AddReference(LoadAssembly(mscorlib));
-			else
-				_logger.Debug("Could not find mscorlib");
-		}
+        void AddMsCorlib()
+        {
+            string mscorlib = FindAssembly("mscorlib");
+            if (mscorlib != null)
+                AddReference(LoadAssembly(mscorlib));
+            else
+                _logger.Debug("Could not find mscorlib");
+        }
 
         void AddCSharpFiles(Microsoft.Build.Evaluation.Project p)
         {
@@ -182,32 +217,35 @@ namespace OmniSharp.Solution
                 try
                 {
                     string path = Path.Combine(p.DirectoryPath, item.EvaluatedInclude).ForceNativePathSeparator();
+                   
                     if (File.Exists(path))
                     {
                         string file = new FileInfo(path).FullName;
                         _logger.Debug("Loading " + file);
                         Files.Add(new CSharpFile(this, file));
-                    } else
+                    }
+                    else
                     {
                         _logger.Debug("File does not exist - " + path);
                     }
-                } catch (NullReferenceException e)
+                }
+                catch (NullReferenceException e)
                 {
                     _logger.Error(e);
                 }
             }
         }
 
-		void AddProjectReferences(Microsoft.Build.Evaluation.Project p)
-		{
-			foreach (Microsoft.Build.Evaluation.ProjectItem item in p.GetItems("ProjectReference"))
-			{
-				var projectName = item.GetMetadataValue("Name");
-				var referenceGuid = Guid.Parse(item.GetMetadataValue("Project"));
-				_logger.Debug("Adding project reference {0}, {1}", projectName, referenceGuid);
-				AddReference(new ProjectReference(_solution, projectName, referenceGuid));
-			}
-		}
+        void AddProjectReferences(Microsoft.Build.Evaluation.Project p)
+        {
+            foreach (Microsoft.Build.Evaluation.ProjectItem item in p.GetItems("ProjectReference"))
+            {
+                var projectName = item.GetMetadataValue("Name");
+                var referenceGuid = Guid.Parse(item.GetMetadataValue("Project"));
+                _logger.Debug("Adding project reference {0}, {1}", projectName, referenceGuid);
+                AddReference(new ProjectReference(_solution, projectName, referenceGuid));
+            }
+        }
 
         public List<IAssemblyReference> References { get; set; }
 
@@ -226,9 +264,9 @@ namespace OmniSharp.Solution
             return Files.Single(f => f.FileName.Equals(fileName, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        public void UpdateFile(string fileName,string source)
+        public void UpdateFile(string fileName, string source)
         {
-            var file = GetFile (fileName);
+            var file = GetFile(fileName);
             file.Content = new StringTextSource(source);
             file.Parse(this, fileName, source);
         }
@@ -289,7 +327,8 @@ namespace OmniSharp.Solution
             {
                 AssemblyNameReference assemblyNameReference = AssemblyNameReference.Parse(evaluatedInclude);
                 return GacInterop.FindAssemblyInNetGac(assemblyNameReference);
-            } catch (TypeInitializationException)
+            }
+            catch (TypeInitializationException)
             {
                 _logger.Debug("Fusion not available - cannot get {0} from the gac.", evaluatedInclude);
                 return null;

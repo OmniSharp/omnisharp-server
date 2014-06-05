@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -79,11 +80,20 @@ namespace OmniSharp
             {
                 Configuration.ConfigurationLoader.Load(clientPathMode);
 
-                var solution = new CSharpSolution(logger);
+                ISolution solution;
+                if(Directory.Exists(solutionPath))
+                {
+                    solution = new CSharpFolder(logger);
+                }
+                else
+                {
+                    solution = new CSharpSolution(logger);
+                }
+
                 Console.CancelKeyPress +=
                     (sender, e) =>
                         {
-                            solution.Terminated = true;
+                            solution.Terminate();
                             Console.WriteLine("Ctrl-C pressed");
                             e.Cancel = true;
                         };

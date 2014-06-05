@@ -50,5 +50,12 @@ namespace OmniSharp.Tests
         {
             throw new NotImplementedException();
         }
+
+        public void LoadSolution(string solution)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Terminated { get; private set; }
     }
 }
