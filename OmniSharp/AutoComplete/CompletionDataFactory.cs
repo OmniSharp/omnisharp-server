@@ -20,7 +20,7 @@ namespace OmniSharp.AutoComplete
 			Action<ICompletionData, int> setAsImport = null;
 			setAsImport = (ICompletionData icompleteData, int depth) =>
 			{
-				if (depth > 3) return;
+				if (depth > 5) return;
 				icompleteData.DisplayFlags |= DisplayFlags.IsImportCompletion;
 				icompleteData.DisplayText += " [Using "+type.Namespace+"]";
 				icompleteData.Description = "Using "+type.Namespace+"\n"+icompleteData.Description;
@@ -31,7 +31,7 @@ namespace OmniSharp.AutoComplete
 				}
 				foreach(var overload in icompleteData.OverloadedData.Where(i => i != icompleteData))
 				{
-					setAsImport(overload, depth++);
+					setAsImport(overload, depth+1);
 				}
 			};
 			setAsImport(result, 0);
