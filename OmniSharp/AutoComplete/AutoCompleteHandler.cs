@@ -48,7 +48,7 @@ namespace OmniSharp.AutoComplete
                 {
                     EolMarker = Environment.NewLine
                 };
-            engine.AutomaticallyAddImports = true;
+            engine.AutomaticallyAddImports = request.WantImportableTypes;
             _logger.Debug("Getting Completion Data");
 
             IEnumerable<ICompletionData> data = engine.GetCompletionData(completionContext.CursorPosition, true);
