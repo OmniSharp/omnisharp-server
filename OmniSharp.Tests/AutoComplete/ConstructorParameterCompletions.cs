@@ -1,5 +1,7 @@
 ﻿using NUnit.Framework;
 using Should;
+using System.Linq;
+using OmniSharp.AutoComplete;
 
 namespace OmniSharp.Tests.AutoComplete
 {
@@ -77,6 +79,62 @@ namespace OmniSharp.Tests.AutoComplete
                                 System.Diagnostics.$
                             }
                         }").ShouldNotContain(".ctor");
+        }
+
+        [Test]
+        public void Should_return_debugger_when_including_importable_type()
+        {
+            DisplayTextFor(
+                @"  public class MyClass {
+                            public MyClass() {
+                                new Debug$
+                            }
+                        }", true).ShouldContain("Debugger() [Using System.Diagnostics]");
+        }
+
+        [Test]
+        public void Should_return_namespace_import_for_system_diagnostics()
+        {
+            CompletionsDataFor(
+                @"  public class MyClass {
+                            public MyClass() {
+                                new Debug$
+                            }
+                        }", true).OfType<CompletionData>().Select(i => i.RequiredNamespaceImport).ShouldContain("System.Diagnostics");
+        }
+
+        [Test]
+        public void Should_sort_imported_types_after_unimported_types()
+        {
+            var completions = DisplayTextFor(
+                @"  public class ObjZoo { }
+                    public class MyClass {
+                            public MyClass() {
+                                new Obj$
+                            }
+                        }", true)
+                        .ToList();
+            var zooIndex = completions.IndexOf("ObjZoo()");
+            var objectIndex = completions.IndexOf("Object() [Using System]");
+            Assert.Greater(zooIndex, -1);
+            Assert.Greater(objectIndex, -1);
+            Assert.Greater(objectIndex, zooIndex, "ObjZoo should be ordered before Object");
+        }
+
+        [Test]
+        public void Should_mark_all_imported_types_overwrites()
+        {
+            var completions = CompletionsDataFor(
+                @"  public class MyClass {
+                            public MyClass() {
+                                new StreamReader$
+                            }
+                        }", true)
+            .Where(i => i.CompletionText.StartsWith("StreamReader("))
+            .Select(i => i.DisplayText)
+            ;
+            Assert.That(completions, Is.Not.Empty);
+            Assert.That(completions, Is.All.ContainsSubstring("[Using System.IO]"));
         }
 
         [Test]

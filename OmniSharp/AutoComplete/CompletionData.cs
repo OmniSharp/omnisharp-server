@@ -69,6 +69,8 @@ namespace OmniSharp.AutoComplete
             get { return _overloadedData; }
         }
 
+        public string RequiredNamespaceImport { get; set; }
+
         public override string ToString()
         {
             return _description;

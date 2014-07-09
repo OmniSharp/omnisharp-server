@@ -17,7 +17,7 @@ namespace OmniSharp.Tests.AutoComplete
             _solution = new FakeSolution();
         }
 
-        public IEnumerable<ICompletionData> GetCompletions(string editorText)
+        public IEnumerable<ICompletionData> GetCompletions(string editorText, bool includeImportableTypes)
         {
             int cursorOffset = editorText.IndexOf("$", StringComparison.Ordinal);
             if(cursorOffset == -1)
@@ -38,7 +38,8 @@ namespace OmniSharp.Tests.AutoComplete
                     Buffer = editorText,
                     Line = cursorPosition.Line,
                     Column = cursorPosition.Column,
-					WantDocumentationForEveryCompletionResult = false
+					WantDocumentationForEveryCompletionResult = false,
+                    WantImportableTypes = includeImportableTypes,
                 };
 
             return provider.CreateProvider(request);
