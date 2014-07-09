@@ -16,7 +16,26 @@ namespace OmniSharp.AutoComplete
     {
 		public ICompletionData CreateImportCompletionData (IType type, bool useFullName, bool addForTypeCreation)
 		{
-			throw new NotImplementedException ();
+			var result = CreateTypeCompletionData(type, useFullName, false, addForTypeCreation);
+			Action<ICompletionData, int> setAsImport = null;
+			setAsImport = (ICompletionData icompleteData, int depth) =>
+			{
+				if (depth > 3) return;
+				icompleteData.DisplayFlags |= DisplayFlags.IsImportCompletion;
+				icompleteData.DisplayText += " [Using "+type.Namespace+"]";
+				icompleteData.Description = "Using "+type.Namespace+"\n"+icompleteData.Description;
+				var completeData = icompleteData as CompletionData;
+				if (completeData != null)
+				{
+					completeData.RequiredNamespaceImport = type.Namespace;
+				}
+				foreach(var overload in icompleteData.OverloadedData.Where(i => i != icompleteData))
+				{
+					setAsImport(overload, depth++);
+				}
+			};
+			setAsImport(result, 0);
+			return result;
 		}
 
 		public ICompletionData CreateFormatItemCompletionData (string format, string description, object example)
@@ -281,7 +300,7 @@ namespace OmniSharp.AutoComplete
 
         public ICompletionData CreateImportCompletionData(IType type, bool useFullName)
         {
-            throw new NotImplementedException();
+            return CreateImportCompletionData(type, useFullName, false);
         }
     }
 }
