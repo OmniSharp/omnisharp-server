@@ -259,14 +259,23 @@ namespace OmniSharp.Solution
             References.Add(LoadAssembly(reference));
         }
 
-        public CSharpFile GetFile(string fileName)
+        private CSharpFile GetFile(string fileName, string source)
         {
-            return Files.Single(f => f.FileName.Equals(fileName, StringComparison.InvariantCultureIgnoreCase));
+            var file = Files.FirstOrDefault(f => f.FileName.Equals(fileName, StringComparison.InvariantCultureIgnoreCase));
+            if (file == null)
+            {
+                file = new CSharpFile(this, fileName, source);
+                Files.Add (file);
+
+                this.ProjectContent
+                    .AddOrUpdateFiles(file.ParsedFile);
+            }
+            return file;
         }
 
-        public void UpdateFile(string fileName, string source)
+        public void UpdateFile(string fileName,string source)
         {
-            var file = GetFile(fileName);
+            var file = GetFile (fileName, source);
             file.Content = new StringTextSource(source);
             file.Parse(this, fileName, source);
         }
