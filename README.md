@@ -13,7 +13,7 @@ and [Emacs OmniSharp plugin](https://github.com/sp3ctum/omnisharp-emacs).
 #Build
 
 ####OSX / Linux 
-Requires a minimum of Mono 3.0.12 - If you absolutely must use mono 2.10 then checkout the mono-2.10.8 tag. [Updating mono on ubuntu](https://github.com/nosami/OmniSharpServer/wiki)
+Requires a minimum of Mono 3.0.12 - If you absolutely must use mono 2.10 then checkout the mono-2.10.8 tag. [Updating mono on ubuntu](https://github.com/nosami/OmniSharpServer/wiki). If you are using OSX, please use the official version of Mono as the homebrew version has [known](https://github.com/nosami/OmniSharpServer/issues/83) [issues](https://github.com/nosami/OmniSharpServer/issues/80).
 ```
     git clone https://github.com/nosami/OmniSharpServer.git
     cd OmniSharpServer
