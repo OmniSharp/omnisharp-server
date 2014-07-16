@@ -24,6 +24,8 @@
     "wrapLineLength": 80
   },
 
+  "CSharpFormattingOptionsName" : "Custom",
+
   "CSharpFormattingOptions": {
     "alignElseInIfStatements": false,
     "alignEmbeddedStatements": true,
