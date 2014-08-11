@@ -18,6 +18,7 @@ namespace OmniSharp.Configuration
         public TextEditorOptions TextEditorOptions { get; set; }
         public TestCommands TestCommands { get; set; }
         public string CSharpFormattingOptionsName { get; set; }
+        public string ConfigFileLocation { get; set; }
         private CSharpFormattingOptions _options;
         public CSharpFormattingOptions CSharpFormattingOptions
         {
