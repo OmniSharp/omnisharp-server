@@ -14,7 +14,7 @@ namespace OmniSharp.ReloadSolution
                     string mode = config.ClientPathMode.HasValue
                         ? config.ClientPathMode.Value.ToString()
                         : null;
-                    Configuration.ConfigurationLoader.Load(mode);
+                    Configuration.ConfigurationLoader.Load(config.ConfigFileLocation, mode);
                     return Response.AsJson(true);
                 };
         }

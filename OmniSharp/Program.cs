@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Threading;
 using Nancy.Hosting.Self;
 using NDesk.Options;
@@ -18,10 +19,14 @@ namespace OmniSharp
             string solutionPath = null;
             string clientPathMode = null;
 
+            // Determine the default location for the server side config.json file.
+            // The user may override this with a command line option if they want.
+            string executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string configLocation = Path.Combine(executableLocation, "config.json");
+
             var port = 2000;
             Verbosity verbosity = Verbosity.Debug;
 
-            
             var options = new OptionSet
                     {
                         {
@@ -43,11 +48,16 @@ namespace OmniSharp
                                                 : Verbosity.Debug
                         },
                         {
-                            "h|help", "show this message and exit",
+                            "h|help", "Show this message and exit",
                             h => showHelp = h != null
                         },
+                        {
+                            "config|config", "The path to the server config.json file",
+                            path => configLocation = path
+                        }
                     };
            
+			Console.WriteLine("Using config file " + configLocation);
 
             try
             {
@@ -68,17 +78,23 @@ namespace OmniSharp
                 return;
             }
 
-            StartServer(solutionPath, clientPathMode, port, verbosity);
+            StartServer(solutionPath, clientPathMode, port, verbosity, configLocation);
             
         }
 
-        private static void StartServer(string solutionPath, string clientPathMode, int port, Verbosity verbosity)
+        private static void StartServer(
+            string solutionPath,
+            string clientPathMode,
+            int port,
+            Verbosity verbosity,
+            string configLocation)
         {
             
             var logger = new Logger(verbosity);
             try
             {
-                Configuration.ConfigurationLoader.Load(clientPathMode);
+                Configuration.ConfigurationLoader.Load(
+                    configLocation: configLocation, clientMode: clientPathMode);
 
                 ISolution solution;
                 if(Directory.Exists(solutionPath))
