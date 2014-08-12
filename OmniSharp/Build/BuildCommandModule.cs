@@ -1,4 +1,5 @@
 ﻿using Nancy;
+using OmniSharp.Solution;
 
 namespace OmniSharp.Build
 {
@@ -7,7 +8,7 @@ namespace OmniSharp.Build
         public BuildCommandModule(BuildCommandBuilder commandBuilder)
         {
             Post["/buildcommand"] = x =>
-                Response.AsText(commandBuilder.Executable + " " + commandBuilder.Arguments);
+                Response.AsText(commandBuilder.Executable.ApplyPathReplacementsForClient() + " " + commandBuilder.Arguments);
         }
     }
 }
