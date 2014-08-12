@@ -51,7 +51,7 @@ namespace OmniSharp
 
         public void Error(object message)
         {
-            Log(message.ToString());
+            Log(message);
         }
 
         private void Log(object message)
