@@ -1,4 +1,4 @@
-﻿namespace OmniSharp.SyntaxErrors
+namespace OmniSharp.Common
 {
     public class Error
     {

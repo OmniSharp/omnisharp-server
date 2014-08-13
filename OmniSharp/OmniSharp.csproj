@@ -114,6 +114,7 @@
     <Compile Include="TestContextInformation\GetTestContextResponse.cs" />
     <Compile Include="Build\BuildCommandBuilder.cs" />
     <Compile Include="Build\BuildCommandModule.cs" />
+    <Compile Include="Common\Error.cs" />
     <Compile Include="Common\FileSystem.cs" />
     <Compile Include="Common\IFileSystem.cs" />
     <Compile Include="FindSymbols\FindSymbolsHandler.cs" />
@@ -190,7 +191,6 @@
     <Compile Include="Solution\OrphanProject.cs" />
     <Compile Include="Solution\StringExtensions.cs" />
     <Compile Include="StopServer\StopServerModule.cs" />
-    <Compile Include="SyntaxErrors\Error.cs" />
     <Compile Include="SyntaxErrors\SyntaxErrorsModule.cs" />
     <Compile Include="Parser\BufferParser.cs" />
     <Compile Include="GotoDefinition\GotoDefinitionHandler.cs" />
@@ -211,6 +211,9 @@
     <Compile Include="GotoDefinition\GotoDefinitionModule.cs" />
     <Compile Include="GotoDefinition\GotoDefinitionRequest.cs" />
     <Compile Include="Common\Request.cs" />
+    <Compile Include="SemanticErrors\SemanticErrorsHandler.cs" />
+    <Compile Include="SemanticErrors\SemanticErrorsModule.cs" />
+    <Compile Include="SemanticErrors\SemanticErrorsResponse.cs" />
     <Compile Include="Solution\CSharpFile.cs" />
     <Compile Include="Solution\CSharpProject.cs" />
     <Compile Include="Logger.cs" />
