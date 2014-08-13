@@ -26,10 +26,11 @@ namespace OmniSharp.Tests
             Files = new List<CSharpFile>();
             References = new List<IAssemblyReference>();
             ProjectId = id;
-            this.ProjectContent = new CSharpProjectContent();
-            this.ProjectContent.SetAssemblyName(name);
-            this.ProjectContent.SetProjectFileName(name);
-            this.ProjectContent = this.ProjectContent.AddAssemblyReferences(new [] { mscorlib.Value, systemCore.Value });
+            this.ProjectContent
+                = new CSharpProjectContent()
+                .SetAssemblyName(name)
+                .SetProjectFileName(name)
+                .AddAssemblyReferences(new [] { mscorlib.Value, systemCore.Value });
         }
 
         public void AddFile(string source, string fileName="myfile")
@@ -49,6 +50,9 @@ namespace OmniSharp.Tests
             var file = GetFile (fileName);
             file.Content = new StringTextSource(source);
             file.Parse(this, fileName, source);
+
+            this.ProjectContent = this.ProjectContent
+                .AddOrUpdateFiles(file.ParsedFile);
         }
 
         public IProjectContent ProjectContent { get; set; }
@@ -62,6 +66,8 @@ namespace OmniSharp.Tests
         public void AddReference(IAssemblyReference reference)
         {
             References.Add(reference);
+            this.ProjectContent = this.ProjectContent
+                .AddAssemblyReferences(reference);
         }
 
         public void AddReference(string reference)

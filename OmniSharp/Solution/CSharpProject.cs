@@ -268,7 +268,7 @@ namespace OmniSharp.Solution
                 file = new CSharpFile(this, fileName, source);
                 Files.Add (file);
 
-                this.ProjectContent
+                this.ProjectContent = this.ProjectContent
                     .AddOrUpdateFiles(file.ParsedFile);
             }
             return file;
@@ -279,6 +279,9 @@ namespace OmniSharp.Solution
             var file = GetFile (fileName, source);
             file.Content = new StringTextSource(source);
             file.Parse(this, fileName, source);
+
+            this.ProjectContent = this.ProjectContent
+                .AddOrUpdateFiles(file.ParsedFile);
         }
 
         public CSharpParser CreateParser()
