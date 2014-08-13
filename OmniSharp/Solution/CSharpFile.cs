@@ -35,8 +35,6 @@ namespace OmniSharp.Solution
             CSharpParser p = project.CreateParser();
             this.SyntaxTree = p.Parse(Content.CreateReader(), fileName);
             this.ParsedFile = this.SyntaxTree.ToTypeSystem();
-            if(this.Project.ProjectContent != null)
-                this.Project.ProjectContent.AddOrUpdateFiles(this.ParsedFile);
         }
 
         protected IProject Project { get; set; }

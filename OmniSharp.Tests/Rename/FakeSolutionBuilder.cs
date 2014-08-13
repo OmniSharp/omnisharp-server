@@ -25,7 +25,7 @@ namespace OmniSharp.Tests.Rename
             foreach (var project in _projects)
             {
                 // each project references the ones that came before it.
-                newProject.ProjectContent.AddAssemblyReferences(new ProjectReference(project.Name));
+                newProject.AddReference(new ProjectReference(project.Name));
             }
             _projects.Add(newProject);
 
