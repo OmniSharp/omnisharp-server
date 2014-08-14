@@ -128,7 +128,7 @@ public class TestClass {
             project.AddFile(editorText, fileName);
             solution.Projects.Add(project);
 
-            var handler = new SemanticErrorsHandler(solution, null);
+            var handler = new SemanticErrorsHandler(solution);
             var request = new Request
             {
                 Buffer = editorText,

@@ -15,12 +15,10 @@ namespace OmniSharp.SemanticErrors
     public class SemanticErrorsHandler
     {
         private readonly ISolution _solution;
-        private readonly Logger _logger;
 
-        public SemanticErrorsHandler(ISolution solution, Logger logger)
+        public SemanticErrorsHandler(ISolution solution)
         {
             _solution = solution;
-            _logger = logger;
         }
 
         public SemanticErrorsResponse FindSemanticErrors(Request request)
