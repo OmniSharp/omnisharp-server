@@ -15,6 +15,7 @@ namespace OmniSharp
     {
         private static void Main(string[] args)
         {
+            System.Diagnostics.Debugger.Break();
             bool showHelp = false;
             string solutionPath = null;
             string clientPathMode = null;
@@ -52,7 +53,7 @@ namespace OmniSharp
                             h => showHelp = h != null
                         },
                         {
-                            "config|config", "The path to the server config.json file",
+                            "config", "The path to the server config.json file",
                             path => configLocation = path
                         }
                     };
