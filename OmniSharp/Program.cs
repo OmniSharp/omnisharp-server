@@ -15,7 +15,6 @@ namespace OmniSharp
     {
         private static void Main(string[] args)
         {
-            System.Diagnostics.Debugger.Break();
             bool showHelp = false;
             string solutionPath = null;
             string clientPathMode = null;
