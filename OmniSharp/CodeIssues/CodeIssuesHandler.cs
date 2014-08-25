@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using ICSharpCode.NRefactory.CSharp.Refactoring;
 using OmniSharp.Common;
 using OmniSharp.Configuration;
@@ -13,11 +14,13 @@ namespace OmniSharp.CodeIssues
     {
         private readonly BufferParser _bufferParser;
         private readonly OmniSharpConfiguration _config;
+        private readonly IEnumerable<string> _ignoredCodeIssues;
 
         public CodeIssuesHandler(BufferParser bufferParser, OmniSharpConfiguration config)
         {
             _bufferParser = bufferParser;
             _config = config;
+            _ignoredCodeIssues = ConfigurationLoader.Config.IgnoredCodeIssues;
         }
 
         public QuickFixResponse GetCodeIssues(Request req)
@@ -58,7 +61,6 @@ namespace OmniSharp.CodeIssues
         private IEnumerable<CodeIssue> GetContextualCodeActions(Request req)
         {
             var refactoringContext = OmniSharpRefactoringContext.GetContext(_bufferParser, req);
-            var ignoredCodeIssues = ConfigurationLoader.Config.IgnoredCodeIssues;
             var actions = new List<CodeIssue>();
             var providers = new CodeIssueProviders().GetProviders();
             foreach (var provider in providers)
@@ -66,7 +68,7 @@ namespace OmniSharp.CodeIssues
                 try
                 {
                     var codeIssues = provider.GetIssues(refactoringContext);
-                    actions.AddRange(codeIssues.Where(issue => !ignoredCodeIssues.Contains(issue.Description)));
+                    actions.AddRange(codeIssues.Where(ShouldIncludeIssue));
                 } 
                 catch (Exception)
                 {
@@ -74,6 +76,11 @@ namespace OmniSharp.CodeIssues
                 
             }
             return actions;
+        }
+
+        private bool ShouldIncludeIssue(CodeIssue issue)
+        {
+            return !_ignoredCodeIssues.Any(ignore => Regex.IsMatch(issue.Description, ignore));
         }
     }
 }

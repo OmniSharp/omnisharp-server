@@ -4,7 +4,8 @@
   ],
 
   "IgnoredCodeIssues": [
-    "Keyword 'private' is redundant. This is the default modifier."
+    "^Keyword 'private' is redundant. This is the default modifier.$",
+    ".* should not separate words with an underscore.*"
   ],
 
   "TestCommands": {
