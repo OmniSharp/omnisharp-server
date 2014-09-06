@@ -38,13 +38,13 @@ namespace OmniSharp
                 HelpService.AsyncInitialize();
             }
             
-            pipelines.BeforeRequest.AddItemToStartOfPipeline(StopWatchStart);
-            pipelines.AfterRequest.AddItemToEndOfPipeline(StopWatchStop);
+            pipelines.BeforeRequest.AddItemToStartOfPipeline(StopWatchStart, false);
+            pipelines.AfterRequest.AddItemToEndOfPipeline(StopWatchStop, false);
 
             if (_logger.Verbosity == Verbosity.Verbose)
             {
-                pipelines.BeforeRequest.AddItemToStartOfPipeline(LogRequest);
-                pipelines.AfterRequest.AddItemToStartOfPipeline(LogResponse);
+                pipelines.BeforeRequest.AddItemToStartOfPipeline(LogRequest, false);
+                pipelines.AfterRequest.AddItemToStartOfPipeline(LogResponse, false);
             }
 
             pipelines.OnError.AddItemToEndOfPipeline((ctx, ex) =>
