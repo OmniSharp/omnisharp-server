@@ -37,14 +37,14 @@ namespace OmniSharp
             {
                 HelpService.AsyncInitialize();
             }
-            
-            pipelines.BeforeRequest.AddItemToStartOfPipeline(StopWatchStart, false);
-            pipelines.AfterRequest.AddItemToEndOfPipeline(StopWatchStop, false);
+
+            pipelines.BeforeRequest += (ctx) => StopWatchStart (ctx);
+            pipelines.AfterRequest += (ctx) => StopWatchStop (ctx);
 
             if (_logger.Verbosity == Verbosity.Verbose)
             {
-                pipelines.BeforeRequest.AddItemToStartOfPipeline(LogRequest, false);
-                pipelines.AfterRequest.AddItemToStartOfPipeline(LogResponse, false);
+                pipelines.BeforeRequest += (ctx) => LogRequest (ctx);
+                pipelines.AfterRequest += (ctx) => LogResponse (ctx);
             }
 
             pipelines.OnError.AddItemToEndOfPipeline((ctx, ex) =>
