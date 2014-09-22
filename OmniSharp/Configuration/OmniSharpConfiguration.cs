@@ -10,6 +10,7 @@ namespace OmniSharp.Configuration
             PathReplacements = new List<PathReplacement>();
             IgnoredCodeIssues = new List<string>();
             TextEditorOptions = new TextEditorOptions ();
+            TextEditorOptions.TabsToSpaces = true;
             CSharpFormattingOptions = FormattingOptionsFactory.CreateAllman();
         }
 

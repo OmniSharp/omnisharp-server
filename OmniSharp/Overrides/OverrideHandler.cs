@@ -106,11 +106,11 @@ namespace OmniSharp.Overrides {
                 , n => n.NodeType == NodeType.TypeDeclaration);
 
             // Even empty classes have nodes, so this works
-            var memberBeforeClosingBraceNode =
-                typeDeclaration.Children.Last().GetPrevNode();
+            var lastNode =
+                typeDeclaration.Children.Last();
 
-            script.InsertAfter
-                ( node    : memberBeforeClosingBraceNode
+            script.InsertBefore
+                ( node    : lastNode
                 , newNode : memberDeclaration);
             script.FormatText(memberDeclaration);
 
