@@ -29,9 +29,7 @@ $
            
             var context = new OverrideContext(request, parser);
             var overrides = context.OverrideTargets.Select(m => m.OverrideTargetName).ToArray();
-            overrides.ShouldContainOnly(
-                "public virtual bool Equals (object obj);", 
-                "public virtual int GetHashCode ();");
+            overrides.ShouldNotContain("public virtual string ToString ();");
 
         }
     }
