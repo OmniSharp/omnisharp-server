@@ -13,6 +13,8 @@ namespace OmniSharp.Overrides {
     /// </summary>
     public class OverrideContext {
 
+        readonly IUnresolvedTypeDefinition currentTypeDefinition;
+
         public OverrideContext
             (Request request, BufferParser parser) {
 
@@ -20,10 +22,10 @@ namespace OmniSharp.Overrides {
             this.CompletionContext = new BufferContext
                 (request, this.BufferParser);
 
-            this.CurrentType = this.CompletionContext.ParsedContent
+            currentTypeDefinition = this.CompletionContext.ParsedContent
                 .UnresolvedFile.GetInnermostTypeDefinition
-                    (this.CompletionContext.TextLocation)
-                .Resolve(this.CompletionContext.ResolveContext);
+                (this.CompletionContext.TextLocation);
+            this.CurrentType = currentTypeDefinition.Resolve(this.CompletionContext.ResolveContext);
 
             this.OverrideTargets =
                 GetOverridableMembers()
@@ -35,25 +37,27 @@ namespace OmniSharp.Overrides {
         /// <summary>
         ///   The type currently under the cursor in this context.
         /// </summary>
-        public IType CurrentType {get; set;}
-        public IEnumerable<GetOverrideTargetsResponse> OverrideTargets {get; set;}
-        public BufferContext CompletionContext {get; set;}
+        public IType CurrentType {get; private set;}
+        public IEnumerable<GetOverrideTargetsResponse> OverrideTargets {get; private set;}
+        public BufferContext CompletionContext {get; private set;}
 
-        public BufferParser BufferParser {get; set;}
+        public BufferParser BufferParser {get; private set;}
 
         public IEnumerable<IMember> GetOverridableMembers() {
             // Disallow trying to override in e.g. interfaces or enums
-            if (   this.CurrentType.Kind != TypeKind.Class
+            if (this.CurrentType.Kind != TypeKind.Class
                 && this.CurrentType.Kind != TypeKind.Struct)
                 return new IMember[0];
 
-            // TODO do not return members that are already overridden!
+            var candidates = this.CurrentType
+                .GetMembers(m => m.IsVirtual && m.IsOverridable).ToArray();
 
-            // TODO do not return members that are overridden in this
-            // type!
-            return this.CurrentType
-                .GetMembers(m => m.IsVirtual && m.IsOverridable);
+            var overridden = this.CurrentType
+                .GetMembers(m => m.IsOverride && 
+                    m.DeclaringTypeDefinition == currentTypeDefinition)
+                .SelectMany(m => InheritanceHelper.GetBaseMembers(m, true));
+
+            return candidates.Except (overridden);
         }
     }
-
 }
