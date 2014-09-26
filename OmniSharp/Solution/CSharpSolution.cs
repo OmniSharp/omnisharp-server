@@ -35,7 +35,7 @@ namespace OmniSharp.Solution
         IProject ProjectContainingFile(string filename);
         void Reload();
         void Terminate();
-        void LoadSolution(string fileName);
+        void LoadSolution();
         bool Terminated { get; }
     }
 
@@ -53,25 +53,25 @@ namespace OmniSharp.Solution
 
         public bool Loaded { get; private set; }
 
-        public CSharpSolution(Logger logger)
+        public CSharpSolution(string filename, Logger logger)
         {
             _logger = logger;
+            FileName = filename;
         }
 
-        public void LoadSolution(string fileName)
+        public void LoadSolution()
         {
             Loaded = false;
-            FileName = fileName;
             _orphanProject = new OrphanProject();
             Projects = new List<IProject>();
             Projects.Add(_orphanProject);
 
-            var directory = Path.GetDirectoryName(fileName);
+            var directory = Path.GetDirectoryName(FileName);
             var projectLinePattern =
                 new Regex(
                     "Project\\(\"(?<TypeGuid>.*)\"\\)\\s+=\\s+\"(?<Title>.*)\",\\s*\"(?<Location>.*)\",\\s*\"(?<Guid>.*)\"");
 
-            foreach (string line in File.ReadLines(fileName))
+            foreach (string line in File.ReadLines(FileName))
             {
                 Match match = projectLinePattern.Match(line);
                 if (match.Success)
@@ -163,7 +163,7 @@ namespace OmniSharp.Solution
 
         public void Reload()
         {
-            LoadSolution(FileName);
+            LoadSolution();
         }
 
         public void Terminate()

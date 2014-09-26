@@ -12,8 +12,9 @@ namespace OmniSharp.Tests
 
         public SolutionTest ()
         {
-            _solution = new CSharpSolution (new Logger (Verbosity.Verbose));
-            _solution.LoadSolution (Environment.CurrentDirectory + "/Solution/minimal/minimal.sln");
+            var path = Environment.CurrentDirectory + "/Solution/minimal/minimal.sln";
+            _solution = new CSharpSolution (path, new Logger (Verbosity.Verbose));
+            _solution.LoadSolution ();
         }
 
         [Test]

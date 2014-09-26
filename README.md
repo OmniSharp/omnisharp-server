@@ -33,8 +33,13 @@ Requires a minimum of Mono 3.0.12 - If you absolutely must use mono 2.10 then ch
 
 To start the Omnisharp server manually (The Vim OmniSharp client and YouCompleteMe may start this for you automatically):
 
+- Use the current working directory
+    - If one solution file is found, use it. Otherwise start in folder mode.
+```
+[mono] OmniSharp.exe
+```
 
-- With a solution file / project files
+- To specify a solution file / project files
 ```
 [mono] OmniSharp.exe -s (path\to\sln)
 ```

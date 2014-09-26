@@ -2,7 +2,8 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
+using System.Reflection;
+
 using System.Threading;
 using Nancy.Hosting.Self;
 using NDesk.Options;
@@ -16,7 +17,7 @@ namespace OmniSharp
         private static void Main(string[] args)
         {
             bool showHelp = false;
-            string solutionPath = null;
+            string solutionPath = Directory.GetCurrentDirectory();
             string clientPathMode = null;
 
             // Determine the default location for the server side config.json file.
@@ -57,7 +58,6 @@ namespace OmniSharp
                         }
                     };
            
-			Console.WriteLine("Using config file " + configLocation);
 
             try
             {
@@ -82,7 +82,8 @@ namespace OmniSharp
             
         }
 
-        private static void StartServer(
+
+        static void StartServer(
             string solutionPath,
             string clientPathMode,
             int port,
@@ -94,17 +95,11 @@ namespace OmniSharp
             try
             {
                 Configuration.ConfigurationLoader.Load(
-                    configLocation: configLocation, clientMode: clientPathMode);
+                        configLocation: configLocation, clientMode: clientPathMode);
 
-                ISolution solution;
-                if(Directory.Exists(solutionPath))
-                {
-                    solution = new CSharpFolder(logger);
-                }
-                else
-                {
-                    solution = new CSharpSolution(logger);
-                }
+                var solution = LoadSolution(solutionPath, logger);
+                logger.Debug("Using solution path " + solutionPath);
+                logger.Debug("Using config file " + configLocation);
 
                 Console.CancelKeyPress +=
                     (sender, e) =>
@@ -122,7 +117,7 @@ namespace OmniSharp
 
                 nancyHost.Start();
                 logger.Debug("OmniSharp server is listening");
-                solution.LoadSolution(solutionPath.ApplyPathReplacementsForServer());
+                solution.LoadSolution();
                 logger.Debug("Solution has finished loading");
                 while (!solution.Terminated)
                 {
@@ -144,9 +139,35 @@ namespace OmniSharp
             }
         }
 
+        static ISolution LoadSolution(string solutionPath, Logger logger)
+        {
+            solutionPath = solutionPath.ApplyPathReplacementsForServer();
+            ISolution solution;
+            if (Directory.Exists(solutionPath))
+            {
+                var slnFiles = Directory.GetFiles(solutionPath, "*.sln");
+                Console.WriteLine(slnFiles.Length);
+                if (slnFiles.Length == 1)
+                {
+                    solutionPath = slnFiles[0];
+                    logger.Debug("Found solution file - " + solutionPath);
+                    solution = new CSharpSolution(solutionPath, logger);
+                }
+                else
+                {
+                    solution = new CSharpFolder(solutionPath, logger);
+                }
+            }
+            else
+            {
+                solution = new CSharpSolution(solutionPath, logger);
+            }
+            return solution;
+        }
+
         static void ShowHelp(OptionSet p)
         {
-            Console.WriteLine("Usage: omnisharp -s /path/to/sln [-p PortNumber]");
+            Console.WriteLine("Usage: omnisharp [-s /path/to/sln] [-p PortNumber]");
             Console.WriteLine();
             Console.WriteLine("Options:");
             p.WriteOptionDescriptions(Console.Out);

@@ -8,20 +8,21 @@ namespace OmniSharp.Solution
     {
         Logger _logger;
         CSharpProject _project;
-        string _folder;
 
-        public CSharpFolder(Logger logger)
+        public CSharpFolder(string folder, Logger logger)
         {
             _logger = logger;
+            FileName = folder;
         }
 
+        public string FileName { get; private set; }
         public bool Terminated { get; private set; }
+        public bool Loaded { get; private set; }
 
-        public void LoadSolution(string folder)
+        public void LoadSolution()
         {
-            _folder = folder;
             Loaded = false;
-            _project = new CSharpProject(this, _logger, folder);
+            _project = new CSharpProject(this, _logger, FileName);
             Loaded = true;
         }
 
@@ -39,15 +40,13 @@ namespace OmniSharp.Solution
 
         public void Reload()
         {
-            LoadSolution(_folder);
+            LoadSolution();
         }
 
         public void Terminate()
         {
             Terminated = true;
         }
-
-        public bool Loaded { get; private set; }
 
         public List<IProject> Projects
         {
@@ -57,7 +56,6 @@ namespace OmniSharp.Solution
             }
         }
 
-        public string FileName { get; private set; }
     }
     
 }
