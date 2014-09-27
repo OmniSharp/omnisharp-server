@@ -51,7 +51,10 @@ namespace OmniSharp
 
         public void Error(object message)
         {
+            var colour = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
             Log(message);
+            Console.ForegroundColor = colour;
         }
 
         private void Log(object message)

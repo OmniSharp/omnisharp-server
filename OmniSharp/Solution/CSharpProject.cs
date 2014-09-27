@@ -89,7 +89,18 @@ namespace OmniSharp.Solution
             Files = new List<CSharpFile>();
             References = new List<IAssemblyReference>();
 
-            var folder = new DirectoryInfo(folderPath);
+            DirectoryInfo folder;
+
+            try
+            {
+                folder = new DirectoryInfo(folderPath);
+            }
+            catch(DirectoryNotFoundException)
+            {
+                logger.Error("Directory not found - " + folderPath);
+                return;
+            }
+
             var files = folder.EnumerateFiles("*.cs", SearchOption.AllDirectories);
             foreach (var file in files)
             {
@@ -120,21 +131,31 @@ namespace OmniSharp.Solution
             FileName = fileName.ForceNativePathSeparator();
             ProjectId = id;
             Files = new List<CSharpFile>();
+            Microsoft.Build.Evaluation.Project project;
 
-            var p = new Microsoft.Build.Evaluation.Project(FileName);
-            AssemblyName = p.GetPropertyValue("AssemblyName");
+            try
+            {
+                project = new Microsoft.Build.Evaluation.Project(FileName);
+            }
+            catch(DirectoryNotFoundException)
+            {
+                logger.Error("Directory not found - " + FileName);
+                return;
+            }
 
-            SetCompilerSettings(p);
+            AssemblyName = project.GetPropertyValue("AssemblyName");
 
-            AddCSharpFiles(p);
+            SetCompilerSettings(project);
+
+            AddCSharpFiles(project);
 
             References = new List<IAssemblyReference>();
             AddMsCorlib();
 
             bool hasSystemCore = false;
-            foreach (var item in p.GetItems("Reference"))
+            foreach (var item in project.GetItems("Reference"))
             {
-                var assemblyFileName = GetAssemblyFileNameFromHintPath(p, item);
+                var assemblyFileName = GetAssemblyFileNameFromHintPath(project, item);
                 //If there isn't a path hint or it doesn't exist, try searching
                 if (assemblyFileName == null)
                     assemblyFileName = FindAssembly(item.EvaluatedInclude);
@@ -160,12 +181,12 @@ namespace OmniSharp.Solution
 
                 }
                 else
-                    _logger.Debug("Could not find referenced assembly " + item.EvaluatedInclude);
+                    _logger.Error("Could not find referenced assembly " + item.EvaluatedInclude);
             }
             if (!hasSystemCore && FindAssembly("System.Core") != null)
                 AddReference(LoadAssembly(FindAssembly("System.Core")));
 
-            AddProjectReferences(p);
+            AddProjectReferences(project);
 
             this.ProjectContent = new CSharpProjectContent()
                 .SetAssemblyName(AssemblyName)
@@ -208,7 +229,7 @@ namespace OmniSharp.Solution
             if (mscorlib != null)
                 AddReference(LoadAssembly(mscorlib));
             else
-                _logger.Debug("Could not find mscorlib");
+                _logger.Error("Could not find mscorlib");
         }
 
         void AddCSharpFiles(Microsoft.Build.Evaluation.Project p)
