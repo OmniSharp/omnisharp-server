@@ -13,13 +13,12 @@ namespace OmniSharp.AutoComplete
                 _wordToComplete = value;
             }
         }
-        private bool _wantDocumentationForEveryCompletionResult = true;
+        private bool _wantDocumentationForEveryCompletionResult = false;
         private bool _wantImportableTypes = false;
 
         /// <summary>
         ///   Specifies whether to return the code documentation for
-        ///   each and every returned autocomplete result. Defaults to
-        ///   true. Can be turned off to get a small speed boost.
+        ///   each and every returned autocomplete result.        
         /// </summary>
         public bool WantDocumentationForEveryCompletionResult {
             get { return _wantDocumentationForEveryCompletionResult; }
