@@ -248,7 +248,7 @@ namespace OmniSharp.Solution
                     }
                     else
                     {
-                        _logger.Debug("File does not exist - " + path);
+                        _logger.Error("File does not exist - " + path);
                     }
                 }
                 catch (NullReferenceException e)
