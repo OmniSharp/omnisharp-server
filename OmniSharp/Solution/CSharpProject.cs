@@ -117,7 +117,7 @@ namespace OmniSharp.Solution
 
             AddMsCorlib();
             AddReference(LoadAssembly(FindAssembly("System.Core")));
-            AddAllKPMPackages();
+            AddAllKpmPackages();
             this.ProjectContent = new CSharpProjectContent()
                 .SetAssemblyName(AssemblyName)
                 .AddAssemblyReferences(References)
@@ -195,32 +195,28 @@ namespace OmniSharp.Solution
                 .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
         }
 
-        private void AddAllKPMPackages()
+        private void AddAllKpmPackages()
         {
-            try
+            var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            var folder = new DirectoryInfo(Path.Combine(userDir, ".kpm", "packages"));
+
+            if(folder.Exists)
             {
-                var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                var folder = new DirectoryInfo(Path.Combine(userDir, ".kpm/packages"));
                 var dlls = folder.EnumerateFiles("*.dll", SearchOption.AllDirectories);
                 foreach (var dll in dlls)
                 {
-                    Console.WriteLine(dll.FullName);
+                    _logger.Debug(dll.FullName);
                     try
                     {
                         AddReference(dll.FullName);
                     }
-                    catch(System.BadImageFormatException)
+                    catch(BadImageFormatException)
                     {
                         // Ignore native dlls
                     }
 
                 }
             }
-            catch (DirectoryNotFoundException)
-            {
-                // Definitely not ASP.NET vNext if no .kpm/packages
-            }
-
         }
 
         string GetAssemblyFileNameFromHintPath(Microsoft.Build.Evaluation.Project p, Microsoft.Build.Evaluation.ProjectItem item)
