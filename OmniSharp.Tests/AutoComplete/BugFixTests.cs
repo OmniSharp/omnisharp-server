@@ -7,7 +7,6 @@ namespace OmniSharp.Tests.AutoComplete
     [TestFixture]
     public class BugFixTests : CompletionTestBase
     {
-
         [Test]
         public void Should_not_add_property_body()
         {

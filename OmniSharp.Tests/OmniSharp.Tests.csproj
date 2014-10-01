@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoComplete\MethodHeaderTests.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddFileReferenceTests.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddGacReferenceTests.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddProjectReferenceTests.cs" />
@@ -129,11 +130,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="FindUsages\" />
-    <Folder Include="Solution\" />
-    <Folder Include="Solution\minimal\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!--<Import Condition="HasTrailingSlash('$(SolutionDir)')" Project="$(SolutionDir).nuget\NuGet.targets" />-->
   <!--<Import Condition="!HasTrailingSlash('$(SolutionDir)')" Project="$(SolutionDir)\.nuget\NuGet.targets" />-->

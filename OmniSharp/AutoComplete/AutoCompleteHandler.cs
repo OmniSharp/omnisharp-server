@@ -21,7 +21,7 @@ namespace OmniSharp.AutoComplete
             _logger = logger;
         }
 
-        public IEnumerable<ICompletionData> CreateProvider(AutoCompleteRequest request)
+        public IEnumerable<CompletionData> CreateProvider(AutoCompleteRequest request)
         {
             request.Column = request.Column - request.WordToComplete.Length;
             var completionContext = new BufferContext (request, _parser);
@@ -51,12 +51,12 @@ namespace OmniSharp.AutoComplete
             engine.AutomaticallyAddImports = request.WantImportableTypes;
             _logger.Debug("Getting Completion Data");
 
-            IEnumerable<ICompletionData> data = engine.GetCompletionData(completionContext.CursorPosition, true);
+            IEnumerable<CompletionData> data = engine.GetCompletionData(completionContext.CursorPosition, true).Cast<CompletionData>();
             _logger.Debug("Got Completion Data");
             return data.Where(d => d != null && d.CompletionText.IsValidCompletionFor(partialWord))
                        .FlattenOverloads()
                        .RemoveDupes()
-                       .OrderByDescending(d => d is CompletionData && ((CompletionData)d).RequiredNamespaceImport != null ? 0 : 1)
+                       .OrderByDescending(d => d.RequiredNamespaceImport != null ? 0 : 1)
                        .ThenByDescending(d => d.CompletionText.IsValidCompletionStartsWithExactCase(partialWord))
                        .ThenByDescending(d => d.CompletionText.IsValidCompletionStartsWithIgnoreCase(partialWord))
                        .ThenByDescending(d => d.CompletionText.IsCamelCaseMatch(partialWord))

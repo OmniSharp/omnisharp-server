@@ -52,6 +52,7 @@ namespace OmniSharp.AutoComplete
         private readonly bool _instantiating;
         private readonly CSharpAmbience _ambience = new CSharpAmbience { ConversionFlags = AmbienceFlags }; 
         private readonly CSharpAmbience _signatureAmbience = new CSharpAmbience { ConversionFlags = AmbienceFlags | ConversionFlags.ShowReturnType | ConversionFlags.ShowBody };
+        private readonly CSharpAmbience _methodHeaderAmbience = new CSharpAmbience { ConversionFlags = AmbienceFlags | ConversionFlags.ShowBody };
 
         private const ConversionFlags AmbienceFlags =
             ConversionFlags.ShowParameterList |
@@ -91,6 +92,10 @@ namespace OmniSharp.AutoComplete
 
             ICompletionData completionData = CompletionData(entity);
 
+            if (entity is IMethod)
+            {
+                (completionData as CompletionData).MethodHeader = _methodHeaderAmbience.ConvertSymbol(entity);
+            }
             Debug.Assert(completionData != null);
             return completionData;
         }

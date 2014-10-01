@@ -6,17 +6,17 @@ namespace OmniSharp.AutoComplete
 {
     public static class CompletionDataExtensions
     {
-        public static IEnumerable<ICompletionData> FlattenOverloads(this IEnumerable<ICompletionData> completions)
+        public static IEnumerable<CompletionData> FlattenOverloads(this IEnumerable<CompletionData> completions)
         {
-            var res = new List<ICompletionData>();
+            var res = new List<CompletionData>();
             foreach (var completion in completions)
             {
-                res.AddRange(completion.HasOverloads ? completion.OverloadedData : new[] { completion });
+                res.AddRange(completion.HasOverloads ? completion.OverloadedData.Cast<CompletionData>() : new[] { completion });
             }
             return res;
         }
 
-        public static IEnumerable<ICompletionData> RemoveDupes(this IEnumerable<ICompletionData> data)
+        public static IEnumerable<CompletionData> RemoveDupes(this IEnumerable<CompletionData> data)
         {
             return data.GroupBy(x => x.DisplayText,
                                 (k, g) => g.Aggregate((a, x) => (CompareTo(x, a) == -1) ? x : a));
