@@ -13,26 +13,29 @@ namespace OmniSharp.AutoComplete
                 _wordToComplete = value;
             }
         }
-        private bool _wantDocumentationForEveryCompletionResult = false;
-        private bool _wantImportableTypes = false;
+
+        public AutoCompleteRequest()
+        {
+            WantDocumentationForEveryCompletionResult = false;
+            WantImportableTypes = false;
+            WantMethodHeader = true;
+        }
 
         /// <summary>
         ///   Specifies whether to return the code documentation for
         ///   each and every returned autocomplete result.        
         /// </summary>
-        public bool WantDocumentationForEveryCompletionResult {
-            get { return _wantDocumentationForEveryCompletionResult; }
-            set { _wantDocumentationForEveryCompletionResult = value; }
-        }
+        public bool WantDocumentationForEveryCompletionResult { get; set; }
 
         /// <summary>
         ///   Specifies whether to return importable types. Defaults to
         ///   false. Can be turned off to get a small speed boost.
         /// </summary>
-        public bool WantImportableTypes {
-            get { return _wantImportableTypes; }
-            set { _wantImportableTypes = value; }
-        }
+        public bool WantImportableTypes { get; set; }
 
+        /// <summary>
+        /// Returns a 'method header' for working with parameter templating.
+        /// </summary>
+        public bool WantMethodHeader { get; set; }
     }
 }

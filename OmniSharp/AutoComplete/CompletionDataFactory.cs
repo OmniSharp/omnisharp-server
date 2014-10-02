@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Completion;
 using ICSharpCode.NRefactory.Completion;
@@ -14,6 +15,40 @@ namespace OmniSharp.AutoComplete
 {
     public class CompletionDataFactory : ICompletionDataFactory
     {
+        private readonly string _partialWord;
+        private readonly bool _instantiating;
+        private readonly CSharpAmbience _ambience = new CSharpAmbience { ConversionFlags = AmbienceFlags };
+        private readonly CSharpAmbience _signatureAmbience = new CSharpAmbience { ConversionFlags = AmbienceFlags | ConversionFlags.ShowReturnType | ConversionFlags.ShowBody };
+
+        private readonly CSharpAmbience _methodHeaderAmbience = new CSharpAmbience
+        {
+            ConversionFlags = ConversionFlags.All ^
+                              ConversionFlags.ShowAccessibility ^
+                              ConversionFlags.ShowModifiers ^
+                              ConversionFlags.UseFullyQualifiedTypeNames ^
+                              ConversionFlags.UseFullyQualifiedEntityNames ^
+                              ConversionFlags.ShowReturnType
+        };
+
+        private const ConversionFlags AmbienceFlags =
+            ConversionFlags.ShowParameterList |
+            ConversionFlags.ShowParameterNames;
+
+        private string _completionText;
+        private string _signature;
+        private readonly bool _wantDocumentation;
+        private readonly IProject _project;
+        private bool _wantMethodHeader;
+
+        public CompletionDataFactory(IProject project, string partialWord, bool instantiating, AutoCompleteRequest request)
+        {
+            _project = project;
+            _partialWord = partialWord;
+            _instantiating = instantiating;
+            _wantDocumentation = request.WantDocumentationForEveryCompletionResult;
+            _wantMethodHeader = request.WantMethodHeader;
+        }
+
 		public ICompletionData CreateImportCompletionData (IType type, bool useFullName, bool addForTypeCreation)
 		{
 			var result = CreateTypeCompletionData(type, useFullName, false, addForTypeCreation);
@@ -48,28 +83,7 @@ namespace OmniSharp.AutoComplete
 			throw new NotImplementedException ();
 		}
 
-        private readonly string _partialWord;
-        private readonly bool _instantiating;
-        private readonly CSharpAmbience _ambience = new CSharpAmbience { ConversionFlags = AmbienceFlags }; 
-        private readonly CSharpAmbience _signatureAmbience = new CSharpAmbience { ConversionFlags = AmbienceFlags | ConversionFlags.ShowReturnType | ConversionFlags.ShowBody };
-        private readonly CSharpAmbience _methodHeaderAmbience = new CSharpAmbience { ConversionFlags = AmbienceFlags | ConversionFlags.ShowBody };
 
-        private const ConversionFlags AmbienceFlags =
-            ConversionFlags.ShowParameterList |
-            ConversionFlags.ShowParameterNames;
-
-        private string _completionText;
-        private string _signature;
-        private readonly bool _wantDocumentation;
-        private readonly IProject _project;
-
-        public CompletionDataFactory(IProject project, string partialWord, bool instantiating, bool wantDocumentation)
-        {
-            _project = project;
-            _partialWord = partialWord;
-            _instantiating = instantiating;
-            _wantDocumentation = wantDocumentation;
-        }
 
         public ICompletionData CreateEntityCompletionData(IEntity entity)
         {
@@ -94,15 +108,33 @@ namespace OmniSharp.AutoComplete
 
             if (entity is IMethod)
             {
-                (completionData as CompletionData).MethodHeader = _methodHeaderAmbience.ConvertSymbol(entity);
+                AddMethodHeader(completionData as CompletionData, entity);
             }
             Debug.Assert(completionData != null);
             return completionData;
         }
 
+        private void AddMethodHeader(CompletionData completionData, IEntity entity)
+        {
+            if (_wantMethodHeader)
+            {
+                var header = _methodHeaderAmbience.ConvertSymbol(entity).TrimEnd(';');
+                // convert List<>.List() to List<>()
+                // int.ToString() to ToString()
+
+                header = Regex.Replace(header, @"^[A-Za-z0-9]+\.", "");
+                header = Regex.Replace(header, @"\.[a-zA-Z0-9]+", "");
+                // convert List<>() to List<T>()
+                // Dictionary<,>() to Dictionary<TKey, TValue>()
+
+                var typeParameters = string.Join(", ", entity.DeclaringType.TypeArguments.Select(a => a.FullName));
+                header = Regex.Replace(header, "<.*>", "<" + typeParameters + ">");
+                completionData.MethodHeader = header;
+            }
+        }
+
         private ICompletionData CompletionData(IEntity entity)
         {
-
             ICompletionData completionData;
             if (entity.Documentation != null)
             {
@@ -226,12 +258,16 @@ namespace OmniSharp.AutoComplete
                     {
                         GenerateGenericMethodSignature(constructor);
                         ICompletionData completionData = CompletionData(constructor);
+                        AddMethodHeader(completionData as CompletionData, constructor);
                         completion.AddOverload(completionData);
                     }
                     else
                     {
-                        completion.AddOverload(CreateEntityCompletionData(constructor));
+                        var entityCompletionData = CreateEntityCompletionData(constructor);
+                        AddMethodHeader(entityCompletionData as CompletionData, constructor);
+                        completion.AddOverload(entityCompletionData);
                     }
+                    AddMethodHeader(completion, constructor);
                 }
             }
             else
@@ -244,6 +280,7 @@ namespace OmniSharp.AutoComplete
                 completion = new CompletionData(name);
                 completion.AddOverload(completion);
             }
+            
             return completion;
         }
 

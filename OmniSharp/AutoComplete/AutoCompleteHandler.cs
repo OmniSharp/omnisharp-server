@@ -42,7 +42,7 @@ namespace OmniSharp.AutoComplete
                   ( project
                   , partialWord
                   , instantiating
-                  , request.WantDocumentationForEveryCompletionResult)
+                  , request)
                 , completionContext.ParsedContent.ProjectContent
                 , completionContext.ResolveContext)
                 {
@@ -61,8 +61,7 @@ namespace OmniSharp.AutoComplete
                        .ThenByDescending(d => d.CompletionText.IsValidCompletionStartsWithIgnoreCase(partialWord))
                        .ThenByDescending(d => d.CompletionText.IsCamelCaseMatch(partialWord))
                        .ThenByDescending(d => d.CompletionText.IsSubsequenceMatch(partialWord))
-                       .ThenBy(d => d.CompletionText)
-                       ;
+                       .ThenBy(d => d.CompletionText);
         }
 
         private static bool IsInstantiating(AstNode nodeUnderCursor)
