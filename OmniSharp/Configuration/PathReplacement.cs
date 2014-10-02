@@ -14,6 +14,11 @@ namespace OmniSharp.Configuration
 
         public static OmniSharpConfiguration Load(string configLocation, string clientMode)
         {
+            if (string.IsNullOrEmpty(configLocation))
+            {
+                string executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                configLocation = Path.Combine(executableLocation, "config.json");
+            }
             var config = File.ReadAllText(configLocation);
             _config = new Nancy.Json.JavaScriptSerializer().Deserialize<OmniSharpConfiguration>(config);
 
