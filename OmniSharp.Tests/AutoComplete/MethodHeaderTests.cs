@@ -6,14 +6,6 @@ using Should;
 
 namespace OmniSharp.Tests.AutoComplete
 {
-    public class MyClass<TDefault>
-    {
-        public MyClass()
-        {
-            
-        }
-    }
-
     [TestFixture]
     public class MethodHeaderTests : CompletionTestBase
     {
@@ -29,6 +21,22 @@ namespace OmniSharp.Tests.AutoComplete
         n.T$;
     }
 }").First().ShouldStartWith("ToString(");
+            }
+        }
+
+        [Test]
+        public void Should_return_method_return_type()
+        {
+            {
+
+				 ReturnTypeFor(
+                    @"public class A {
+    public A() 
+    {
+        int n;
+        n.T$;
+    }
+}").First().ShouldEqual("string");
             }
         }
 

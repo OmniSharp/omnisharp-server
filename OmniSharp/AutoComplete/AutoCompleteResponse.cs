@@ -11,6 +11,8 @@ namespace OmniSharp.AutoComplete
             Description = d.Description;
             RequiredNamespaceImport = d.RequiredNamespaceImport;
             MethodHeader = d.MethodHeader;
+            ReturnType = d.ReturnType;
+
         }
 
         public string CompletionText { get; set; }
@@ -18,5 +20,6 @@ namespace OmniSharp.AutoComplete
         public string DisplayText { get; set; }
         public string RequiredNamespaceImport { get; set; }
         public string MethodHeader { get; set; }
+        public string ReturnType { get; set; }
     }
 }

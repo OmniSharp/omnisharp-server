@@ -21,6 +21,11 @@ namespace OmniSharp.Tests.AutoComplete
             return CompletionsDataFor(input, includeImportableTypes).Select(c => c.MethodHeader);
         }
 
+		protected IEnumerable<string> ReturnTypeFor(string input, bool includeImportableTypes = false)
+        {
+            return CompletionsDataFor(input, includeImportableTypes).Select(c => c.ReturnType);
+        }
+
         protected IEnumerable<CompletionData> CompletionsDataFor(string input, bool includeImportableTypes = false)
         {
             return new CompletionsSpecBase().GetCompletions(input, includeImportableTypes);

@@ -42,6 +42,7 @@ namespace MonoDevelop.Projects
             if (type is ArrayTypeReference)
             {
                 var array = (ArrayTypeReference)type;
+				
                 AppendTypeReference(result, array.ElementType);
                 result.Append("[");
                 result.Append(new string(',', array.Dimensions));

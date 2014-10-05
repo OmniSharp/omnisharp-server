@@ -108,13 +108,13 @@ namespace OmniSharp.AutoComplete
 
             if (entity is IMethod)
             {
-                AddMethodHeader(completionData as CompletionData, entity);
+                AddMethodHeader(completionData as CompletionData, entity as IMethod);
             }
             Debug.Assert(completionData != null);
             return completionData;
         }
 
-        private void AddMethodHeader(CompletionData completionData, IEntity entity)
+        private void AddMethodHeader(CompletionData completionData, IMethod entity)
         {
             if (_wantMethodHeader)
             {
@@ -130,6 +130,8 @@ namespace OmniSharp.AutoComplete
                 var typeParameters = string.Join(", ", entity.DeclaringType.TypeArguments.Select(a => a.FullName));
                 header = Regex.Replace(header, "<.*>", "<" + typeParameters + ">");
                 completionData.MethodHeader = header;
+				var returnTypeAmbience = new CSharpAmbience {ConversionFlags = ConversionFlags.ShowReturnType};
+				completionData.ReturnType = returnTypeAmbience.ConvertSymbol(entity).Split(' ').First();
             }
         }
 
