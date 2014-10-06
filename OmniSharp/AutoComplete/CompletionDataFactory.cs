@@ -128,7 +128,7 @@ namespace OmniSharp.AutoComplete
                 // Dictionary<,>() to Dictionary<TKey, TValue>()
 
                 var typeParameters = string.Join(", ", entity.DeclaringType.TypeArguments.Select(a => a.FullName));
-                header = Regex.Replace(header, "<.*>", "<" + typeParameters + ">");
+                header = Regex.Replace(header, "<[^>]*>", "<" + typeParameters + ">");
                 completionData.MethodHeader = header;
 				var returnTypeAmbience = new CSharpAmbience {ConversionFlags = ConversionFlags.ShowReturnType};
 				completionData.ReturnType = returnTypeAmbience.ConvertSymbol(entity).Split(' ').First();
