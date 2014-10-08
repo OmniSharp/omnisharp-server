@@ -6,6 +6,15 @@ namespace OmniSharp.Common
 {
     public class QuickFix
     {
+        public enum LogLevelType
+        {
+            None = 0,
+            Warning = 1,
+            Error = 2
+        }
+
+        public LogLevelType LogLevel { get; set; }
+
         private string _fileName;
 
         public string FileName 

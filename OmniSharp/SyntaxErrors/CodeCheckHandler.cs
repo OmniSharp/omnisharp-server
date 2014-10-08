@@ -26,13 +26,13 @@ namespace OmniSharp.SyntaxErrors
             var syntaxErrors =
                 _syntaxErrorsHandler.FindSyntaxErrors(request)
                     .Errors.Select(
-                        x => new QuickFix {Column = x.Column, FileName = x.FileName, Line = x.Line, Text = x.Message});
+                        x => new QuickFix {Column = x.Column, FileName = x.FileName, Line = x.Line, Text = x.Message, LogLevel = QuickFix.LogLevelType.Error});
             errors.AddRange(syntaxErrors);
 
             var semanticErrors =
                 _semanticErrorsHandler.FindSemanticErrors(request)
                     .Errors.Select(
-                        x => new QuickFix {Column = x.Column, FileName = x.FileName, Line = x.Line, Text = x.Message});
+                        x => new QuickFix {Column = x.Column, FileName = x.FileName, Line = x.Line, Text = x.Message , LogLevel = QuickFix.LogLevelType.Error});
             errors.AddRange(semanticErrors);
 
             var codeErrors = _codeIssuesHandler.GetCodeIssues(request).QuickFixes;
