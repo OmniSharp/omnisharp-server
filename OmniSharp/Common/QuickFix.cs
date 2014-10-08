@@ -15,6 +15,11 @@ namespace OmniSharp.Common
 
         public LogLevelType LogLevel { get; set; }
 
+        public string LogLevelString
+        {
+            get { return LogLevel.ToString(); }
+        }
+
         private string _fileName;
 
         public string FileName 

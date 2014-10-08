@@ -29,11 +29,21 @@ namespace OmniSharp.SyntaxErrors
                         x => new QuickFix {Column = x.Column, FileName = x.FileName, Line = x.Line, Text = x.Message, LogLevel = QuickFix.LogLevelType.Error});
             errors.AddRange(syntaxErrors);
 
+            if (errors.Any())
+            {
+                return errors;
+            }
+
             var semanticErrors =
                 _semanticErrorsHandler.FindSemanticErrors(request)
                     .Errors.Select(
                         x => new QuickFix {Column = x.Column, FileName = x.FileName, Line = x.Line, Text = x.Message , LogLevel = QuickFix.LogLevelType.Error});
             errors.AddRange(semanticErrors);
+
+            if (errors.Any())
+            {
+                return errors;
+            }
 
             var codeErrors = _codeIssuesHandler.GetCodeIssues(request).QuickFixes;
             errors.AddRange(codeErrors);
