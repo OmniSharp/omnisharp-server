@@ -32,7 +32,7 @@ namespace OmniSharp.CodeIssues
                     Line = a.Start.Line,
                     FileName = req.FileName,
                     Text = a.Description,
-                    LogLevel = QuickFix.LogLevelType.Warning
+                    LogLevel = "Warning"
                 }));
         }
 

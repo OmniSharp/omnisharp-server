@@ -26,7 +26,7 @@ namespace OmniSharp.SyntaxErrors
             var syntaxErrors =
                 _syntaxErrorsHandler.FindSyntaxErrors(request)
                     .Errors.Select(
-                        x => new QuickFix {Column = x.Column, FileName = x.FileName, Line = x.Line, Text = x.Message, LogLevel = QuickFix.LogLevelType.Error});
+                        x => new QuickFix {Column = x.Column, FileName = x.FileName, Line = x.Line, Text = x.Message, LogLevel = "Error"});
             errors.AddRange(syntaxErrors);
 
             if (errors.Any())
@@ -37,7 +37,7 @@ namespace OmniSharp.SyntaxErrors
             var semanticErrors =
                 _semanticErrorsHandler.FindSemanticErrors(request)
                     .Errors.Select(
-                        x => new QuickFix {Column = x.Column, FileName = x.FileName, Line = x.Line, Text = x.Message , LogLevel = QuickFix.LogLevelType.Error});
+                        x => new QuickFix {Column = x.Column, FileName = x.FileName, Line = x.Line, Text = x.Message , LogLevel = "Error"});
             errors.AddRange(semanticErrors);
 
             if (errors.Any())
