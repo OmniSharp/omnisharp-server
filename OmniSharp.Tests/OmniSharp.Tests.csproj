@@ -94,7 +94,6 @@
     <Compile Include="UnitTesting\ContextInformationTests.cs" />
     <Compile Include="UnitTesting\UnitTesting.cs" />
     <Compile Include="FindUsages\IntegrationTest.cs" />
-    <Compile Include="SemanticErrors\SemanticErrors.cs" />
     <Compile Include="Solution\SolutionTest.cs" />
     <Compile Include="Solution\minimal\minimal\MyClass.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
