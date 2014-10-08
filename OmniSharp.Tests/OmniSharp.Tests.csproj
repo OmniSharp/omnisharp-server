@@ -94,7 +94,6 @@
     <Compile Include="UnitTesting\ContextInformationTests.cs" />
     <Compile Include="UnitTesting\UnitTesting.cs" />
     <Compile Include="FindUsages\IntegrationTest.cs" />
-    <Compile Include="SemanticErrors\SemanticErrors.cs" />
     <Compile Include="Solution\SolutionTest.cs" />
     <Compile Include="Solution\minimal\minimal\MyClass.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -128,7 +127,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="FindUsages\" />
+    <Folder Include="Solution\" />
+    <Folder Include="Solution\minimal\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!--<Import Condition="HasTrailingSlash('$(SolutionDir)')" Project="$(SolutionDir).nuget\NuGet.targets" />-->
   <!--<Import Condition="!HasTrailingSlash('$(SolutionDir)')" Project="$(SolutionDir)\.nuget\NuGet.targets" />-->
@@ -142,12 +145,5 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
   <!--<Import Project="$(SolutionDir)\.nuget\nuget.targets" />-->
 </Project>
