@@ -7,7 +7,7 @@ namespace OmniSharp.SyntaxErrors
 {
     public class CodeCheckModule : NancyModule
     {
-        public SyntaxErrorsModule(CodeCheckHandler handler)
+        public CodeCheckModule(CodeCheckHandler handler)
         {
             Post["/codecheck"] = x =>
                 {

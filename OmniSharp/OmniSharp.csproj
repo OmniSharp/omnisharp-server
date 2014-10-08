@@ -105,6 +105,8 @@
     <Compile Include="Configuration\PathMode.cs" />
     <Compile Include="Configuration\PathReplacement.cs" />
     <Compile Include="Configuration\TestCommands.cs" />
+    <Compile Include="SyntaxErrors\CodeCheckHandler.cs" />
+    <Compile Include="SyntaxErrors\CodeCheckModule.cs" />
     <Compile Include="TestContextInformation\GetContextResponse.cs" />
     <Compile Include="TestContextInformation\TestCommandRequest.cs" />
     <Compile Include="Documentation\DocumentationFetcher.cs" />
@@ -298,4 +300,11 @@
   </Target>
   -->
   <ItemGroup />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
 </Project>
