@@ -151,6 +151,10 @@ namespace OmniSharp.Solution
             AddCSharpFiles(project);
 
             References = new List<IAssemblyReference>();
+            this.ProjectContent = new CSharpProjectContent()
+                .SetAssemblyName(AssemblyName)
+                .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
+
             AddMsCorlib();
 
             bool hasSystemCore = false;
@@ -187,12 +191,8 @@ namespace OmniSharp.Solution
             if (!hasSystemCore && FindAssembly("System.Core") != null)
                 AddReference(LoadAssembly(FindAssembly("System.Core")));
 
-            AddProjectReferences(project);
 
-            this.ProjectContent = new CSharpProjectContent()
-                .SetAssemblyName(AssemblyName)
-                .AddAssemblyReferences(References)
-                .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
+            AddProjectReferences(project);
         }
 
         private void AddAllKpmPackages()
@@ -299,11 +299,13 @@ namespace OmniSharp.Solution
         public void AddReference(IAssemblyReference reference)
         {
             References.Add(reference);
+            ProjectContent = ProjectContent.AddAssemblyReferences(References);
         }
 
         public void AddReference(string reference)
         {
             References.Add(LoadAssembly(reference));
+            ProjectContent = ProjectContent.AddAssemblyReferences(References);
         }
 
         private CSharpFile GetFile(string fileName, string source)
