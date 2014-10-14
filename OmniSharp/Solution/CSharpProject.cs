@@ -80,6 +80,14 @@ namespace OmniSharp.Solution
         public List<CSharpFile> Files { get; private set; }
 
         private CompilerSettings _compilerSettings;
+
+        public CompilerSettings CompilerSettings
+        {
+            get 
+            {
+                return _compilerSettings;
+            }
+        }
         private readonly Logger _logger;
 		
         public CSharpProject(ISolution solution, Logger logger, string folderPath)
@@ -250,7 +258,7 @@ namespace OmniSharp.Solution
 
             var config = ConfigurationLoader.Config;
             foreach (var define in config.Defines)
-                _compilerSettings.ConditionalSymbols.Add (define);
+                _compilerSettings.ConditionalSymbols.Add(define);
         }
 
         void AddMsCorlib()
