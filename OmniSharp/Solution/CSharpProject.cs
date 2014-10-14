@@ -9,6 +9,7 @@ using ICSharpCode.NRefactory.TypeSystem;
 using ICSharpCode.NRefactory.Utils;
 using Mono.Cecil;
 using ICSharpCode.NRefactory.Editor;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.Solution
 {
@@ -79,6 +80,14 @@ namespace OmniSharp.Solution
         public List<CSharpFile> Files { get; private set; }
 
         private CompilerSettings _compilerSettings;
+
+        public CompilerSettings CompilerSettings
+        {
+            get 
+            {
+                return _compilerSettings;
+            }
+        }
         private readonly Logger _logger;
 		
         public CSharpProject(ISolution solution, Logger logger, string folderPath)
@@ -245,6 +254,10 @@ namespace OmniSharp.Solution
             string[] defines = p.GetPropertyValue("DefineConstants")
                                 .Split(new [] {';'}, StringSplitOptions.RemoveEmptyEntries);
             foreach (string define in defines)
+                _compilerSettings.ConditionalSymbols.Add(define);
+
+            var config = ConfigurationLoader.Config;
+            foreach (var define in config.Defines)
                 _compilerSettings.ConditionalSymbols.Add(define);
         }
 
