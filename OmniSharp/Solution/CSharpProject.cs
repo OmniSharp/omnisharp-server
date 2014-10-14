@@ -9,6 +9,7 @@ using ICSharpCode.NRefactory.TypeSystem;
 using ICSharpCode.NRefactory.Utils;
 using Mono.Cecil;
 using ICSharpCode.NRefactory.Editor;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.Solution
 {
@@ -246,6 +247,10 @@ namespace OmniSharp.Solution
                                 .Split(new [] {';'}, StringSplitOptions.RemoveEmptyEntries);
             foreach (string define in defines)
                 _compilerSettings.ConditionalSymbols.Add(define);
+
+            var config = ConfigurationLoader.Config;
+            foreach (var define in config.Defines)
+                _compilerSettings.ConditionalSymbols.Add (define);
         }
 
         void AddMsCorlib()
