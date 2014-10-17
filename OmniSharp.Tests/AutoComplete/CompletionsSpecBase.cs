@@ -39,7 +39,8 @@ namespace OmniSharp.Tests.AutoComplete
                     Column = cursorPosition.Column,
 					WantDocumentationForEveryCompletionResult = false,
                     WantImportableTypes = includeImportableTypes,
-                    WantMethodHeader = true
+                    WantMethodHeader = true,
+                    WantSnippet = true
                 };
 
             return provider.CreateProvider(request);

@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{1F3D3CA5-1E85-4657-8719-24E5ED0D1FAE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -102,6 +100,8 @@
     </Compile>
     <Compile Include="FixUsings\FixUsingsTests.cs" />
     <Compile Include="Overrides\TestOverrideContext.cs" />
+    <Compile Include="AutoComplete\SnippetGenerationTests.cs" />
+    <Compile Include="AutoComplete\SnippetTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OmniSharp\OmniSharp.csproj">

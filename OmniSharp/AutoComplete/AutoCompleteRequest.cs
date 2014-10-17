@@ -23,7 +23,7 @@ namespace OmniSharp.AutoComplete
 
         /// <summary>
         ///   Specifies whether to return the code documentation for
-        ///   each and every returned autocomplete result.        
+        ///   each and every returned autocomplete result.
         /// </summary>
         public bool WantDocumentationForEveryCompletionResult { get; set; }
 
@@ -36,6 +36,8 @@ namespace OmniSharp.AutoComplete
         /// <summary>
         /// Returns a 'method header' for working with parameter templating.
         /// </summary>
-        public bool WantMethodHeader { get; set; }
+		public bool WantMethodHeader { get; set; }
+
+		public bool WantSnippet { get; set; }
     }
 }
