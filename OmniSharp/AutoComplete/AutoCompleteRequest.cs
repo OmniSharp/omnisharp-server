@@ -5,20 +5,16 @@ namespace OmniSharp.AutoComplete
     public class AutoCompleteRequest : Request
     {
         private string _wordToComplete;
-        public string WordToComplete {
-            get {
+        public string WordToComplete
+        {
+            get
+            {
                 return _wordToComplete ?? "";
             }
-            set {
+            set
+            {
                 _wordToComplete = value;
             }
-        }
-
-        public AutoCompleteRequest()
-        {
-            WantDocumentationForEveryCompletionResult = false;
-            WantImportableTypes = false;
-            WantMethodHeader = true;
         }
 
         /// <summary>
@@ -36,8 +32,17 @@ namespace OmniSharp.AutoComplete
         /// <summary>
         /// Returns a 'method header' for working with parameter templating.
         /// </summary>
-		public bool WantMethodHeader { get; set; }
+        public bool WantMethodHeader { get; set; }
 
-		public bool WantSnippet { get; set; }
+        /// <summary>
+        /// Returns a snippet that can be used by common snippet libraries
+        /// to provide parameter and type parameter placeholders
+        /// </summary>
+        public bool WantSnippet { get; set; }
+
+        /// <summary>
+        /// Returns the return type 
+        /// </summary>
+        public bool WantReturnType { get; set; }
     }
 }

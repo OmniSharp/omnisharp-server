@@ -20,7 +20,7 @@ namespace OmniSharp.Tests.AutoComplete
         [SetUp]
         public void SetUp()
         {
-            snippetGenerator = new SnippetGenerator();
+            snippetGenerator = new SnippetGenerator(true);
             var loader = new CecilLoader();
             loader.IncludeInternalMembers = true;
             myLib = loader.LoadAssemblyFile(typeof(SnippetGenerationTests).Assembly.Location);
@@ -50,7 +50,6 @@ namespace OmniSharp.Tests.AutoComplete
             var typeDef = compilation.FindType(typeof(List<>)).GetDefinition();
             snippetGenerator.ConversionFlags = ConversionFlags.UseFullyQualifiedEntityNames | ConversionFlags.ShowTypeParameterList;
             string result = snippetGenerator.Generate(typeDef);
-
             Assert.AreEqual("List<${1:T}>()$0", result);
         }
 

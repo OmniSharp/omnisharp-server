@@ -41,6 +41,7 @@ namespace OmniSharp.AutoComplete
         private readonly IProject _project;
         private bool _wantMethodHeader;
         private bool _wantSnippet;
+        private bool _wantReturnType;
 
         public CompletionDataFactory(IProject project, string partialWord, bool instantiating, AutoCompleteRequest request)
         {
@@ -50,6 +51,7 @@ namespace OmniSharp.AutoComplete
             _wantDocumentation = request.WantDocumentationForEveryCompletionResult;
             _wantMethodHeader = request.WantMethodHeader;
             _wantSnippet = request.WantSnippet;
+            _wantReturnType = request.WantReturnType;
         }
 
         public ICompletionData CreateImportCompletionData(IType type, bool useFullName, bool addForTypeCreation)
@@ -112,45 +114,32 @@ namespace OmniSharp.AutoComplete
             {
                 AddMethodHeader(completionData as CompletionData, entity as IMethod);
             }
+
             Debug.Assert(completionData != null);
             return completionData;
         }
 
-        private void AddMethodHeader(CompletionData completionData, IMethod entity)
+        private void AddMethodHeader(CompletionData completionData, IMethod method)
         {
+            var methodDefinition = method.MemberDefinition;
+
             if (_wantMethodHeader)
             {
-                var header = _methodHeaderAmbience.ConvertSymbol(entity).TrimEnd(';');
-                // convert List<>.List() to List<>()
-                // int.ToString() to ToString()
-
-                header = Regex.Replace(header, @"^[A-Za-z0-9]+\.", "");
-                header = Regex.Replace(header, @"\.[a-zA-Z0-9]+", "");
-                // convert List<>() to List<T>()
-                // Dictionary<,>() to Dictionary<TKey, TValue>()
-
-                var typeParameters = entity.DeclaringType.TypeArguments.Select(a => a.FullName);
-                int i = 1;
-                var templatedTypedParameter = new List<string>();
-                foreach (var param in typeParameters)
-                {
-                    templatedTypedParameter.Add("${" + i++ + ":" + param + "}");
-                }
-               
-                completionData.MethodHeader = Regex.Replace(header, "<[^>]*>", "<" + string.Join(", ", typeParameters) + ">");
-
-                var returnTypeAmbience = new CSharpAmbience { ConversionFlags = ConversionFlags.ShowReturnType };
-                completionData.ReturnType = returnTypeAmbience.ConvertSymbol(entity).Split(' ').First();
+                var snippetGenerator = new SnippetGenerator(false);
+                completionData.MethodHeader = snippetGenerator.Generate(methodDefinition);
             }
-
 
             if (_wantSnippet)
             {
-                var snippetGenerator = new SnippetGenerator();
-                snippetGenerator.ConversionFlags = ConversionFlags.All;
-                
-                var methodDefinition = (entity as IMethod).MemberDefinition;
+                var snippetGenerator = new SnippetGenerator(true);
                 completionData.Snippet = snippetGenerator.Generate(methodDefinition);
+            }
+
+            if (_wantReturnType)
+            {
+                    
+                var returnTypeAmbience = new CSharpAmbience { ConversionFlags = ConversionFlags.ShowReturnType };
+                completionData.ReturnType = returnTypeAmbience.ConvertSymbol(method).Split(' ').First();
             }
         }
 

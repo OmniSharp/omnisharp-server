@@ -40,6 +40,7 @@ namespace OmniSharp.Tests.AutoComplete
 					WantDocumentationForEveryCompletionResult = false,
                     WantImportableTypes = includeImportableTypes,
                     WantMethodHeader = true,
+                    WantReturnType = true,
                     WantSnippet = true
                 };
 

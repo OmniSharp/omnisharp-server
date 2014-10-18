@@ -15,7 +15,13 @@ namespace OmniSharp.AutoComplete
         private TextWriterTokenWriter _writer;
 
         int _counter = 1;
-		
+        bool _includePlaceholders;
+
+        public SnippetGenerator(bool includePlaceholders)
+        {
+            _includePlaceholders = includePlaceholders;
+        }
+        
         public string Generate(ISymbol symbol)
         {
             if (symbol == null)
@@ -40,7 +46,6 @@ namespace OmniSharp.AutoComplete
             if (HasParameters(symbol))
             {
                 _writer.WriteToken(symbol.SymbolKind == SymbolKind.Indexer ? Roles.LBracket : Roles.LPar, symbol.SymbolKind == SymbolKind.Indexer ? "[" : "(");
-                // bool first = true;
                 var parameters = new List<ParameterDeclaration>(node.GetChildrenByRole(Roles.Parameter));
                 if (parameters.Any())
                 {
@@ -48,8 +53,11 @@ namespace OmniSharp.AutoComplete
                 }
                 _writer.WriteToken(symbol.SymbolKind == SymbolKind.Indexer ? Roles.RBracket : Roles.RPar, symbol.SymbolKind == SymbolKind.Indexer ? "]" : ")");
             }
-
-            _writer.WriteToken(Roles.Text, "$0");
+            if (_includePlaceholders)
+            {
+                _writer.WriteToken(Roles.Text, "$0");
+	
+            }
             return writer.ToString();
         }
 
@@ -103,15 +111,20 @@ namespace OmniSharp.AutoComplete
             var last = list.Last();
             foreach (AstNode node in list)
             {
-                _writer.WriteToken(Roles.Text, "$");
-                _writer.WriteToken(Roles.Text, "{");
-                _writer.WriteToken(Roles.Text, _counter.ToString());
-                _writer.WriteToken(Roles.Text, ":");
-
+                if (_includePlaceholders)
+                {
+                    _writer.WriteToken(Roles.Text, "$");
+                    _writer.WriteToken(Roles.Text, "{");
+                    _writer.WriteToken(Roles.Text, _counter.ToString());
+                    _writer.WriteToken(Roles.Text, ":");
+                }
                 var outputVisitor = new CSharpOutputVisitor(_writer, _policy);
                 node.AcceptVisitor(outputVisitor);
 
-                _writer.WriteToken(Roles.Text, "}");
+                if (_includePlaceholders)
+                {
+                    _writer.WriteToken(Roles.Text, "}");
+                }
 
                 if (node != last)
                 {
@@ -156,10 +169,10 @@ namespace OmniSharp.AutoComplete
                 case SymbolKind.Indexer:
                     writer.WriteKeyword(Roles.Identifier, "this");
                     break;
-            case SymbolKind.Constructor:
-                WriteQualifiedName (member.DeclaringType.Name, writer, formattingPolicy);
-                var typeNode = astBuilder.ConvertEntity(member.DeclaringTypeDefinition);
-                WriteTypeParameters (writer, typeNode.GetChildrenByRole(Roles.TypeParameter));
+                case SymbolKind.Constructor:
+                    WriteQualifiedName(member.DeclaringType.Name, writer, formattingPolicy);
+                    var typeNode = astBuilder.ConvertEntity(member.DeclaringTypeDefinition);
+                    WriteTypeParameters(writer, typeNode.GetChildrenByRole(Roles.TypeParameter));
                     break;
                 case SymbolKind.Destructor:
                     writer.WriteToken(DestructorDeclaration.TildeRole, "~");
