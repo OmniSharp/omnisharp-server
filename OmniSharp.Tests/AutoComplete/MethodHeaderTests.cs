@@ -25,17 +25,14 @@ namespace OmniSharp.Tests.AutoComplete
         [Test]
         public void Should_return_method_return_type()
         {
-            {
-
-				 ReturnTypeFor(
-                    @"public class A {
+            ReturnTypeFor(
+                @"public class A {
     public A() 
     {
         int n;
         n.T$;
     }
 }").First().ShouldEqual("string");
-            }
         }
 
         [Test]
