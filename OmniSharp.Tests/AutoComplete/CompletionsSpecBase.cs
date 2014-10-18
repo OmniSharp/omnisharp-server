@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using ICSharpCode.NRefactory;
-using ICSharpCode.NRefactory.Completion;
 using OmniSharp.AutoComplete;
 using OmniSharp.Parser;
 
@@ -17,7 +16,7 @@ namespace OmniSharp.Tests.AutoComplete
             _solution = new FakeSolution();
         }
 
-        public IEnumerable<ICompletionData> GetCompletions(string editorText, bool includeImportableTypes)
+        public IEnumerable<CompletionData> GetCompletions(string editorText, bool includeImportableTypes)
         {
             int cursorOffset = editorText.IndexOf("$", StringComparison.Ordinal);
             if(cursorOffset == -1)
@@ -40,6 +39,9 @@ namespace OmniSharp.Tests.AutoComplete
                     Column = cursorPosition.Column,
 					WantDocumentationForEveryCompletionResult = false,
                     WantImportableTypes = includeImportableTypes,
+                    WantMethodHeader = true,
+                    WantReturnType = true,
+                    WantSnippet = true
                 };
 
             return provider.CreateProvider(request);

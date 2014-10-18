@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{1F3D3CA5-1E85-4657-8719-24E5ED0D1FAE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -57,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoComplete\MethodHeaderTests.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddFileReferenceTests.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddGacReferenceTests.cs" />
     <Compile Include="ProjectManipulation\AddReference\AddProjectReferenceTests.cs" />
@@ -100,6 +99,8 @@
     </Compile>
     <Compile Include="FixUsings\FixUsingsTests.cs" />
     <Compile Include="Overrides\TestOverrideContext.cs" />
+    <Compile Include="AutoComplete\SnippetGenerationTests.cs" />
+    <Compile Include="AutoComplete\SnippetTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OmniSharp\OmniSharp.csproj">
@@ -128,11 +129,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="FindUsages\" />
-    <Folder Include="Solution\" />
-    <Folder Include="Solution\minimal\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!--<Import Condition="HasTrailingSlash('$(SolutionDir)')" Project="$(SolutionDir).nuget\NuGet.targets" />-->
   <!--<Import Condition="!HasTrailingSlash('$(SolutionDir)')" Project="$(SolutionDir)\.nuget\NuGet.targets" />-->
