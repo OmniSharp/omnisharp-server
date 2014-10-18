@@ -31,7 +31,8 @@ namespace OmniSharp.CodeIssues
                     Column = a.Start.Column,
                     Line = a.Start.Line,
                     FileName = req.FileName,
-                    Text = a.Description
+                    Text = a.Description,
+                    LogLevel = "Warning"
                 }));
         }
 

@@ -31,8 +31,17 @@ namespace OmniSharp.AutoComplete
 
             var project = _solution.ProjectContainingFile(request.FileName);
         
-            ICompletionContextProvider contextProvider = new DefaultCompletionContextProvider
+            var contextProvider = new DefaultCompletionContextProvider
                 (completionContext.Document, completionContext.ParsedContent.UnresolvedFile);
+
+            if (project.CompilerSettings != null) 
+            {
+                var conditionalSymbols = project.CompilerSettings.ConditionalSymbols;
+                foreach (var symbol in conditionalSymbols) 
+                {
+                    contextProvider.AddSymbol (symbol);
+                }
+            }
 
             var instantiating = IsInstantiating(completionContext.NodeCurrentlyUnderCursor);
 

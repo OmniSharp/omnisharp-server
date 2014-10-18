@@ -21,16 +21,6 @@ namespace OmniSharp.AutoComplete
         private readonly CSharpAmbience _ambience = new CSharpAmbience { ConversionFlags = AmbienceFlags };
         private readonly CSharpAmbience _signatureAmbience = new CSharpAmbience { ConversionFlags = AmbienceFlags | ConversionFlags.ShowReturnType | ConversionFlags.ShowBody };
 
-        private readonly CSharpAmbience _methodHeaderAmbience = new CSharpAmbience
-        {
-            ConversionFlags = ConversionFlags.All ^
-            ConversionFlags.ShowAccessibility ^
-            ConversionFlags.ShowModifiers ^
-            ConversionFlags.UseFullyQualifiedTypeNames ^
-            ConversionFlags.UseFullyQualifiedEntityNames ^
-            ConversionFlags.ShowReturnType
-        };
-
         private const ConversionFlags AmbienceFlags =
             ConversionFlags.ShowParameterList |
             ConversionFlags.ShowParameterNames;

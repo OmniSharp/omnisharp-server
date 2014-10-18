@@ -105,6 +105,8 @@
     <Compile Include="Configuration\PathMode.cs" />
     <Compile Include="Configuration\PathReplacement.cs" />
     <Compile Include="Configuration\TestCommands.cs" />
+    <Compile Include="SyntaxErrors\CodeCheckHandler.cs" />
+    <Compile Include="SyntaxErrors\CodeCheckModule.cs" />
     <Compile Include="TestContextInformation\GetContextResponse.cs" />
     <Compile Include="TestContextInformation\TestCommandRequest.cs" />
     <Compile Include="Documentation\DocumentationFetcher.cs" />

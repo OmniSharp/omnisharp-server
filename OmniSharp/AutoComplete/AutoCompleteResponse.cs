@@ -13,8 +13,6 @@ namespace OmniSharp.AutoComplete
             MethodHeader = d.MethodHeader;
             ReturnType = d.ReturnType;
             Snippet = d.Snippet;
-
-
         }
 
         public string CompletionText { get; private set; }

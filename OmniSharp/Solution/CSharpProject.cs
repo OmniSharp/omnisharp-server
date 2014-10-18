@@ -9,6 +9,7 @@ using ICSharpCode.NRefactory.TypeSystem;
 using ICSharpCode.NRefactory.Utils;
 using Mono.Cecil;
 using ICSharpCode.NRefactory.Editor;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.Solution
 {
@@ -42,7 +43,7 @@ namespace OmniSharp.Solution
             @"C:\Program Files\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v2.0",
             @"C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE\ReferenceAssemblies\v2.0",
             @"C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies",
-            
+
             //Unix Paths
             @"/usr/local/lib/mono/4.5",
             @"/usr/local/lib/mono/4.0",
@@ -79,8 +80,16 @@ namespace OmniSharp.Solution
         public List<CSharpFile> Files { get; private set; }
 
         private CompilerSettings _compilerSettings;
+
+        public CompilerSettings CompilerSettings
+        {
+            get 
+            {
+                return _compilerSettings;
+            }
+        }
         private readonly Logger _logger;
-		
+
         public CSharpProject(ISolution solution, Logger logger, string folderPath)
         {
             _logger = logger;
@@ -151,6 +160,10 @@ namespace OmniSharp.Solution
             AddCSharpFiles(project);
 
             References = new List<IAssemblyReference>();
+            this.ProjectContent = new CSharpProjectContent()
+                .SetAssemblyName(AssemblyName)
+                .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
+
             AddMsCorlib();
 
             bool hasSystemCore = false;
@@ -187,12 +200,8 @@ namespace OmniSharp.Solution
             if (!hasSystemCore && FindAssembly("System.Core") != null)
                 AddReference(LoadAssembly(FindAssembly("System.Core")));
 
-            AddProjectReferences(project);
 
-            this.ProjectContent = new CSharpProjectContent()
-                .SetAssemblyName(AssemblyName)
-                .AddAssemblyReferences(References)
-                .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
+            AddProjectReferences(project);
         }
 
         private void AddAllKpmPackages()
@@ -206,14 +215,9 @@ namespace OmniSharp.Solution
                 foreach (var dll in dlls)
                 {
                     _logger.Debug(dll.FullName);
-                    try
-                    {
-                        AddReference(dll.FullName);
-                    }
-                    catch(BadImageFormatException)
-                    {
-                        // Ignore native dlls
-                    }
+
+                    AddReference(dll.FullName);
+
 
                 }
             }
@@ -243,8 +247,12 @@ namespace OmniSharp.Solution
                 CheckForOverflow = GetBoolProperty(p, "CheckForOverflowUnderflow") ?? false
             };
             string[] defines = p.GetPropertyValue("DefineConstants")
-                                .Split(new [] {';'}, StringSplitOptions.RemoveEmptyEntries);
+                .Split(new [] {';'}, StringSplitOptions.RemoveEmptyEntries);
             foreach (string define in defines)
+                _compilerSettings.ConditionalSymbols.Add(define);
+
+            var config = ConfigurationLoader.Config;
+            foreach (var define in config.Defines)
                 _compilerSettings.ConditionalSymbols.Add(define);
         }
 
@@ -264,7 +272,7 @@ namespace OmniSharp.Solution
                 try
                 {
                     string path = Path.Combine(p.DirectoryPath, item.EvaluatedInclude).ForceNativePathSeparator();
-                   
+
                     if (File.Exists(path))
                     {
                         string file = new FileInfo(path).FullName;
@@ -299,11 +307,21 @@ namespace OmniSharp.Solution
         public void AddReference(IAssemblyReference reference)
         {
             References.Add(reference);
+            ProjectContent = ProjectContent.AddAssemblyReferences(References);
         }
 
         public void AddReference(string reference)
         {
-            References.Add(LoadAssembly(reference));
+            try
+            {
+                References.Add(LoadAssembly(reference));
+                ProjectContent = ProjectContent.AddAssemblyReferences(References);
+            }
+            catch(BadImageFormatException)
+            {
+                // Ignore native dlls
+                _logger.Error(reference + " is a native dll");
+            }
         }
 
         private CSharpFile GetFile(string fileName, string source)
@@ -344,7 +362,7 @@ namespace OmniSharp.Solution
         {
             project.Save(FileName);
         }
-        
+
         public override string ToString()
         {
             return string.Format("[CSharpProject AssemblyName={0}]", AssemblyName);
@@ -366,7 +384,7 @@ namespace OmniSharp.Solution
 
             if (evaluatedInclude.IndexOf(',') >= 0)
                 evaluatedInclude = evaluatedInclude.Substring(0, evaluatedInclude.IndexOf(','));
-            
+
             string directAssemblyFile = (evaluatedInclude + ".dll").ForceNativePathSeparator();
             if (File.Exists(directAssemblyFile))
                 return directAssemblyFile;
