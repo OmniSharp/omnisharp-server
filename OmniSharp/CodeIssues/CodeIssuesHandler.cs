@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -30,6 +30,8 @@ namespace OmniSharp.CodeIssues
                 {
                     Column = a.Start.Column,
                     Line = a.Start.Line,
+                    EndColumn = a.End.Column,
+                    EndLine = a.End.Line,
                     FileName = req.FileName,
                     Text = a.Description,
                     LogLevel = "Warning"

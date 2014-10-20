@@ -1,4 +1,4 @@
-﻿using ICSharpCode.NRefactory.Editor;
+using ICSharpCode.NRefactory.Editor;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.Solution;
 
@@ -21,6 +21,8 @@ namespace OmniSharp.Common
 
         public int Line { get; set; }
         public int Column { get; set; }
+        public int EndLine { get; set; }
+        public int EndColumn { get; set; }
         public string Text { get; set; }
 
         /// <summary>

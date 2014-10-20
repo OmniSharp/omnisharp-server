@@ -1,4 +1,4 @@
-﻿
+
 // Copyright (c) AlphaSierraPapa for the SharpDevelop Team
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this
@@ -21,8 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace OmniSharp.Solution
 {

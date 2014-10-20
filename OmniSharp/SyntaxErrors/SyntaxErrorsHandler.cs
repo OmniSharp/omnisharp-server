@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using ICSharpCode.NRefactory.CSharp;
 using OmniSharp.Common;
 using OmniSharp.Solution;
@@ -18,6 +18,8 @@ namespace OmniSharp.SyntaxErrors
                     Message = error.Message.Replace("'", "''"),
                     Column = error.Region.BeginColumn,
                     Line = error.Region.BeginLine,
+                    EndColumn = error.Region.EndColumn,
+                    EndLine = error.Region.EndLine,
                     FileName = filename
                 });
 
