@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MyClass.cs" />
+    <Compile Include="MyClassContainer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
