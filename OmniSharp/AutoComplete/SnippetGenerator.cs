@@ -46,9 +46,15 @@ namespace OmniSharp.AutoComplete
             if (HasParameters(symbol))
             {
                 _writer.WriteToken(symbol.SymbolKind == SymbolKind.Indexer ? Roles.LBracket : Roles.LPar, symbol.SymbolKind == SymbolKind.Indexer ? "[" : "(");
-                var parameters = new List<ParameterDeclaration>(node.GetChildrenByRole(Roles.Parameter));
-                if (parameters.Any())
+                IEnumerable<ParameterDeclaration> parameters = new List<ParameterDeclaration>(node.GetChildrenByRole(Roles.Parameter));
+                if (symbol is IMethod && ((IMethod)symbol).IsExtensionMethod)
                 {
+                    parameters = parameters.Skip(1);
+                }
+
+                if(parameters.Any())
+                {
+
                     WriteCommaSeparatedList(parameters);
                 }
                 _writer.WriteToken(symbol.SymbolKind == SymbolKind.Indexer ? Roles.RBracket : Roles.RPar, symbol.SymbolKind == SymbolKind.Indexer ? "]" : ")");
@@ -56,7 +62,6 @@ namespace OmniSharp.AutoComplete
             if (_includePlaceholders)
             {
                 _writer.WriteToken(Roles.Text, "$0");
-	
             }
             return writer.ToString();
         }
@@ -106,10 +111,10 @@ namespace OmniSharp.AutoComplete
             }
         }
 
-        void WriteCommaSeparatedList(IEnumerable<AstNode> list)
+        void WriteCommaSeparatedList(IEnumerable<AstNode> parameters)
         {
-            var last = list.Last();
-            foreach (AstNode node in list)
+            var last = parameters.Last();
+            foreach (AstNode node in parameters)
             {
                 if (_includePlaceholders)
                 {

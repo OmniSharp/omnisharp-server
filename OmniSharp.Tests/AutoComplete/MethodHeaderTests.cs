@@ -76,5 +76,35 @@ namespace OmniSharp.Tests.AutoComplete
                 }")
                 .ShouldContain("Dictionary<TKey, TValue>()");
         }
+
+        [Test]
+        public void Should_not_add_this_parameter_to_extension_method()
+        {
+            MethodHeaderFor(
+            @"using System.Collections.Generic;
+            using System.Linq;
+
+            public class A {
+                public A()
+                {
+                    string s;
+                    s.MyEx$
+                }
+            }
+
+            public static class StringExtensions
+            {
+                public static string MyExtension(this string s)
+                {
+                    return s;
+                }
+
+                public static string MyExtension(this string s, int i)
+                {
+                    return s;
+                }
+            }
+            ").ShouldContainOnly("MyExtension()", "MyExtension(int i)");
+        }
     }
 }

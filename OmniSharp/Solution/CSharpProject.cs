@@ -120,7 +120,7 @@ namespace OmniSharp.Solution
             var dlls = folder.EnumerateFiles("*.dll", SearchOption.AllDirectories);
             foreach (var dll in dlls)
             {
-                Console.WriteLine(dll.FullName);
+                _logger.Debug("Loading assembly " + dll.FullName);
                 AddReference(dll.FullName);
             }
 
