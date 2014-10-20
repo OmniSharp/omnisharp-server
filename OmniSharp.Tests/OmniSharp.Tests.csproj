@@ -101,6 +101,7 @@
     <Compile Include="Overrides\TestOverrideContext.cs" />
     <Compile Include="AutoComplete\SnippetGenerationTests.cs" />
     <Compile Include="AutoComplete\SnippetTests.cs" />
+    <Compile Include="SemanticErrors\SemanticErrors.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OmniSharp\OmniSharp.csproj">
@@ -128,6 +129,7 @@
     <None Include="Solution\minimal\minimal\minimal.csproj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="SemanticErrors\TestResult.xml" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -144,4 +146,7 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <!--<Import Project="$(SolutionDir)\.nuget\nuget.targets" />-->
+  <ItemGroup>
+    <Folder Include="SemanticErrors\" />
+  </ItemGroup>
 </Project>
