@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -105,6 +105,8 @@
     <Compile Include="Configuration\PathMode.cs" />
     <Compile Include="Configuration\PathReplacement.cs" />
     <Compile Include="Configuration\TestCommands.cs" />
+    <Compile Include="SyntaxErrors\CodeCheckHandler.cs" />
+    <Compile Include="SyntaxErrors\CodeCheckModule.cs" />
     <Compile Include="TestContextInformation\GetContextResponse.cs" />
     <Compile Include="TestContextInformation\TestCommandRequest.cs" />
     <Compile Include="Documentation\DocumentationFetcher.cs" />
@@ -253,6 +255,7 @@
     <Compile Include="CodeActions\FixUsingsResponse.cs" />
     <Compile Include="CodeActions\FixUsingsModule.cs" />
     <Compile Include="Solution\CSharpFolder.cs" />
+    <Compile Include="AutoComplete\SnippetGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

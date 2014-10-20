@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Xml;
 using ICSharpCode.NRefactory.TypeSystem;
 using ICSharpCode.NRefactory.TypeSystem.Implementation;
-//using MonoDevelop.Core;
 using ICSharpCode.NRefactory.Documentation;
 using System.Text;
 
@@ -39,6 +38,7 @@ namespace MonoDevelop.Ide.TypeSystem
     public class MonoDocDocumentationProvider : IDocumentationProvider
     {
         #region IDocumentationProvider implementation
+
         public DocumentationComment GetDocumentation(IEntity entity)
         {
             if (entity == null)
@@ -52,30 +52,38 @@ namespace MonoDevelop.Ide.TypeSystem
                 var helpTree = MonoDevelop.Projects.HelpService.HelpTree;
                 if (helpTree == null)
                     return null;
-				if (entity.SymbolKind == SymbolKind.TypeDefinition)
+                if (entity.SymbolKind == SymbolKind.TypeDefinition)
                 {
-#pragma warning disable 612,618
+                    #pragma warning disable 612,618
                     doc = helpTree.GetHelpXml(idString);
-#pragma warning restore 612,618
+                    #pragma warning restore 612,618
                 }
                 else
                 {
                     var parentId = entity.DeclaringTypeDefinition.GetIdString();
 
-#pragma warning disable 612,618
-                    doc = helpTree.GetHelpXml(parentId);
-#pragma warning restore 612,618
+                    #pragma warning disable 612,618
+                    try
+                    {
+                            
+                        doc = helpTree.GetHelpXml(parentId);
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        //ignore
+                    }
+                    #pragma warning restore 612,618
                     if (doc == null)
-					{
+                    {
                         return null;
-					}
+                    }
                     XmlNode node = SelectNode(doc, entity);
 
                     if (node != null)
                         return new DocumentationComment(node.OuterXml, new SimpleTypeResolveContext(entity));
                     return null;
-                    //					var node = doc.SelectSingleNode ("/Type/Members/Member")
-                    //					return new DocumentationComment (doc.OuterXml, new SimpleTypeResolveContext (entity));
+                    //                  var node = doc.SelectSingleNode ("/Type/Members/Member")
+                    //                  return new DocumentationComment (doc.OuterXml, new SimpleTypeResolveContext (entity));
                 }
             }
             catch (Exception e)

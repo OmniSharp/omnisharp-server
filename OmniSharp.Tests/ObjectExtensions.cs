@@ -6,6 +6,11 @@ namespace OmniSharp.Tests
 {
     public static class ObjectExtensions
     {
+        public static void ShouldEqual(this string actual, string expected)
+        {
+            Assert.AreEqual(expected, actual);
+        }
+
         public static void ShouldEqual<T>(this IEnumerable<T> actual, params T[] expected)
         {
             CollectionAssert.AreEqual(expected, actual.ToArray());

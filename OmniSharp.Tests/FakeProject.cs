@@ -12,7 +12,7 @@ namespace OmniSharp.Tests
     public class FakeProject : IProject
     {
         public string Name { get; set; }
-
+        public CompilerSettings CompilerSettings { get { return null; } }
         static readonly Lazy<IUnresolvedAssembly> mscorlib = new Lazy<IUnresolvedAssembly>(
             () => new CecilLoader().LoadAssemblyFile(typeof (object).Assembly.Location));
         

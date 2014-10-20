@@ -19,6 +19,7 @@ namespace OmniSharp.Solution
         public IProjectContent ProjectContent { get; set; }
         public string FileName { get; private set; }
         public Guid ProjectId { get; private set; }
+        public CompilerSettings CompilerSettings { get { return null; } }
 
         public void AddReference(IAssemblyReference reference)
         {

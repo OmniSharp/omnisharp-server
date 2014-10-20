@@ -7,8 +7,8 @@ namespace OmniSharp.AutoComplete
     public class CompletionData
         : ICompletionData
     {
-        private readonly ICollection<ICompletionData> _overloadedData 
-            = new List<ICompletionData>();
+        private readonly ICollection<CompletionData> _overloadedData 
+            = new List<CompletionData>();
 
         private string _description;
         private string _displayText;
@@ -33,7 +33,7 @@ namespace OmniSharp.AutoComplete
 
         public void AddOverload(ICompletionData data)
         {
-            _overloadedData.Add(data);
+            _overloadedData.Add(data as CompletionData);
         }
 
         public CompletionCategory CompletionCategory { get; set; }
@@ -70,6 +70,9 @@ namespace OmniSharp.AutoComplete
         }
 
         public string RequiredNamespaceImport { get; set; }
+        public string MethodHeader { get; set; }
+        public string ReturnType { get; set; }
+        public string Snippet { get; set; }
 
         public override string ToString()
         {

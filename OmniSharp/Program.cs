@@ -53,7 +53,7 @@ namespace OmniSharp
                             h => showHelp = h != null
                         },
                         {
-                            "config", "The path to the server config.json file",
+                            "config=", "The path to the server config.json file",
                             path => configLocation = path
                         }
                     };
