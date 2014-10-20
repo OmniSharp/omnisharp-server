@@ -6,6 +6,18 @@ using System;
 namespace OmniSharp.Tests
 {
     [TestFixture]
+    public class FolderModeTest
+    {
+        [Test]
+        public void Should_start_in_folder_mode()
+        {
+            var path = Environment.CurrentDirectory + "/Solution/minimal";
+            var solution = new CSharpFolder(path, new Logger (Verbosity.Verbose));
+            solution.LoadSolution ();
+        }
+    }
+
+    [TestFixture]
     public class SolutionTest
     {
         readonly CSharpSolution _solution;

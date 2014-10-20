@@ -124,13 +124,15 @@ namespace OmniSharp.Solution
                 AddReference(dll.FullName);
             }
 
-            AddMsCorlib();
-            AddReference(LoadAssembly(FindAssembly("System.Core")));
-            AddAllKpmPackages();
+
             this.ProjectContent = new CSharpProjectContent()
                 .SetAssemblyName(AssemblyName)
                 .AddAssemblyReferences(References)
                 .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
+
+            AddMsCorlib();
+            AddReference(LoadAssembly(FindAssembly("System.Core")));
+            AddAllKpmPackages();
         }
 
         public CSharpProject(ISolution solution, Logger logger, string title, string fileName, Guid id)
