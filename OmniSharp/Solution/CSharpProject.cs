@@ -117,14 +117,6 @@ namespace OmniSharp.Solution
                 Files.Add(new CSharpFile(this, file.FullName));
             }
 
-            var dlls = folder.EnumerateFiles("*.dll", SearchOption.AllDirectories);
-            foreach (var dll in dlls)
-            {
-                _logger.Debug("Loading assembly " + dll.FullName);
-                AddReference(dll.FullName);
-            }
-
-
             this.ProjectContent = new CSharpProjectContent()
                 .SetAssemblyName(AssemblyName)
                 .AddAssemblyReferences(References)
@@ -133,6 +125,13 @@ namespace OmniSharp.Solution
             AddMsCorlib();
             AddReference(LoadAssembly(FindAssembly("System.Core")));
             AddAllKpmPackages();
+
+            var dlls = folder.EnumerateFiles("*.dll", SearchOption.AllDirectories);
+            foreach (var dll in dlls)
+            {
+                _logger.Debug("Loading assembly " + dll.FullName);
+                AddReference(dll.FullName);
+            }
         }
 
         public CSharpProject(ISolution solution, Logger logger, string title, string fileName, Guid id)
