@@ -21,5 +21,6 @@ namespace OmniSharp.Solution
         void AddReference(IAssemblyReference reference);
         void AddReference(string reference);
         CompilerSettings CompilerSettings { get; }
+        string FindAssembly (string evaluatedInclude);
     }
 }

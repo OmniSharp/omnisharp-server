@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Xml.Linq;
 using ICSharpCode.NRefactory.CSharp;
@@ -13,7 +14,119 @@ using OmniSharp.Configuration;
 
 namespace OmniSharp.Solution
 {
-    public class CSharpProject : IProject
+    public class Project : IProject
+    {
+        Logger _logger;
+        IFileSystem _fileSystem;
+
+        public Project (IFileSystem fileSystem, Logger logger)
+        {
+            _fileSystem = fileSystem;
+            _logger = logger;
+        }
+
+        public CompilerSettings CompilerSettings { get; set; }
+        static ConcurrentDictionary<string, IUnresolvedAssembly> assemblyDict = new ConcurrentDictionary<string, IUnresolvedAssembly>(Platform.FileNameComparer);
+
+        public void UpdateFile(string fileName,string source)
+        {
+            var file = GetFile (fileName, source);
+            file.Content = new StringTextSource(source);
+            file.Parse(this, fileName, source);
+
+            this.ProjectContent = this.ProjectContent
+                .AddOrUpdateFiles(file.ParsedFile);
+        }
+
+        private CSharpFile GetFile(string fileName, string source)
+        {
+            var file = Files.FirstOrDefault(f => f.FileName.Equals(fileName, StringComparison.InvariantCultureIgnoreCase));
+            if (file == null)
+            {
+                file = new CSharpFile(this, fileName, source);
+                Files.Add (file);
+
+                this.ProjectContent = this.ProjectContent
+                    .AddOrUpdateFiles(file.ParsedFile);
+            }
+            return file;
+        }
+
+        public CSharpParser CreateParser()
+        {
+            return new CSharpParser(CompilerSettings);
+        }
+
+        public XDocument AsXml()
+        {
+            return XDocument.Load(FileName);
+        }
+
+        public void AddReference(IAssemblyReference reference)
+        {
+            References.Add(reference);
+            ProjectContent = ProjectContent.AddAssemblyReferences(References);
+        }
+
+        public void AddReference(string reference)
+        {
+            try
+            {
+                References.Add(LoadAssembly(reference));
+                ProjectContent = ProjectContent.AddAssemblyReferences(References);
+            }
+            catch(BadImageFormatException)
+            {
+                // Ignore native dlls
+                _logger.Error(reference + " is a native dll");
+            }
+        }
+
+
+        public IUnresolvedAssembly LoadAssembly(string assemblyFileName)
+        {
+            if (!_fileSystem.File.Exists(assemblyFileName))
+            {
+                throw new FileNotFoundException("Assembly does not exist!", assemblyFileName);
+            }
+            return assemblyDict.GetOrAdd(assemblyFileName, file => new CecilLoader().LoadAssemblyFile(file));
+        }
+
+
+
+
+
+        public void Save(XDocument project)
+        {
+            project.Save(FileName);
+        }
+
+        public string FindAssembly (string evaluatedInclude)
+        {
+            throw new NotImplementedException ();
+        }
+
+        public IProjectContent ProjectContent {
+            get {
+                throw new NotImplementedException ();
+            }
+            set {
+                throw new NotImplementedException ();
+            }
+        }
+
+        public string Title { get; protected set; }
+
+        public string FileName { get; protected set; }
+
+        public List<CSharpFile> Files { get; protected set; }
+
+        public List<IAssemblyReference> References { get; set; }
+
+        public Guid ProjectId { get; protected set; }
+    }
+
+    public class CSharpProject : Project
     {
         public static readonly string[] AssemblySearchPaths =
         {
@@ -79,30 +192,27 @@ namespace OmniSharp.Solution
 
         public List<CSharpFile> Files { get; private set; }
 
-        private CompilerSettings _compilerSettings;
-
-        public CompilerSettings CompilerSettings
-        {
-            get 
-            {
-                return _compilerSettings;
-            }
-        }
         private readonly Logger _logger;
 
-        public CSharpProject(ISolution solution, Logger logger, string folderPath)
+        IFileSystem _fileSystem;
+
+        public CSharpProject (ISolution solution, 
+                             Logger logger, 
+                             string folderPath, 
+                             IFileSystem fileSystem) : base (fileSystem, logger)
         {
+            _fileSystem = fileSystem;
             _logger = logger;
             _solution = solution;
 
             Files = new List<CSharpFile>();
             References = new List<IAssemblyReference>();
 
-            DirectoryInfo folder;
+            DirectoryInfoBase folder;
 
             try
             {
-                folder = new DirectoryInfo(folderPath);
+                folder = _fileSystem.DirectoryInfo.FromDirectoryName(folderPath);
             }
             catch(DirectoryNotFoundException)
             {
@@ -110,7 +220,7 @@ namespace OmniSharp.Solution
                 return;
             }
 
-            var files = folder.EnumerateFiles("*.cs", SearchOption.AllDirectories);
+            var files = folder.GetFiles("*.cs", SearchOption.AllDirectories);
             foreach (var file in files)
             {
                 _logger.Debug("Loading " + file.FullName);
@@ -126,7 +236,7 @@ namespace OmniSharp.Solution
             AddReference(LoadAssembly(FindAssembly("System.Core")));
             AddAllKpmPackages();
 
-            var dlls = folder.EnumerateFiles("*.dll", SearchOption.AllDirectories);
+            var dlls = folder.GetFiles("*.dll", SearchOption.AllDirectories);
             foreach (var dll in dlls)
             {
                 _logger.Debug("Loading assembly " + dll.FullName);
@@ -134,7 +244,12 @@ namespace OmniSharp.Solution
             }
         }
 
-        public CSharpProject(ISolution solution, Logger logger, string title, string fileName, Guid id)
+        public CSharpProject(ISolution solution,
+                             IFileSystem fileSystem,
+                             Logger logger, 
+                             string title, 
+                             string fileName, 
+                             Guid id) : base(fileSystem, logger)
         {
             _logger = logger;
             _solution = solution;
@@ -181,7 +296,7 @@ namespace OmniSharp.Solution
 
                 if (assemblyFileName != null)
                 {
-                    if (Path.GetFileName(assemblyFileName).Equals("System.Core.dll", StringComparison.OrdinalIgnoreCase))
+                    if (_fileSystem.Path.GetFileName(assemblyFileName).Equals("System.Core.dll", StringComparison.OrdinalIgnoreCase))
                         hasSystemCore = true;
 
                     _logger.Debug("Loading assembly " + item.EvaluatedInclude);
@@ -208,11 +323,11 @@ namespace OmniSharp.Solution
         private void AddAllKpmPackages()
         {
             var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var folder = new DirectoryInfo(Path.Combine(userDir, ".kpm", "packages"));
+            var folder = _fileSystem.DirectoryInfo.FromDirectoryName(_fileSystem.Path.Combine(userDir, ".kpm", "packages"));
 
             if(folder.Exists)
             {
-                var dlls = folder.EnumerateFiles("*.dll", SearchOption.AllDirectories);
+                var dlls = folder.GetFiles("*.dll", SearchOption.AllDirectories);
                 foreach (var dll in dlls)
                 {
                     _logger.Debug(dll.FullName);
@@ -229,9 +344,9 @@ namespace OmniSharp.Solution
             string assemblyFileName = null;
             if (item.HasMetadata("HintPath"))
             {
-                assemblyFileName = Path.Combine(p.DirectoryPath, item.GetMetadataValue("HintPath")).ForceNativePathSeparator();
+                assemblyFileName = _fileSystem.Path.Combine(p.DirectoryPath, item.GetMetadataValue("HintPath")).ForceNativePathSeparator();
                 _logger.Info("Looking for assembly from HintPath at " + assemblyFileName);
-                if (!File.Exists(assemblyFileName))
+                if (!_fileSystem.File.Exists(assemblyFileName))
                 {
                     _logger.Info("Did not find assembly from HintPath");
                     assemblyFileName = null;
@@ -242,7 +357,7 @@ namespace OmniSharp.Solution
 
         void SetCompilerSettings(Microsoft.Build.Evaluation.Project p)
         {
-            _compilerSettings = new CompilerSettings
+            CompilerSettings = new CompilerSettings
             {
                 AllowUnsafeBlocks = GetBoolProperty(p, "AllowUnsafeBlocks") ?? false,
                 CheckForOverflow = GetBoolProperty(p, "CheckForOverflowUnderflow") ?? false
@@ -250,11 +365,11 @@ namespace OmniSharp.Solution
             string[] defines = p.GetPropertyValue("DefineConstants")
                 .Split(new [] {';'}, StringSplitOptions.RemoveEmptyEntries);
             foreach (string define in defines)
-                _compilerSettings.ConditionalSymbols.Add(define);
+                CompilerSettings.ConditionalSymbols.Add(define);
 
             var config = ConfigurationLoader.Config;
             foreach (var define in config.Defines)
-                _compilerSettings.ConditionalSymbols.Add(define);
+                CompilerSettings.ConditionalSymbols.Add(define);
         }
 
         void AddMsCorlib()
@@ -272,11 +387,11 @@ namespace OmniSharp.Solution
             {
                 try
                 {
-                    string path = Path.Combine(p.DirectoryPath, item.EvaluatedInclude).ForceNativePathSeparator();
+                    string path = _fileSystem.Path.Combine(p.DirectoryPath, item.EvaluatedInclude).ForceNativePathSeparator();
 
-                    if (File.Exists(path))
+                    if (_fileSystem.File.Exists(path))
                     {
-                        string file = new FileInfo(path).FullName;
+                        string file = _fileSystem.FileInfo.FromFileName(path).FullName;
                         _logger.Debug("Loading " + file);
                         Files.Add(new CSharpFile(this, file));
                     }
@@ -305,95 +420,30 @@ namespace OmniSharp.Solution
 
         public List<IAssemblyReference> References { get; set; }
 
-        public void AddReference(IAssemblyReference reference)
-        {
-            References.Add(reference);
-            ProjectContent = ProjectContent.AddAssemblyReferences(References);
-        }
 
-        public void AddReference(string reference)
-        {
-            try
-            {
-                References.Add(LoadAssembly(reference));
-                ProjectContent = ProjectContent.AddAssemblyReferences(References);
-            }
-            catch(BadImageFormatException)
-            {
-                // Ignore native dlls
-                _logger.Error(reference + " is a native dll");
-            }
-        }
-
-        private CSharpFile GetFile(string fileName, string source)
-        {
-            var file = Files.FirstOrDefault(f => f.FileName.Equals(fileName, StringComparison.InvariantCultureIgnoreCase));
-            if (file == null)
-            {
-                file = new CSharpFile(this, fileName, source);
-                Files.Add (file);
-
-                this.ProjectContent = this.ProjectContent
-                    .AddOrUpdateFiles(file.ParsedFile);
-            }
-            return file;
-        }
-
-        public void UpdateFile(string fileName,string source)
-        {
-            var file = GetFile (fileName, source);
-            file.Content = new StringTextSource(source);
-            file.Parse(this, fileName, source);
-
-            this.ProjectContent = this.ProjectContent
-                .AddOrUpdateFiles(file.ParsedFile);
-        }
-
-        public CSharpParser CreateParser()
-        {
-            return new CSharpParser(_compilerSettings);
-        }
-
-        public XDocument AsXml()
-        {
-            return XDocument.Load(FileName);
-        }
-
-        public void Save(XDocument project)
-        {
-            project.Save(FileName);
-        }
 
         public override string ToString()
         {
             return string.Format("[CSharpProject AssemblyName={0}]", AssemblyName);
         }
 
-        static ConcurrentDictionary<string, IUnresolvedAssembly> assemblyDict = new ConcurrentDictionary<string, IUnresolvedAssembly>(Platform.FileNameComparer);
 
-        public static IUnresolvedAssembly LoadAssembly(string assemblyFileName)
-        {
-            if (!File.Exists(assemblyFileName))
-            {
-                throw new FileNotFoundException("Assembly does not exist!", assemblyFileName);
-            }
-            return assemblyDict.GetOrAdd(assemblyFileName, file => new CecilLoader().LoadAssemblyFile(file));
-        }
 
-        public static string FindAssembly(string evaluatedInclude)
+
+        public string FindAssembly(string evaluatedInclude)
         {
 
             if (evaluatedInclude.IndexOf(',') >= 0)
                 evaluatedInclude = evaluatedInclude.Substring(0, evaluatedInclude.IndexOf(','));
 
             string directAssemblyFile = (evaluatedInclude + ".dll").ForceNativePathSeparator();
-            if (File.Exists(directAssemblyFile))
+            if (_fileSystem.File.Exists(directAssemblyFile))
                 return directAssemblyFile;
 
             foreach (string searchPath in AssemblySearchPaths)
             {
-                string assemblyFile = Path.Combine(searchPath, evaluatedInclude + ".dll").ForceNativePathSeparator();
-                if (File.Exists(assemblyFile))
+                string assemblyFile = _fileSystem.Path.Combine(searchPath, evaluatedInclude + ".dll").ForceNativePathSeparator();
+                if (_fileSystem.File.Exists(assemblyFile))
                     return assemblyFile;
             }
             return null;

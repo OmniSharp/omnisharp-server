@@ -9,7 +9,7 @@ using ICSharpCode.NRefactory.Editor;
 namespace OmniSharp.Solution
 {
     /// <summary>
-    /// Placeholder that can be used for files that don't belong to a project.
+    /// Placeholder that can be used for files that don't belong to a project yet.
     /// </summary>
     public class OrphanProject : IProject
     {
@@ -29,7 +29,7 @@ namespace OmniSharp.Solution
 
         public void AddReference(string reference)
         {
-            AddReference(CSharpProject.LoadAssembly(reference));
+            AddReference(LoadAssembly(reference));
         }
 
         public void AddFile(string fileName)
