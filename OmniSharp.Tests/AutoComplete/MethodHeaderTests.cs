@@ -78,6 +78,26 @@ namespace OmniSharp.Tests.AutoComplete
         }
 
         [Test]
+        public void Should_return_method_type_arguments()
+        {
+            MethodHeaderFor(
+                @"using System.Collections.Generic;
+                public class Test {
+                    public string Get<SomeType>()
+                    {
+                    }
+                }
+                public class Class1 {
+                    public Class1()
+                    {
+                        var someObj = new Test();
+                        someObj.G$
+                    }
+                }")
+                .ShouldContain("Get<SomeType>()");
+        }
+
+        [Test]
         public void Should_not_add_this_parameter_to_extension_method()
         {
             MethodHeaderFor(
