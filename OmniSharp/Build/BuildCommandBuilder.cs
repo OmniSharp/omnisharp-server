@@ -28,9 +28,9 @@ namespace OmniSharp.Build
             get { return (PlatformService.IsUnix ? "" : "/m ") + "/nologo /v:q /property:GenerateFullPaths=true \"" + _solution.FileName + "\""; }
         }
 
-        public dynamic BuildCommand(BuildTargetRequest req)
+        public BuildTargetResponse BuildCommand(BuildTargetRequest req)
         {
-            return new{Command = this.Executable.ApplyPathReplacementsForClient() + " " + this.Arguments + " /target:" + req.Type.ToString()};
+            return new BuildTargetResponse { Command = this.Executable.ApplyPathReplacementsForClient() + " " + this.Arguments + " /target:" + req.Type.ToString() };
         }
     }
 }

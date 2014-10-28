@@ -257,6 +257,7 @@
     <Compile Include="Solution\CSharpFolder.cs" />
     <Compile Include="AutoComplete\SnippetGenerator.cs" />
     <Compile Include="Build\BuildTargetRequest.cs" />
+    <Compile Include="Build\BuildTargetResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
