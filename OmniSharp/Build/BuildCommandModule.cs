@@ -14,7 +14,7 @@ namespace OmniSharp.Build
             Post["/buildtarget"] = x =>
             {
                 var req = this.Bind<BuildTargetRequest>();
-                return commandBuilder.BuildCommand(req);
+                return Response.AsJson(commandBuilder.BuildCommand(req));
             };
         }
     }
