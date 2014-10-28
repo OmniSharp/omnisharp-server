@@ -256,6 +256,7 @@
     <Compile Include="CodeActions\FixUsingsModule.cs" />
     <Compile Include="Solution\CSharpFolder.cs" />
     <Compile Include="AutoComplete\SnippetGenerator.cs" />
+    <Compile Include="Build\BuildTargetRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

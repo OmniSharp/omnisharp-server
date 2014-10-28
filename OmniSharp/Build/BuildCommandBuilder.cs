@@ -6,7 +6,7 @@ namespace OmniSharp.Build
     public class BuildCommandBuilder
     {
         private readonly ISolution _solution;
-        
+
         public BuildCommandBuilder(ISolution solution)
         {
             _solution = solution;
@@ -19,13 +19,18 @@ namespace OmniSharp.Build
                 return PlatformService.IsUnix
                     ? "xbuild"
                     : Path.Combine(System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory(),
-                        "Msbuild.exe");
+                    "Msbuild.exe");
             }
         }
 
         public string Arguments
         {
             get { return (PlatformService.IsUnix ? "" : "/m ") + "/nologo /v:q /property:GenerateFullPaths=true \"" + _solution.FileName + "\""; }
+        }
+
+        public dynamic BuildCommand(BuildTargetRequest req)
+        {
+            return new{Command = this.Executable.ApplyPathReplacementsForClient() + " " + this.Arguments + " /target:" + req.Type.ToString()};
         }
     }
 }
