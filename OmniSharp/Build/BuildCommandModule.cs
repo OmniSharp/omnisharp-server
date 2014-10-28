@@ -1,5 +1,6 @@
 ﻿using Nancy;
 using OmniSharp.Solution;
+using Nancy.ModelBinding;
 
 namespace OmniSharp.Build
 {
@@ -9,6 +10,12 @@ namespace OmniSharp.Build
         {
             Post["/buildcommand"] = x =>
                 Response.AsText(commandBuilder.Executable.ApplyPathReplacementsForClient() + " " + commandBuilder.Arguments);
+
+            Post["/buildtarget"] = x =>
+            {
+                var req = this.Bind<BuildTargetRequest>();
+                return commandBuilder.BuildCommand(req);
+            };
         }
     }
 }
