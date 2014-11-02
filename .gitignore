@@ -114,3 +114,4 @@ UpgradeLog*.XML
 # NuGet
 packages/
 
+.projectile
