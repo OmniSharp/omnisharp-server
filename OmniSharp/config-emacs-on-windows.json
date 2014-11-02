@@ -22,8 +22,8 @@
     "indentSize": 4,
     "continuationIndent": 4,
     "labelIndent": 0,
-    "eolMarker": "/* use default == Environment.Newline, or change to '\n' or '\r\n' */"  
-    "eolMarker": undefined,
+    "eolMarker": "/* use default == Environment.Newline, or change to '\n' or '\r\n' */",
+    "eolMarker": null,
     "indentBlankLines": false,
     "wrapLineLength": 80
   },

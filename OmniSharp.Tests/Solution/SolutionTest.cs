@@ -1,7 +1,8 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.IO;
+using NUnit.Framework;
 using OmniSharp.Solution;
 using Should;
-using System;
 
 namespace OmniSharp.Tests
 {
@@ -47,6 +48,13 @@ namespace OmniSharp.Tests
         {
             _solution.ProjectContainingFile ((Environment.CurrentDirectory + "/Solution/minimal/minimal/test.cs").LowerCaseDriveLetter())
                 .Title.ShouldEqual ("minimal");
+        }
+
+        [Test]
+        public void Should_load_config_file()
+        {
+            var configLocation = Path.Combine(Environment.CurrentDirectory, "..", "..", "..", "OmniSharp", "config.json");
+            Configuration.ConfigurationLoader.Load(configLocation, null);
         }
     }
 }
