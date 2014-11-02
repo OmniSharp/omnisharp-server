@@ -22,7 +22,7 @@
     "indentSize": 4,
     "continuationIndent": 4,
     "labelIndent": 0,
-    "eolMarker": "/* Leaving eolMarker undefined here makes OmniSharpServer use Environment.Newline */"  
+    "eolMarker": "/* use default == Environment.Newline, or change to '\n' or '\r\n' */"  
     "eolMarker": undefined,
     "indentBlankLines": false,
     "wrapLineLength": 80
