@@ -13,8 +13,8 @@ namespace OmniSharp.Tests
         public void Should_start_in_folder_mode()
         {
             var path = Environment.CurrentDirectory + "/Solution/minimal";
-            var solution = new CSharpFolder(path, new Logger (Verbosity.Verbose));
-            solution.LoadSolution ();
+            var solution = new CSharpFolder(path, new Logger(Verbosity.Verbose));
+            solution.LoadSolution();
         }
     }
 
@@ -23,31 +23,31 @@ namespace OmniSharp.Tests
     {
         readonly CSharpSolution _solution;
 
-        public SolutionTest ()
+        public SolutionTest()
         {
             var path = Environment.CurrentDirectory + "/Solution/minimal/minimal.sln";
-            _solution = new CSharpSolution (path, new Logger (Verbosity.Verbose));
-            _solution.LoadSolution ();
+            _solution = new CSharpSolution(path, new Logger(Verbosity.Verbose));
+            _solution.LoadSolution();
         }
 
         [Test]
         public void Should_contain_one_orphan_project_and_one_real()
         {
-            _solution.Projects.Count.ShouldEqual (2);
-            _solution.Projects [1].Title.ShouldEqual ("minimal");
+            _solution.Projects.Count.ShouldEqual(2);
+            _solution.Projects[1].Title.ShouldEqual("minimal");
         }
 
         [Test]
         public void Should_put_unknown_file_into_orphan_project()
         {
-            _solution.ProjectContainingFile ("test.cs").Title.ShouldEqual ("Orphan Project");
+            _solution.ProjectContainingFile("test.cs").Title.ShouldEqual("Orphan Project");
         }
 
-        [Test]
-        public void Should_put_unknown_file_near_to_close_project_file()
+                                [Test]
+public void Should_put_unknown_file_near_to_close_project_file()
         {
-            _solution.ProjectContainingFile ((Environment.CurrentDirectory + "/Solution/minimal/minimal/test.cs").LowerCaseDriveLetter())
-                .Title.ShouldEqual ("minimal");
+            _solution.ProjectContainingFile((Environment.CurrentDirectory + "/Solution/minimal/minimal/test.cs").LowerCaseDriveLetter())
+                .Title.ShouldEqual("minimal");
         }
 
         [Test]
