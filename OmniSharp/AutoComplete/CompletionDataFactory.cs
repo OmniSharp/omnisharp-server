@@ -20,6 +20,7 @@ namespace OmniSharp.AutoComplete
         private readonly bool _instantiating;
         private readonly CSharpAmbience _ambience = new CSharpAmbience { ConversionFlags = AmbienceFlags };
         private readonly CSharpAmbience _signatureAmbience = new CSharpAmbience { ConversionFlags = AmbienceFlags | ConversionFlags.ShowReturnType | ConversionFlags.ShowBody };
+        private readonly ReturnTypeAmbience _returnTypeAmbience = new ReturnTypeAmbience();
 
         private const ConversionFlags AmbienceFlags =
             ConversionFlags.ShowParameterList |
@@ -87,6 +88,7 @@ namespace OmniSharp.AutoComplete
             if (!_completionText.IsValidCompletionFor(_partialWord))
                 return new CompletionData("~~");
 
+
             if (entity is IMethod)
             {
                 var method = entity as IMethod;
@@ -98,13 +100,20 @@ namespace OmniSharp.AutoComplete
                 _signature = _signatureAmbience.ConvertSymbol(entity).TrimEnd(';');
             }
 
-            ICompletionData completionData = CompletionData(entity);
+            CompletionData completionData = CompletionData(entity) as CompletionData;
 
             if (entity is IMethod)
             {
-                AddMethodHeader(completionData as CompletionData, entity as IMethod);
+                AddMethodHeader(completionData, entity as IMethod);
             }
 
+            if (entity is IField || entity is IProperty)
+            {
+                if (_wantReturnType)
+                {
+                    completionData.ReturnType = _returnTypeAmbience.ConvertSymbol(entity);
+                }
+            }
             Debug.Assert(completionData != null);
             return completionData;
         }
@@ -127,9 +136,7 @@ namespace OmniSharp.AutoComplete
 
             if (_wantReturnType)
             {
-                    
-                var returnTypeAmbience = new CSharpAmbience { ConversionFlags = ConversionFlags.ShowReturnType };
-                completionData.ReturnType = returnTypeAmbience.ConvertSymbol(method).Split(' ').First();
+                completionData.ReturnType = _returnTypeAmbience.ConvertSymbol(method);
             }
         }
 
@@ -300,7 +307,12 @@ namespace OmniSharp.AutoComplete
 
         public ICompletionData CreateVariableCompletionData(IVariable variable)
         {
-            return new CompletionData(variable.Name);
+            var completionData = new CompletionData(variable.Name);
+            if (_wantReturnType)
+            {
+                completionData.ReturnType = _returnTypeAmbience.ConvertSymbol(variable);
+            }
+            return completionData;
         }
 
         public ICompletionData CreateVariableCompletionData(ITypeParameter parameter)

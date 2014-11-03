@@ -3,7 +3,6 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
-
 using System.Threading;
 using Nancy.Hosting.Self;
 using NDesk.Options;

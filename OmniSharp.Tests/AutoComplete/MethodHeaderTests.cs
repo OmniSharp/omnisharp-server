@@ -10,16 +10,14 @@ namespace OmniSharp.Tests.AutoComplete
         [Test]
         public void Should_return_method_header()
         {
-            {
-                MethodHeaderFor(
-                    @"public class A {
+            MethodHeaderFor(
+                @"public class A {
     public A() 
     {
         int n;
         n.T$;
     }
 }").First().ShouldStartWith("ToString(");
-            }
         }
 
         [Test]
@@ -33,6 +31,33 @@ namespace OmniSharp.Tests.AutoComplete
         n.T$;
     }
 }").First().ShouldEqual("string");
+        }
+
+        [Test]
+        public void Should_return_variable_return_type()
+        {
+            ReturnTypeFor(
+                @"public class A {
+    public A() 
+    {
+        int aninteger;
+        anint$
+    }
+}").First().ShouldEqual("int");
+        }
+
+        [Test]
+        public void Should_return_property_return_type()
+        {
+            ReturnTypeFor(
+                @"public class A {
+    int aproperty { get;}
+    public A() 
+    {
+        
+        aprop$
+    }
+}").First().ShouldEqual("int { get; }");
         }
 
         [Test]
@@ -101,7 +126,7 @@ namespace OmniSharp.Tests.AutoComplete
         public void Should_not_add_this_parameter_to_extension_method()
         {
             MethodHeaderFor(
-            @"using System.Collections.Generic;
+                @"using System.Collections.Generic;
             using System.Linq;
 
             public class A {
