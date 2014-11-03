@@ -258,6 +258,7 @@
     <Compile Include="AutoComplete\SnippetGenerator.cs" />
     <Compile Include="Build\BuildTargetRequest.cs" />
     <Compile Include="Build\BuildTargetResponse.cs" />
+    <Compile Include="AutoComplete\ReturnTypeAmbience.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

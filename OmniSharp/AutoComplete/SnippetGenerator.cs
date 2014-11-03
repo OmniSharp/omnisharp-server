@@ -35,15 +35,18 @@ namespace OmniSharp.AutoComplete
             astBuilder.AlwaysUseShortTypeNames = true;
             AstNode node = astBuilder.ConvertSymbol(symbol);
 
-
             if (symbol is ITypeDefinition)
-                WriteTypeDeclarationName ((ITypeDefinition)symbol, _writer, _policy);
+            {
+                WriteTypeDeclarationName((ITypeDefinition)symbol, _writer, _policy);
+            }
             else if (symbol is IMember)
             {
-                WriteMemberDeclarationName ((IMember)symbol, _writer, _policy);
+                WriteMemberDeclarationName((IMember)symbol, _writer, _policy);
             }
             else
+            {
                 _writer.WriteIdentifier(Identifier.Create(symbol.Name));
+            }
 
 
             if (HasParameters(symbol))
@@ -55,7 +58,7 @@ namespace OmniSharp.AutoComplete
                     parameters = parameters.Skip(1);
                 }
 
-                 WriteCommaSeparatedList(parameters);
+                WriteCommaSeparatedList(parameters);
                 _writer.WriteToken(symbol.SymbolKind == SymbolKind.Indexer ? Roles.RBracket : Roles.RPar, symbol.SymbolKind == SymbolKind.Indexer ? "]" : ")");
             }
             if (_includePlaceholders)
@@ -112,29 +115,29 @@ namespace OmniSharp.AutoComplete
 
         void WriteCommaSeparatedList(IEnumerable<AstNode> parameters)
         {
-            if (parameters.Any ())
+            if (parameters.Any())
             {
-                var last = parameters.Last ();
+                var last = parameters.Last();
                 foreach (AstNode node in parameters)
                 {
                     if (_includePlaceholders)
                     {
-                        _writer.WriteToken (Roles.Text, "$");
-                        _writer.WriteToken (Roles.Text, "{");
-                        _writer.WriteToken (Roles.Text, _counter.ToString ());
-                        _writer.WriteToken (Roles.Text, ":");
+                        _writer.WriteToken(Roles.Text, "$");
+                        _writer.WriteToken(Roles.Text, "{");
+                        _writer.WriteToken(Roles.Text, _counter.ToString());
+                        _writer.WriteToken(Roles.Text, ":");
                     }
-                    var outputVisitor = new CSharpOutputVisitor (_writer, _policy);
-                    node.AcceptVisitor (outputVisitor);
+                    var outputVisitor = new CSharpOutputVisitor(_writer, _policy);
+                    node.AcceptVisitor(outputVisitor);
 
                     if (_includePlaceholders)
                     {
-                        _writer.WriteToken (Roles.Text, "}");
+                        _writer.WriteToken(Roles.Text, "}");
                     }
 
                     if (node != last)
                     {
-                        this.Comma (node);
+                        this.Comma(node);
                     }
 
                     _counter++;
