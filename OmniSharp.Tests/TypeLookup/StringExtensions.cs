@@ -18,7 +18,7 @@ namespace OmniSharp.Tests.TypeLookup
             project.AddFile(editorText);
             solution.Projects.Add(project);
 
-            var handler = new TypeLookupHandler(solution, new BufferParser(solution), ConfigurationLoader.Load());
+            var handler = new TypeLookupHandler(solution, new BufferParser(solution), new OmniSharpConfiguration());
             var request = new TypeLookupRequest()
             {
                 Buffer = editorText,
