@@ -7,6 +7,7 @@ using ICSharpCode.NRefactory.TypeSystem.Implementation;
 using OmniSharp.Documentation;
 using OmniSharp.Parser;
 using OmniSharp.Solution;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.TypeLookup
 {
@@ -24,8 +25,11 @@ namespace OmniSharp.TypeLookup
 
         private readonly ISolution _solution;
 
-        public TypeLookupHandler(ISolution solution, BufferParser bufferParser)
+        private readonly OmniSharpConfiguration _config;
+
+        public TypeLookupHandler(ISolution solution, BufferParser bufferParser, OmniSharpConfiguration config)
         {
+            _config = config;
             _bufferParser = bufferParser;
             _solution = solution;
         }
@@ -37,9 +41,9 @@ namespace OmniSharp.TypeLookup
             var resolveResult = ResolveAtLocation.Resolve(res.Compilation, res.UnresolvedFile, res.SyntaxTree, loc);
             var response = new TypeLookupResponse();
             var ambience = new CSharpAmbience()
-                {
-                    ConversionFlags = AmbienceFlags,
-                };
+            {
+                ConversionFlags = AmbienceFlags,
+            };
 
 
             if (resolveResult == null || resolveResult is NamespaceResolveResult)
@@ -52,7 +56,7 @@ namespace OmniSharp.TypeLookup
                 {
                     var result = resolveResult as CSharpInvocationResolveResult;
                     entity = result.Member;
-					response.Type = ambience.ConvertSymbol(result.Member);
+                    response.Type = ambience.ConvertSymbol(result.Member);
                 }
                 else if (resolveResult is LocalResolveResult)
                 {
@@ -63,7 +67,7 @@ namespace OmniSharp.TypeLookup
                 {
                     var result = resolveResult as MemberResolveResult;
                     entity = result.Member;
-					response.Type = ambience.ConvertSymbol(result.Member);
+                    response.Type = ambience.ConvertSymbol(result.Member);
                 }
                 else if (resolveResult is TypeResolveResult)
                 {
@@ -79,7 +83,7 @@ namespace OmniSharp.TypeLookup
                 if (request.IncludeDocumentation && entity != null)
                 {
                     var project = _solution.ProjectContainingFile(request.FileName);
-                    response.Documentation = new DocumentationFetcher().GetDocumentation(project, entity);
+                    response.Documentation = new DocumentationFetcher().GetDocumentation(project, entity, _config);
                 }
             }
 

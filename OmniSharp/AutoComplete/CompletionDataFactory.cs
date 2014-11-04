@@ -11,6 +11,7 @@ using ICSharpCode.NRefactory.TypeSystem;
 using ICSharpCode.NRefactory.TypeSystem.Implementation;
 using OmniSharp.Documentation;
 using OmniSharp.Solution;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.AutoComplete
 {
@@ -33,8 +34,9 @@ namespace OmniSharp.AutoComplete
         private bool _wantMethodHeader;
         private bool _wantSnippet;
         private bool _wantReturnType;
+        private readonly OmniSharpConfiguration _config;
 
-        public CompletionDataFactory(IProject project, string partialWord, bool instantiating, AutoCompleteRequest request)
+        public CompletionDataFactory(IProject project, string partialWord, bool instantiating, AutoCompleteRequest request, OmniSharpConfiguration config)
         {
             _project = project;
             _partialWord = partialWord;
@@ -43,6 +45,7 @@ namespace OmniSharp.AutoComplete
             _wantMethodHeader = request.WantMethodHeader;
             _wantSnippet = request.WantSnippet;
             _wantReturnType = request.WantReturnType;
+            _config = config;
         }
 
         public ICompletionData CreateImportCompletionData(IType type, bool useFullName, bool addForTypeCreation)
@@ -147,7 +150,7 @@ namespace OmniSharp.AutoComplete
             {
                 completionData = new CompletionData(_signature, _completionText,
                     _signature + Environment.NewLine +
-                    DocumentationConverter.ConvertDocumentation(entity.Documentation));
+                    DocumentationConverter.ConvertDocumentation(entity.Documentation, _config));
             }
             else
             {
@@ -163,7 +166,7 @@ namespace OmniSharp.AutoComplete
                 var documentationSignature = ambience.ConvertSymbol(entity);
                 if (_wantDocumentation)
                 {
-                    string documentation = new DocumentationFetcher().GetDocumentation(_project, entity);
+                    string documentation = new DocumentationFetcher().GetDocumentation(_project, entity, _config);
                     var documentationAndSignature =
                         documentationSignature + Environment.NewLine + documentation;
                     completionData = new CompletionData(_signature, _completionText, documentationAndSignature);
@@ -321,21 +324,21 @@ namespace OmniSharp.AutoComplete
         }
 
         public ICompletionData CreateEventCreationCompletionData(string varName, IType delegateType, IEvent evt,
-            string parameterDefinition,
-            IUnresolvedMember currentMember,
-            IUnresolvedTypeDefinition currentType)
+                                                                 string parameterDefinition,
+                                                                 IUnresolvedMember currentMember,
+                                                                 IUnresolvedTypeDefinition currentType)
         {
             return new CompletionData(varName);
         }
 
         public ICompletionData CreateNewOverrideCompletionData(int declarationBegin, IUnresolvedTypeDefinition type,
-            IMember m)
+                                                               IMember m)
         {
             return new CompletionData(m.Name);
         }
 
         public ICompletionData CreateNewPartialCompletionData(int declarationBegin, IUnresolvedTypeDefinition type,
-            IUnresolvedMember m)
+                                                              IUnresolvedMember m)
         {
             return new CompletionData(m.Name);
         }

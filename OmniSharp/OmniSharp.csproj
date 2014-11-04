@@ -24,7 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Commandlineparameters>-p 2000 -s /Users/jason/.vim/bundle/Omnisharp/server/OmniSharp.sln</Commandlineparameters>
+    <Commandlineparameters>-p 2000 -s ~/Projects/testconsoleprj/testconsoleprj.sln </Commandlineparameters>
     <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">

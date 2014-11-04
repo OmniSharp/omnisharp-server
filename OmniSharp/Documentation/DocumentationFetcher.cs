@@ -2,6 +2,7 @@
 using ICSharpCode.NRefactory.Documentation;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.Solution;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.Documentation
 {
@@ -9,7 +10,7 @@ namespace OmniSharp.Documentation
     {
         static readonly ConcurrentDictionary<string, string> _documentationCache = new ConcurrentDictionary<string, string>();
 
-        public string GetDocumentation(IProject project, IEntity entity)
+        public string GetDocumentation(IProject project, IEntity entity, OmniSharpConfiguration config)
         {
             string idString = entity.GetIdString();
             string result;
@@ -37,7 +38,7 @@ namespace OmniSharp.Documentation
             }
 
             result = documentationComment != null 
-                ? DocumentationConverter.ConvertDocumentation(documentationComment.Xml.Text) 
+                ? DocumentationConverter.ConvertDocumentation(documentationComment.Xml.Text, config) 
                 : null;
 
             _documentationCache.TryAdd(idString, result);
