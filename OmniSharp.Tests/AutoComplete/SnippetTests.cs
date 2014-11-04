@@ -20,6 +20,22 @@ namespace OmniSharp.Tests.AutoComplete
         }
 
         [Test]
+        public void Should_template_field()
+        {
+            SnippetFor(
+                @"using System.Collections.Generic;
+
+            public class Class1 {
+                public int someField;
+                public Class1()
+                {
+                    somef$
+                }
+            }")
+                .ShouldContain("someField$0");        
+        }
+
+        [Test]
         public void Should_return_all_constructors()
         {
             SnippetFor(

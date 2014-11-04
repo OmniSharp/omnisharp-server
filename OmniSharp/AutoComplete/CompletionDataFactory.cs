@@ -116,6 +116,11 @@ namespace OmniSharp.AutoComplete
                 {
                     completionData.ReturnType = _returnTypeAmbience.ConvertSymbol(entity);
                 }
+
+                if (_wantSnippet)
+                {
+                    completionData.Snippet = new SnippetGenerator(true).Generate(entity);
+                }
             }
             Debug.Assert(completionData != null);
             return completionData;
