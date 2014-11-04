@@ -6,6 +6,7 @@ using ICSharpCode.NRefactory.CSharp.Completion;
 using ICSharpCode.NRefactory.Completion;
 using OmniSharp.Parser;
 using OmniSharp.Solution;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.AutoComplete
 {
@@ -14,12 +15,14 @@ namespace OmniSharp.AutoComplete
         private readonly ISolution _solution;
         private readonly BufferParser _parser;
         private readonly Logger _logger;
+        private readonly  OmniSharpConfiguration _config;
 
-        public AutoCompleteHandler(ISolution solution, BufferParser parser, Logger logger)
+        public AutoCompleteHandler(ISolution solution, BufferParser parser, Logger logger, OmniSharpConfiguration config)
         {
             _solution = solution;
             _parser = parser;
             _logger = logger;
+            _config = config;
         }
 
         public IEnumerable<CompletionData> CreateProvider(AutoCompleteRequest request)
@@ -31,33 +34,31 @@ namespace OmniSharp.AutoComplete
 
             var project = _solution.ProjectContainingFile(request.FileName);
         
-            var contextProvider = new DefaultCompletionContextProvider
-                (completionContext.Document, completionContext.ParsedContent.UnresolvedFile);
+            var contextProvider = new DefaultCompletionContextProvider(completionContext.Document, completionContext.ParsedContent.UnresolvedFile);
 
-            if (project.CompilerSettings != null) 
+            if (project.CompilerSettings != null)
             {
                 var conditionalSymbols = project.CompilerSettings.ConditionalSymbols;
-                foreach (var symbol in conditionalSymbols) 
+                foreach (var symbol in conditionalSymbols)
                 {
-                    contextProvider.AddSymbol (symbol);
+                    contextProvider.AddSymbol(symbol);
                 }
             }
 
             var instantiating = IsInstantiating(completionContext.NodeCurrentlyUnderCursor);
 
-            var engine = new CSharpCompletionEngine
-                ( completionContext.Document
+            var engine = new CSharpCompletionEngine(completionContext.Document
                 , contextProvider
-                , new CompletionDataFactory
-                  ( project
+                , new CompletionDataFactory(project
                     , partialWord
                     , instantiating
-                    , request)
+                    , request
+                    , _config)
                 , completionContext.ParsedContent.ProjectContent
                 , completionContext.ResolveContext)
-                {
-                    EolMarker = Environment.NewLine
-                };
+            {
+                EolMarker = Environment.NewLine
+            };
             engine.AutomaticallyAddImports = request.WantImportableTypes;
             _logger.Debug("Getting Completion Data");
 
@@ -78,9 +79,9 @@ namespace OmniSharp.AutoComplete
         {
             bool instantiating = false;
 
-            if (nodeUnderCursor != null 
-                && nodeUnderCursor.Parent != null 
-                && nodeUnderCursor.Parent.Parent != null) 
+            if (nodeUnderCursor != null
+                && nodeUnderCursor.Parent != null
+                && nodeUnderCursor.Parent.Parent != null)
             {
                 instantiating =
                     nodeUnderCursor.Parent.Parent.Children.Any(child => child.Role.ToString() == "new");

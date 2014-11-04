@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.Documentation
 {
@@ -12,7 +13,7 @@ namespace OmniSharp.Documentation
         /// <summary>
         /// Converts the xml documentation string into a plain text string.
         /// </summary>
-        public static string ConvertDocumentation(string xmlDocumentation)
+        public static string ConvertDocumentation(string xmlDocumentation, OmniSharpConfiguration config)
         {
             if (string.IsNullOrEmpty(xmlDocumentation))
                 return string.Empty;
@@ -35,22 +36,22 @@ namespace OmniSharp.Documentation
                                 xml.Skip();
                                 break;
                             case "remarks":
-                                ret.Append(Environment.NewLine);
+                                ret.Append(config.TextEditorOptions.EolMarker);
                                 ret.Append("Remarks:");
-                                ret.Append(Environment.NewLine);
+                                ret.Append(config.TextEditorOptions.EolMarker);
                                 break;
                             case "example":
-                                ret.Append(Environment.NewLine);
+                                ret.Append(config.TextEditorOptions.EolMarker);
                                 ret.Append("Example:");
-                                ret.Append(Environment.NewLine);
+                                ret.Append(config.TextEditorOptions.EolMarker);
                                 break;
                             case "exception":
-                                ret.Append(Environment.NewLine);
+                                ret.Append(config.TextEditorOptions.EolMarker);
                                 ret.Append(GetCref(xml["cref"]));
                                 ret.Append(": ");
                                 break;
                             case "returns":
-                                ret.Append(Environment.NewLine);
+                                ret.Append(config.TextEditorOptions.EolMarker);
                                 ret.Append("Returns: ");
                                 break;
                             case "see":
@@ -58,7 +59,7 @@ namespace OmniSharp.Documentation
                                 ret.Append(xml["langword"]);
                                 break;
                             case "seealso":
-                                ret.Append(Environment.NewLine);
+                                ret.Append(config.TextEditorOptions.EolMarker);
                                 ret.Append("See also: ");
                                 ret.Append(GetCref(xml["cref"]));
                                 break;
@@ -66,18 +67,18 @@ namespace OmniSharp.Documentation
                                 ret.Append(xml["name"]);
                                 break;
                             case "param":
-                                ret.Append(Environment.NewLine);
+                                ret.Append(config.TextEditorOptions.EolMarker);
                                 ret.Append(Whitespace.Replace(xml["name"].Trim(), " "));
                                 ret.Append(": ");
                                 break;
                             case "value":
-                                ret.Append(Environment.NewLine);
+                                ret.Append(config.TextEditorOptions.EolMarker);
                                 ret.Append("Value: ");
-                                ret.Append(Environment.NewLine);
+                                ret.Append(config.TextEditorOptions.EolMarker);
                                 break;
                             case "br":
                             case "para":
-                                ret.Append(Environment.NewLine);
+                                ret.Append(config.TextEditorOptions.EolMarker);
                                 break;
                         }
                     }

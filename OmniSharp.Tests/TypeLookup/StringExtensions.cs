@@ -1,6 +1,7 @@
 using System;
 using OmniSharp.Parser;
 using OmniSharp.TypeLookup;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.Tests.TypeLookup
 {
@@ -17,14 +18,14 @@ namespace OmniSharp.Tests.TypeLookup
             project.AddFile(editorText);
             solution.Projects.Add(project);
 
-            var handler = new TypeLookupHandler(solution, new BufferParser(solution));
+            var handler = new TypeLookupHandler(solution, new BufferParser(solution), ConfigurationLoader.Load());
             var request = new TypeLookupRequest()
-                {
-                    Buffer = editorText,
-                    FileName = "myfile",
-                    Line = cursorPosition.Line,
-                    Column = cursorPosition.Column,
-                };
+            {
+                Buffer = editorText,
+                FileName = "myfile",
+                Line = cursorPosition.Line,
+                Column = cursorPosition.Column,
+            };
 
             return handler.GetTypeLookupResponse(request).Type;
         }
