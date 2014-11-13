@@ -319,5 +319,40 @@ public class Handler
                 }
             }");
         }
+        
+        [Test]
+        public void Should_rename_private_variable()
+        {
+            Rename(@"
+            public class MyUserData
+            {
+            	public string _name;
+            }
+            
+            public class SampleClass
+            {
+            	MyUserData _user$Data;
+            
+            	void Start () 
+            	{
+            		_userData = new MyUserData();
+            	}
+            }", "_myUserData")
+            .ShouldEqual(@"
+            public class MyUserData
+            {
+            	public string _name;
+            }
+            
+            public class SampleClass
+            {
+            	MyUserData _myUserData;
+            
+            	void Start () 
+            	{
+            		_myUserData = new MyUserData();
+            	}
+            }");
+        }
     }
 }
