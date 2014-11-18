@@ -58,6 +58,31 @@ namespace OmniSharp.Tests.AutoComplete
         }
 
         [Test]
+        public void Should_return_all_constructors_with_trailing_code()
+        {
+            SnippetFor(
+                @"public class MyClass {
+                            public MyClass() {}
+                            public MyClass(int param) {}
+                            public MyClass(string param) {}
+                        }
+
+                        public class Class2 {
+                            public Class2()
+                            {
+                                var c = new My$
+                                if(2+2==4)
+                                {
+                                }
+                            }
+                        }")
+                .ShouldContainOnly(
+                    "MyClass()$0",
+                    "MyClass(${1:int param})$0",
+                    "MyClass(${1:string param})$0");
+        }
+
+        [Test]
         public void Should_template_generic_type_arguments()
         {
             SnippetFor(
