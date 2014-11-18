@@ -1,19 +1,41 @@
-﻿using System.Linq;
+﻿using System.IO.Abstractions.TestingHelpers;
+using System.Linq;
 using System.Xml.Linq;
 using NUnit.Framework;
 using OmniSharp.ProjectManipulation;
 using OmniSharp.ProjectManipulation.RemoveFromProject;
+using OmniSharp.Solution;
 using Should;
+using OmniSharp.Tests.ProjectManipulation.AddReference;
 
 namespace OmniSharp.Tests.ProjectManipulation.RemoveFromProject
 {
     [TestFixture]
     public class RemoveFromProjectTests
     {
+        ISolution Solution;
+        MockFileSystem _fs;
+
+        [SetUp]
+        public void SetUp()
+        {
+            Solution = new FakeSolution(@"c:\test\fake.sln");
+            _fs = new MockFileSystem();
+        }
+
+        IProject GetProject(string content, string projFileName = @"c:\test\code\fake1.csproj")
+        {
+            _fs.File.WriteAllText(projFileName, content);
+            var project = new MockProject(Solution, _fs, new Logger(Verbosity.Quiet), projFileName);
+            project.FileName = projFileName;
+            project.Files.Add(new CSharpFile(project, @"c:\test\code\test.cs", "some c# code"));
+            return project;
+        }
+
         [Test, ExpectedException(typeof(ProjectNotFoundException))]
         public void ShouldThrowProjectNotFoundExceptionWhenProjectNotFound()
         {
-            var project = new FakeProject(fileName: @"/test/code/fake.csproj");
+            var project = GetProject("<xml/>", @"/test/code/fake.csproj");
             var solution = new FakeSolution(@"/test/fake.sln");
             solution.Projects.Add(project);
 
@@ -29,24 +51,22 @@ namespace OmniSharp.Tests.ProjectManipulation.RemoveFromProject
         [Test]
         public void ShouldRemoveFileFromProjectXml()
         {
-            var project = new FakeProject(fileName: @"c:\test\code\fake.csproj");
-            project.AddFile("some content", @"c:\test\code\test.cs");
 
             var xml = @"
-                <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
-                    <ItemGroup>
-                        <Compile Include=""Hello.cs""/>
-                        <Compile Include=""Test.cs""/>
-                    </ItemGroup>
-                </Project>";
+               <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+                   <ItemGroup>
+                       <Compile Include=""Hello.cs""/>
+                       <Compile Include=""Test.cs""/>
+                   </ItemGroup>
+               </Project>";
+            var project = GetProject(xml, @"c:\test\code\fake1.csproj");
 
-            project.XmlRepresentation = XDocument.Parse(xml);
             var expectedXml = XDocument.Parse(@"
-                <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
-                    <ItemGroup>
-                        <Compile Include=""Hello.cs""/>
-                    </ItemGroup>
-                </Project>");
+               <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+                   <ItemGroup>
+                       <Compile Include=""Hello.cs""/>
+                   </ItemGroup>
+               </Project>");
 
             var solution = new FakeSolution(@"c:\test\fake.sln");
             solution.Projects.Add(project);
@@ -65,18 +85,14 @@ namespace OmniSharp.Tests.ProjectManipulation.RemoveFromProject
         [Test]
         public void ShouldRemoveItemGroupWhenRemovingLastFile()
         {
-			XNamespace ns = "http://schemas.microsoft.com/developer/msbuild/2003";
-            var project = new FakeProject(fileName: @"c:\test\code\fake.csproj");
-            project.AddFile("some content", @"c:\test\code\test.cs");
-
             var xml = @"
-                <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
-                    <ItemGroup>
-                        <Compile Include=""Test.cs""/>
-                    </ItemGroup>
-                </Project>";
+               <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+                   <ItemGroup>
+                       <Compile Include=""Test.cs""/>
+                   </ItemGroup>
+               </Project>";
+            var project = GetProject(xml);
 
-            project.XmlRepresentation = XDocument.Parse(xml);
 
             var solution = new FakeSolution(@"c:\test\fake.sln");
             solution.Projects.Add(project);
@@ -89,23 +105,21 @@ namespace OmniSharp.Tests.ProjectManipulation.RemoveFromProject
             var handler = new RemoveFromProjectHandler(solution);
             handler.RemoveFromProject(request);
 
-			project.AsXml().Descendants(ns + "ItemGroup").Count().ShouldEqual(0);
+            XNamespace ns = "http://schemas.microsoft.com/developer/msbuild/2003";
+            project.AsXml().Descendants(ns + "ItemGroup").Count().ShouldEqual(0);
         }
 
         [Test]
         public void ShouldRemoveFileFromProject()
         {
-            var project = new FakeProject(fileName: @"c:\test\code\fake.csproj");
-            project.AddFile("some content", @"c:\test\code\test.cs");
-
             var xml = @"
-                <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
-                    <ItemGroup>
-                        <Compile Include=""Test.cs""/>
-                    </ItemGroup>
-                </Project>";
+               <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+                   <ItemGroup>
+                       <Compile Include=""Test.cs""/>
+                   </ItemGroup>
+               </Project>";
 
-            project.XmlRepresentation = XDocument.Parse(xml);
+            var project = GetProject(xml);
 
             var solution = new FakeSolution(@"c:\test\fake.sln");
             solution.Projects.Add(project);

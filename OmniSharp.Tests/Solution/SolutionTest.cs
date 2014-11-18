@@ -3,6 +3,8 @@ using System.IO;
 using NUnit.Framework;
 using OmniSharp.Solution;
 using Should;
+using System.IO.Abstractions;
+
 
 namespace OmniSharp.Tests
 {
@@ -13,8 +15,8 @@ namespace OmniSharp.Tests
         public void Should_start_in_folder_mode()
         {
             var path = Environment.CurrentDirectory + "/Solution/minimal";
-            var solution = new CSharpFolder(path, new Logger(Verbosity.Verbose));
-            solution.LoadSolution();
+            var solution = new CSharpFolder(path, new Logger (Verbosity.Verbose), new FileSystem());
+            solution.LoadSolution ();
         }
     }
 
@@ -26,8 +28,8 @@ namespace OmniSharp.Tests
         public SolutionTest()
         {
             var path = Environment.CurrentDirectory + "/Solution/minimal/minimal.sln";
-            _solution = new CSharpSolution(path, new Logger(Verbosity.Verbose));
-            _solution.LoadSolution();
+            _solution = new CSharpSolution (new FileSystem(), path, new Logger(Verbosity.Verbose));
+            _solution.LoadSolution ();
         }
 
         [Test]

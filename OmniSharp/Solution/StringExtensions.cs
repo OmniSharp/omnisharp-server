@@ -33,6 +33,15 @@ namespace OmniSharp.Solution
 			return path.Replace ('\\', Path.DirectorySeparatorChar);
 		}
 
+        public static string ForcePathSeparator(this string path, char directorySeparatorChar)
+        {
+            if (directorySeparatorChar == '/')
+            {
+                return path.Replace('\\', '/');
+            }
+            return path.Replace ('/', '\\');
+        }
+
         /// <summary>
         /// Returns the relative path of a file to another file
         /// </summary>

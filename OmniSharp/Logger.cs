@@ -5,6 +5,7 @@ namespace OmniSharp
 {
     public enum Verbosity
     {
+        Silent,
         Quiet,
         Debug,
         Verbose
@@ -13,53 +14,55 @@ namespace OmniSharp
     public class Logger
     {
         Verbosity _verbosity;
-		public Verbosity Verbosity { get { return _verbosity; } }
+        public Verbosity Verbosity { get { return _verbosity; } }
 
         Stopwatch _stopwatch;
 
         public Logger(Verbosity verbosity)
         {
             _verbosity = verbosity;
-            _stopwatch = new Stopwatch ();
-            _stopwatch.Start ();
+            _stopwatch = new Stopwatch();
+            _stopwatch.Start();
         }
 
         public void Debug(string message)
         {
-            if(_verbosity != Verbosity.Quiet)
+            if (_verbosity != Verbosity.Quiet)
                 Log(message);
-		}
+        }
 
         public void Info(string message)
         {
-            if(_verbosity == Verbosity.Verbose)
+            if (_verbosity == Verbosity.Verbose)
                 Log(message);
-		}
+        }
 
         public void Info(object message)
         {
-            if(_verbosity == Verbosity.Verbose)
+            if (_verbosity == Verbosity.Verbose)
                 Log(message);
         }
 
         public void Debug(string message, params object[] arg)
         {
             if (_verbosity != Verbosity.Quiet)
-                Log (string.Format (message, arg));
-            //Console.WriteLine(message, arg);
-		}
+                Log(string.Format(message, arg));
+        }
 
         public void Error(object message)
         {
-            var colour = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Log(message);
-            Console.ForegroundColor = colour;
+            if (_verbosity != Verbosity.Silent)
+            {
+                var colour = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Log(message);
+                Console.ForegroundColor = colour;
+            }
         }
 
         private void Log(object message)
         {
-            Console.WriteLine (_stopwatch.ElapsedMilliseconds.ToString("00000000 ") + message);
+            Console.WriteLine(_stopwatch.ElapsedMilliseconds.ToString("00000000 ") + message);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.NRefactory.TypeSystem;
+using OmniSharp.Solution;
 
 namespace OmniSharp.Tests.Rename
 {
@@ -21,11 +22,11 @@ namespace OmniSharp.Tests.Rename
         public FakeSolutionBuilder AddProject()
         {
             var newProject = new FakeProject("Project" + projectCount++);
-			
+            
             foreach (var project in _projects)
             {
                 // each project references the ones that came before it.
-                newProject.AddReference(new ProjectReference(project.Name));
+                newProject.AddReference(new ICSharpCode.NRefactory.TypeSystem.ProjectReference(project.Name));
             }
             _projects.Add(newProject);
 

@@ -53,6 +53,12 @@
     <Reference Include="Nancy.Authentication.Forms">
       <HintPath>..\packages\Nancy.Authentication.Forms.0.22.2\lib\net40\Nancy.Authentication.Forms.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Abstractions">
+      <HintPath>..\packages\System.IO.Abstractions.1.4.0.92\lib\net35\System.IO.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Abstractions.TestingHelpers">
+      <HintPath>..\packages\System.IO.Abstractions.TestingHelpers.1.4.0.92\lib\net35\System.IO.Abstractions.TestingHelpers.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoComplete\MethodHeaderTests.cs" />
@@ -87,7 +93,6 @@
     <Compile Include="FakeSolution.cs" />
     <Compile Include="AutoComplete\GenericCompletions.cs" />
     <Compile Include="AutoComplete\NamespaceCompletions.cs" />
-    <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GoToImplementation\GoToImplementation.cs" />
     <Compile Include="UnitTesting\ContextInformationTests.cs" />
@@ -102,6 +107,8 @@
     <Compile Include="AutoComplete\SnippetGenerationTests.cs" />
     <Compile Include="AutoComplete\SnippetTests.cs" />
     <Compile Include="SemanticErrors\SemanticErrors.cs" />
+    <Compile Include="ShouldExtensions.cs" />
+    <Compile Include="ProjectManipulation\AddReference\MockProject.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OmniSharp\OmniSharp.csproj">

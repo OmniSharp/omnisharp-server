@@ -19,7 +19,7 @@ namespace OmniSharp.ProjectManipulation.AddReference
 
             if (!referenceAlreadyAdded)
             {
-				var fileReferenceNode = CreateReferenceNode(reference);
+                var fileReferenceNode = CreateReferenceNode(reference);
                 if (referenceNodes.Count > 0)
                 {
                     referenceNodes.First().Parent.Add(fileReferenceNode);
@@ -31,10 +31,17 @@ namespace OmniSharp.ProjectManipulation.AddReference
                     projectXml.Element(MsBuildNameSpace + "Project").Add(projectItemGroup);
                 }
 
-                project.AddReference(CSharpProject.FindAssembly(reference));
-                project.Save(projectXml);
-
-                response.Message = string.Format("Reference to {0} added successfully", reference);
+                var assemblyPath = project.FindAssembly (reference);
+                if (assemblyPath != null)
+                {
+                    project.AddReference (assemblyPath);
+                    project.Save (projectXml);
+                    response.Message = string.Format ("Reference to {0} added successfully", reference);
+                }
+                else
+                {
+                    response.Message = "Did not find " + reference;
+                }
             }
             else
             {

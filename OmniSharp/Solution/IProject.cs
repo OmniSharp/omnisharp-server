@@ -9,7 +9,7 @@ namespace OmniSharp.Solution
     public interface IProject
     {
         IProjectContent ProjectContent { get; set; }
-        string Title { get; }
+        string Title { get; set; }
         string FileName { get; }
         List<CSharpFile> Files { get; }
         List<IAssemblyReference> References { get; set; }
@@ -17,9 +17,10 @@ namespace OmniSharp.Solution
         CSharpParser CreateParser();
         XDocument AsXml();
         void Save(XDocument project);
-        Guid ProjectId { get; }
+        Guid ProjectId { get; set; }
         void AddReference(IAssemblyReference reference);
         void AddReference(string reference);
         CompilerSettings CompilerSettings { get; }
+        string FindAssembly (string evaluatedInclude);
     }
 }

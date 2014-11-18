@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
@@ -42,8 +43,9 @@ namespace OmniSharp.Solution
 
     public class CSharpSolution : ISolution
     {
-        private OrphanProject _orphanProject;
-        private Logger _logger;
+        OrphanProject _orphanProject;
+        Logger _logger;
+        IFileSystem _fileSystem;
 
         public List<IProject> Projects { get; private set; }
 
@@ -53,16 +55,17 @@ namespace OmniSharp.Solution
 
         public bool Loaded { get; private set; }
 
-        public CSharpSolution(string filename, Logger logger)
+        public CSharpSolution(IFileSystem fileSystem, string filename, Logger logger)
         {
             _logger = logger;
+            _fileSystem = fileSystem;
             FileName = filename;
         }
 
         public void LoadSolution()
         {
             Loaded = false;
-            _orphanProject = new OrphanProject();
+            _orphanProject = new OrphanProject(_fileSystem, _logger);
             Projects = new List<IProject>();
             Projects.Add(_orphanProject);
 
@@ -109,7 +112,7 @@ namespace OmniSharp.Solution
         public void LoadProject(string title, string location, string id)
         {
             _logger.Debug("Loading project - {0}, {1}, {2}", title, location, id);
-            Projects.Add(new CSharpProject(this, _logger, title, location, new Guid(id)));
+            Projects.Add(new CSharpProject(this, _fileSystem, _logger, title, location, new Guid(id)));
         }
 
         public CSharpFile GetFile(string filename)

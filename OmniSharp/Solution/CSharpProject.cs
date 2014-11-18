@@ -1,108 +1,53 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
-using System.Xml.Linq;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
-using ICSharpCode.NRefactory.Utils;
 using Mono.Cecil;
-using ICSharpCode.NRefactory.Editor;
 using OmniSharp.Configuration;
 
 namespace OmniSharp.Solution
 {
-    public class CSharpProject : IProject
+    public class CSharpProject : Project
     {
-        public static readonly string[] AssemblySearchPaths =
-        {
-            //Windows Paths
-            @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5",
-            @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0",
-            @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.5",
-            @"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5",
-            @"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0",
-            @"C:\Program Files\Reference Assemblies\Microsoft\Framework\v3.5",
-            @"C:\Windows\Microsoft.NET\Framework\v2.0.50727",
-            @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v2.0\Assemblies",
-            @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\Assemblies",
-            @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET MVC 4\Assemblies",
-            @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET MVC 3\Assemblies",
-            @"C:\Program Files\Microsoft ASP.NET\ASP.NET Web Pages\v2.0\Assemblies",
-            @"C:\Program Files\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\Assemblies",
-            @"C:\Program Files\Microsoft ASP.NET\ASP.NET MVC 4\Assemblies",
-            @"C:\Program Files\Microsoft ASP.NET\ASP.NET MVC 3\Assemblies",
-            @"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v4.5",
-            @"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v4.0",
-            @"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v2.0",
-            @"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\ReferenceAssemblies\v2.0",
-            @"C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies",
-            @"C:\Program Files\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v4.5",
-            @"C:\Program Files\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v4.0",
-            @"C:\Program Files\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v2.0",
-            @"C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE\ReferenceAssemblies\v2.0",
-            @"C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies",
 
-            //Unix Paths
-            @"/usr/local/lib/mono/4.5",
-            @"/usr/local/lib/mono/4.0",
-            @"/usr/local/lib/mono/3.5",
-            @"/usr/local/lib/mono/2.0",
-            @"/usr/lib/mono/4.5",
-            @"/usr/lib/mono/4.0",
-            @"/usr/lib/mono/3.5",
-            @"/usr/lib/mono/2.0",
-            @"/opt/mono/lib/mono/4.5",
-            @"/opt/mono/lib/mono/4.0",
-            @"/opt/mono/lib/mono/3.5",
-            @"/opt/mono/lib/mono/2.0",
-
-            //OS X Paths
-            @"/Library/Frameworks/Mono.Framework/Libraries/mono/4.5",
-            @"/Library/Frameworks/Mono.Framework/Libraries/mono/4.0",
-            @"/Library/Frameworks/Mono.Framework/Libraries/mono/3.5",
-            @"/Library/Frameworks/Mono.Framework/Libraries/mono/2.0",
-            @"~/.kpm/packages"
-        };
         private readonly ISolution _solution;
 
-        public string FileName { get; private set; }
+        // public string FileName { get; private set; }
 
         public string AssemblyName { get; set; }
 
-        public Guid ProjectId { get; private set; }
+        // public Guid ProjectId { get; private set; }
 
-        public string Title { get; private set; }
+        // public string Title { get; private set; }
 
-        public IProjectContent ProjectContent { get; set; }
+        // public IProjectContent ProjectContent { get; set; }
 
-        public List<CSharpFile> Files { get; private set; }
+        // public List<CSharpFile> Files { get; private set; }
 
-        private CompilerSettings _compilerSettings;
-
-        public CompilerSettings CompilerSettings
-        {
-            get 
-            {
-                return _compilerSettings;
-            }
-        }
         private readonly Logger _logger;
 
-        public CSharpProject(ISolution solution, Logger logger, string folderPath)
+        IFileSystem _fileSystem;
+
+        public CSharpProject (ISolution solution, 
+                             Logger logger, 
+                             string folderPath, 
+                             IFileSystem fileSystem) : base (fileSystem, logger)
         {
+            _fileSystem = fileSystem;
             _logger = logger;
             _solution = solution;
 
             Files = new List<CSharpFile>();
             References = new List<IAssemblyReference>();
 
-            DirectoryInfo folder;
+            DirectoryInfoBase folder;
 
             try
             {
-                folder = new DirectoryInfo(folderPath);
+                folder = _fileSystem.DirectoryInfo.FromDirectoryName(folderPath);
             }
             catch(DirectoryNotFoundException)
             {
@@ -110,7 +55,7 @@ namespace OmniSharp.Solution
                 return;
             }
 
-            var files = folder.EnumerateFiles("*.cs", SearchOption.AllDirectories);
+            var files = folder.GetFiles("*.cs", SearchOption.AllDirectories);
             foreach (var file in files)
             {
                 _logger.Debug("Loading " + file.FullName);
@@ -126,7 +71,7 @@ namespace OmniSharp.Solution
             AddReference(LoadAssembly(FindAssembly("System.Core")));
             AddAllKpmPackages();
 
-            var dlls = folder.EnumerateFiles("*.dll", SearchOption.AllDirectories);
+            var dlls = folder.GetFiles("*.dll", SearchOption.AllDirectories);
             foreach (var dll in dlls)
             {
                 _logger.Debug("Loading assembly " + dll.FullName);
@@ -134,19 +79,29 @@ namespace OmniSharp.Solution
             }
         }
 
-        public CSharpProject(ISolution solution, Logger logger, string title, string fileName, Guid id)
+        public CSharpProject(ISolution solution,
+                             IFileSystem fileSystem,
+                             Logger logger, 
+                             string title, 
+                             string fileName, 
+                             Guid id) : base(fileSystem, logger)
         {
+            _fileSystem = fileSystem;
             _logger = logger;
             _solution = solution;
             Title = title;
-            FileName = fileName.ForceNativePathSeparator();
+            if (fileSystem is FileSystem)
+            {
+                fileName = fileName.ForceNativePathSeparator ();
+            }
+            FileName = fileName;
             ProjectId = id;
             Files = new List<CSharpFile>();
             Microsoft.Build.Evaluation.Project project;
 
             try
             {
-                project = new Microsoft.Build.Evaluation.Project(FileName);
+                project = new Microsoft.Build.Evaluation.Project(_fileSystem, fileName);
             }
             catch(DirectoryNotFoundException)
             {
@@ -181,7 +136,7 @@ namespace OmniSharp.Solution
 
                 if (assemblyFileName != null)
                 {
-                    if (Path.GetFileName(assemblyFileName).Equals("System.Core.dll", StringComparison.OrdinalIgnoreCase))
+                    if (_fileSystem.Path.GetFileName(assemblyFileName).Equals("System.Core.dll", StringComparison.OrdinalIgnoreCase))
                         hasSystemCore = true;
 
                     _logger.Debug("Loading assembly " + item.EvaluatedInclude);
@@ -208,18 +163,16 @@ namespace OmniSharp.Solution
         private void AddAllKpmPackages()
         {
             var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var folder = new DirectoryInfo(Path.Combine(userDir, ".kpm", "packages"));
+            var folder = _fileSystem.DirectoryInfo.FromDirectoryName(Path.Combine(userDir, ".kpm", "packages"));
 
             if(folder.Exists)
             {
-                var dlls = folder.EnumerateFiles("*.dll", SearchOption.AllDirectories);
+                var dlls = folder.GetFiles("*.dll", SearchOption.AllDirectories);
                 foreach (var dll in dlls)
                 {
                     _logger.Debug(dll.FullName);
 
                     AddReference(dll.FullName);
-
-
                 }
             }
         }
@@ -229,9 +182,9 @@ namespace OmniSharp.Solution
             string assemblyFileName = null;
             if (item.HasMetadata("HintPath"))
             {
-                assemblyFileName = Path.Combine(p.DirectoryPath, item.GetMetadataValue("HintPath")).ForceNativePathSeparator();
+                assemblyFileName = _fileSystem.Path.Combine(p.DirectoryPath, item.GetMetadataValue("HintPath")).ForceNativePathSeparator();
                 _logger.Info("Looking for assembly from HintPath at " + assemblyFileName);
-                if (!File.Exists(assemblyFileName))
+                if (!_fileSystem.File.Exists(assemblyFileName))
                 {
                     _logger.Info("Did not find assembly from HintPath");
                     assemblyFileName = null;
@@ -242,7 +195,7 @@ namespace OmniSharp.Solution
 
         void SetCompilerSettings(Microsoft.Build.Evaluation.Project p)
         {
-            _compilerSettings = new CompilerSettings
+            CompilerSettings = new CompilerSettings
             {
                 AllowUnsafeBlocks = GetBoolProperty(p, "AllowUnsafeBlocks") ?? false,
                 CheckForOverflow = GetBoolProperty(p, "CheckForOverflowUnderflow") ?? false
@@ -250,11 +203,11 @@ namespace OmniSharp.Solution
             string[] defines = p.GetPropertyValue("DefineConstants")
                 .Split(new [] {';'}, StringSplitOptions.RemoveEmptyEntries);
             foreach (string define in defines)
-                _compilerSettings.ConditionalSymbols.Add(define);
+                CompilerSettings.ConditionalSymbols.Add(define);
 
             var config = ConfigurationLoader.Config;
             foreach (var define in config.Defines)
-                _compilerSettings.ConditionalSymbols.Add(define);
+                CompilerSettings.ConditionalSymbols.Add(define);
         }
 
         void AddMsCorlib()
@@ -272,11 +225,11 @@ namespace OmniSharp.Solution
             {
                 try
                 {
-                    string path = Path.Combine(p.DirectoryPath, item.EvaluatedInclude).ForceNativePathSeparator();
+                    string path = _fileSystem.Path.Combine(p.DirectoryPath, item.EvaluatedInclude).ForceNativePathSeparator();
 
-                    if (File.Exists(path))
+                    if (_fileSystem.File.Exists(path))
                     {
-                        string file = new FileInfo(path).FullName;
+                        string file = _fileSystem.FileInfo.FromFileName(path).FullName;
                         _logger.Debug("Loading " + file);
                         Files.Add(new CSharpFile(this, file));
                     }
@@ -303,100 +256,9 @@ namespace OmniSharp.Solution
             }
         }
 
-        public List<IAssemblyReference> References { get; set; }
-
-        public void AddReference(IAssemblyReference reference)
-        {
-            References.Add(reference);
-            ProjectContent = ProjectContent.AddAssemblyReferences(References);
-        }
-
-        public void AddReference(string reference)
-        {
-            try
-            {
-                References.Add(LoadAssembly(reference));
-                ProjectContent = ProjectContent.AddAssemblyReferences(References);
-            }
-            catch(BadImageFormatException)
-            {
-                // Ignore native dlls
-                _logger.Error(reference + " is a native dll");
-            }
-        }
-
-        private CSharpFile GetFile(string fileName, string source)
-        {
-            var file = Files.FirstOrDefault(f => f.FileName.Equals(fileName, StringComparison.InvariantCultureIgnoreCase));
-            if (file == null)
-            {
-                file = new CSharpFile(this, fileName, source);
-                Files.Add (file);
-
-                this.ProjectContent = this.ProjectContent
-                    .AddOrUpdateFiles(file.ParsedFile);
-            }
-            return file;
-        }
-
-        public void UpdateFile(string fileName,string source)
-        {
-            var file = GetFile (fileName, source);
-            file.Content = new StringTextSource(source);
-            file.Parse(this, fileName, source);
-
-            this.ProjectContent = this.ProjectContent
-                .AddOrUpdateFiles(file.ParsedFile);
-        }
-
-        public CSharpParser CreateParser()
-        {
-            return new CSharpParser(_compilerSettings);
-        }
-
-        public XDocument AsXml()
-        {
-            return XDocument.Load(FileName);
-        }
-
-        public void Save(XDocument project)
-        {
-            project.Save(FileName);
-        }
-
         public override string ToString()
         {
             return string.Format("[CSharpProject AssemblyName={0}]", AssemblyName);
-        }
-
-        static ConcurrentDictionary<string, IUnresolvedAssembly> assemblyDict = new ConcurrentDictionary<string, IUnresolvedAssembly>(Platform.FileNameComparer);
-
-        public static IUnresolvedAssembly LoadAssembly(string assemblyFileName)
-        {
-            if (!File.Exists(assemblyFileName))
-            {
-                throw new FileNotFoundException("Assembly does not exist!", assemblyFileName);
-            }
-            return assemblyDict.GetOrAdd(assemblyFileName, file => new CecilLoader().LoadAssemblyFile(file));
-        }
-
-        public static string FindAssembly(string evaluatedInclude)
-        {
-
-            if (evaluatedInclude.IndexOf(',') >= 0)
-                evaluatedInclude = evaluatedInclude.Substring(0, evaluatedInclude.IndexOf(','));
-
-            string directAssemblyFile = (evaluatedInclude + ".dll").ForceNativePathSeparator();
-            if (File.Exists(directAssemblyFile))
-                return directAssemblyFile;
-
-            foreach (string searchPath in AssemblySearchPaths)
-            {
-                string assemblyFile = Path.Combine(searchPath, evaluatedInclude + ".dll").ForceNativePathSeparator();
-                if (File.Exists(assemblyFile))
-                    return assemblyFile;
-            }
-            return null;
         }
 
         string FindAssemblyInNetGac(string evaluatedInclude)
