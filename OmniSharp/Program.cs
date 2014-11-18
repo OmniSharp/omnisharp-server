@@ -12,7 +12,7 @@ using OmniSharp.Solution;
 
 namespace OmniSharp
 {
-    internal static class Program
+    static class Program
     {
         private static void Main(string[] args)
         {
@@ -97,7 +97,7 @@ namespace OmniSharp
                 Configuration.ConfigurationLoader.Load(
                         configLocation: configLocation, clientMode: clientPathMode);
 
-                var solution = LoadSolution(solutionPath, logger);
+                var solution = new SolutionPicker(new FileSystem()).LoadSolution(solutionPath, logger);
                 logger.Debug("Using solution path " + solutionPath);
                 logger.Debug("Using config file " + configLocation);
 
@@ -139,32 +139,7 @@ namespace OmniSharp
             }
         }
 
-        static ISolution LoadSolution(string solutionPath, Logger logger)
-        {
-            solutionPath = solutionPath.ApplyPathReplacementsForServer();
-            ISolution solution;
-            var fileSystem = new FileSystem();
-            if (Directory.Exists(solutionPath))
-            {
-                var slnFiles = Directory.GetFiles(solutionPath, "*.sln");
-                Console.WriteLine(slnFiles.Length);
-                if (slnFiles.Length == 1)
-                {
-                    solutionPath = slnFiles[0];
-                    logger.Debug("Found solution file - " + solutionPath);
-                    solution = new CSharpSolution(fileSystem, solutionPath, logger);
-                }
-                else
-                {
-                    solution = new CSharpFolder(solutionPath, logger, fileSystem);
-                }
-            }
-            else
-            {
-                solution = new CSharpSolution(fileSystem, solutionPath, logger);
-            }
-            return solution;
-        }
+
 
         static void ShowHelp(OptionSet p)
         {

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using NUnit.Framework;
+using OmniSharp;
 using OmniSharp.Solution;
 using Should;
 using System.IO.Abstractions;
+using System.IO.Abstractions.TestingHelpers;
 
 
 namespace OmniSharp.Tests
@@ -17,6 +19,16 @@ namespace OmniSharp.Tests
             var path = Environment.CurrentDirectory + "/Solution/minimal";
             var solution = new CSharpFolder(path, new Logger (Verbosity.Verbose), new FileSystem());
             solution.LoadSolution ();
+        }
+
+        [Test]
+        public void Should_pick_unity_csharp_solution_in_folder_mode()
+        {
+            var fs = new MockFileSystem();
+            fs.File.WriteAllText("Unity.sln", "");
+            fs.File.WriteAllText("Unity-csharp.sln", "");
+            var solution = new SolutionPicker(fs).LoadSolution(@".", new Logger(Verbosity.Verbose));
+            fs.FileInfo.FromFileName (solution.FileName).Name.ShouldEqual("Unity-csharp.sln");
         }
     }
 

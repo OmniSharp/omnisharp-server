@@ -264,6 +264,7 @@
     <Compile Include="AutoComplete\ReturnTypeAmbience.cs" />
     <Compile Include="Solution\AssemblySearch.cs" />
     <Compile Include="Solution\Project.cs" />
+    <Compile Include="Solution\SolutionPicker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
