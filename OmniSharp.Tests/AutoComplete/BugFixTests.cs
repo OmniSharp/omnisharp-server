@@ -102,7 +102,6 @@ public class MyClass
         [Test]
         public void Should_add_parentheses_to_class_when_instantiating()
         {
-            
             CompletionsFor(
                 @"
                 public class MyClass

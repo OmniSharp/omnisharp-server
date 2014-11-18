@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.RegularExpressions;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Completion;
-using ICSharpCode.NRefactory.CSharp.TypeSystem;
 using ICSharpCode.NRefactory.Completion;
 using ICSharpCode.NRefactory.TypeSystem;
 using ICSharpCode.NRefactory.TypeSystem.Implementation;
@@ -263,7 +261,7 @@ namespace OmniSharp.AutoComplete
                 return new CompletionData("~~");
             }
             CompletionData completion;
-            if (_instantiating)
+            if (addForTypeCreation || _instantiating)
             {
                 completion = new CompletionData(type.Name);
                 foreach (var constructor in type.GetConstructors())
