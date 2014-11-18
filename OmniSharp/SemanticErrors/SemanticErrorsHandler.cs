@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using ICSharpCode.NRefactory;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.NRefactory.Semantics;
 using ICSharpCode.NRefactory.TypeSystem;
 using OmniSharp.Common;
+using OmniSharp.Configuration;
 using Error = OmniSharp.Common.Error;
 using OmniSharp.Solution;
 
@@ -15,10 +17,12 @@ namespace OmniSharp.SemanticErrors
     public class SemanticErrorsHandler
     {
         private readonly ISolution _solution;
+        private readonly IEnumerable<string> _ignoredCodeIssues;
 
         public SemanticErrorsHandler(ISolution solution)
         {
             _solution = solution;
+            _ignoredCodeIssues = ConfigurationLoader.Config.IgnoredCodeIssues;
         }
 
         public SemanticErrorsResponse FindSemanticErrors(Request request)
@@ -31,7 +35,9 @@ namespace OmniSharp.SemanticErrors
             var resolver = new CSharpAstResolver(solutionSnapshot.GetCompilation(project.ProjectContent), syntaxTree);
             var navigator = new SemanticErrorsNavigator();
             resolver.ApplyNavigator(navigator);
-            var errors = navigator.GetErrors().Select(i => new Error
+            var errors = navigator.GetErrors()
+                .Where(e => ShouldIncludeIssue(e.Message))
+                .Select(i => new Error
             {
                 FileName = clientFilename,
                 Message = i.Message,
@@ -40,10 +46,16 @@ namespace OmniSharp.SemanticErrors
                 EndLine = i.EndLocation.Line,
                 EndColumn = i.EndLocation.Column
             });
+
             return new SemanticErrorsResponse
             {
                 Errors = errors,
             };
+        }
+
+        private bool ShouldIncludeIssue(string issue)
+        {
+            return !_ignoredCodeIssues.Any(ignore => Regex.IsMatch(issue, ignore));
         }
 
         struct ResolveErrors
