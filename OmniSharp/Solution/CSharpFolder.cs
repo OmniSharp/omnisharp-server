@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
+using DesignTimeHostDemo;
 
 namespace OmniSharp.Solution
 {
@@ -27,6 +28,14 @@ namespace OmniSharp.Solution
             Loaded = false;
             _project = new CSharpProject(this, _logger, FileName, _fileSystem);
             Loaded = true;
+            var dth = new DesignTimeHostDemo.Program();
+            dth.Go("/Users/jason/.kre/packages/KRE-Mono.1.0.0-beta2-10709/", FileName);
+            dth.OnUpdateFileReference += OnUpdateFileReference;
+        }
+
+        void OnUpdateFileReference(object sender, FileReferenceEventArgs e)
+        {
+            _project.AddReference(e.Reference);
         }
 
         public CSharpFile GetFile(string filename)

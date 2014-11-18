@@ -15,17 +15,7 @@ namespace OmniSharp.Solution
 
         private readonly ISolution _solution;
 
-        // public string FileName { get; private set; }
-
         public string AssemblyName { get; set; }
-
-        // public Guid ProjectId { get; private set; }
-
-        // public string Title { get; private set; }
-
-        // public IProjectContent ProjectContent { get; set; }
-
-        // public List<CSharpFile> Files { get; private set; }
 
         private readonly Logger _logger;
 
@@ -69,7 +59,6 @@ namespace OmniSharp.Solution
 
             AddMsCorlib();
             AddReference(LoadAssembly(FindAssembly("System.Core")));
-            AddAllKpmPackages();
 
             var dlls = folder.GetFiles("*.dll", SearchOption.AllDirectories);
             foreach (var dll in dlls)
@@ -158,23 +147,6 @@ namespace OmniSharp.Solution
 
 
             AddProjectReferences(project);
-        }
-
-        private void AddAllKpmPackages()
-        {
-            var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var folder = _fileSystem.DirectoryInfo.FromDirectoryName(Path.Combine(userDir, ".kpm", "packages"));
-
-            if(folder.Exists)
-            {
-                var dlls = folder.GetFiles("*.dll", SearchOption.AllDirectories);
-                foreach (var dll in dlls)
-                {
-                    _logger.Debug(dll.FullName);
-
-                    AddReference(dll.FullName);
-                }
-            }
         }
 
         string GetAssemblyFileNameFromHintPath(Microsoft.Build.Evaluation.Project p, Microsoft.Build.Evaluation.ProjectItem item)

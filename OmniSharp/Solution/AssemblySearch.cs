@@ -50,7 +50,6 @@ namespace OmniSharp.Solution
             @"/Library/Frameworks/Mono.Framework/Libraries/mono/4.0",
             @"/Library/Frameworks/Mono.Framework/Libraries/mono/3.5",
             @"/Library/Frameworks/Mono.Framework/Libraries/mono/2.0",
-            @"~/.kpm/packages"
         };
     }
 }
