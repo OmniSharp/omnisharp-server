@@ -259,6 +259,8 @@
     <Compile Include="CodeActions\FixUsingsModule.cs" />
     <Compile Include="Solution\CSharpFolder.cs" />
     <Compile Include="AutoComplete\SnippetGenerator.cs" />
+    <Compile Include="Solution\AssemblySearch.cs" />
+    <Compile Include="Solution\Project.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

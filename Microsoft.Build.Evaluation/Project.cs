@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.IO.Abstractions;
 
 namespace Microsoft.Build.Evaluation
 {
@@ -13,13 +11,13 @@ namespace Microsoft.Build.Evaluation
 
         public string DirectoryPath { get; private set; }
 
-        private XDocument document;
+        readonly XDocument document;
 
-
-        public Project(string fileName)
+        public Project(IFileSystem fileSystem, string fileName)
         {
-            DirectoryPath = Path.GetDirectoryName(fileName);
-            document = XDocument.Load(fileName);
+            DirectoryPath = fileSystem.Path.GetDirectoryName(fileName);
+            var xml = fileSystem.File.ReadAllText(fileName);
+            document = XDocument.Parse(xml);
         }
 
         public string GetPropertyValue(string name)

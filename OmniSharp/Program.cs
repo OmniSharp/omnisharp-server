@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Abstractions;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -129,13 +130,13 @@ namespace OmniSharp
             }
             catch(Exception e)
             {
-				if(e is SocketException || e is HttpListenerException)
-				{
-					logger.Error("Detected an OmniSharp instance already running on port " + port + ". Press a key.");
-					Console.ReadKey();
-					return;
-				}
-				throw;
+                if(e is SocketException || e is HttpListenerException)
+                {
+                    logger.Error("Detected an OmniSharp instance already running on port " + port + ". Press a key.");
+                    Console.ReadKey();
+                    return;
+                }
+                throw;
             }
         }
 
@@ -143,6 +144,7 @@ namespace OmniSharp
         {
             solutionPath = solutionPath.ApplyPathReplacementsForServer();
             ISolution solution;
+            var fileSystem = new FileSystem();
             if (Directory.Exists(solutionPath))
             {
                 var slnFiles = Directory.GetFiles(solutionPath, "*.sln");
@@ -151,16 +153,16 @@ namespace OmniSharp
                 {
                     solutionPath = slnFiles[0];
                     logger.Debug("Found solution file - " + solutionPath);
-                    solution = new CSharpSolution(solutionPath, logger);
+                    solution = new CSharpSolution(fileSystem, solutionPath, logger);
                 }
                 else
                 {
-                    solution = new CSharpFolder(solutionPath, logger);
+                    solution = new CSharpFolder(solutionPath, logger, fileSystem);
                 }
             }
             else
             {
-                solution = new CSharpSolution(solutionPath, logger);
+                solution = new CSharpSolution(fileSystem, solutionPath, logger);
             }
             return solution;
         }

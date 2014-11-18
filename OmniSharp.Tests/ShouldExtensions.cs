@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using System.Xml.Linq;
 
 namespace OmniSharp.Tests
 {
-    public static class ObjectExtensions
+    public static class ShouldExtensions
     {
         public static void ShouldEqual(this string actual, string expected)
         {
@@ -15,7 +16,17 @@ namespace OmniSharp.Tests
         {
             CollectionAssert.AreEqual(expected, actual.ToArray());
         }
-        
+
+        public static void ShouldEqual(this XDocument actual, XDocument expected)
+        {
+            actual.ToString().ShouldEqual(expected.ToString());
+        }
+
+        public static void ShouldEqualXml(this string actual, string expected)
+        {
+            XDocument.Parse(actual).ShouldEqual(XDocument.Parse(expected));
+        }
+
         public static void ShouldContainOnly<T>(this IEnumerable<T> actual, params T[] expected)
         {
             actual.ShouldContainOnly(new List<T>(expected));

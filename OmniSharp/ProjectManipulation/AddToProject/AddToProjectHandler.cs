@@ -11,11 +11,11 @@ namespace OmniSharp.ProjectManipulation.AddToProject
     {
         private readonly ISolution _solution;
         private readonly XNamespace _msBuildNameSpace = "http://schemas.microsoft.com/developer/msbuild/2003";
-		private readonly IFileSystem _fileSystem;
+        private readonly IFileSystem _fileSystem;
 
         public AddToProjectHandler(ISolution solution, IFileSystem fileSystem)
         {
-			_fileSystem = fileSystem;
+            _fileSystem = fileSystem;
             _solution = solution;
         }
 
@@ -37,7 +37,7 @@ namespace OmniSharp.ProjectManipulation.AddToProject
 
             var requestFile = request.FileName;
             var projectDirectory = _fileSystem.GetDirectoryName(relativeProject.FileName);
-			var relativeFileName = requestFile.Replace(projectDirectory, "").ForceWindowsPathSeparator().Substring(1);
+            var relativeFileName = requestFile.Replace(projectDirectory, "").ForceWindowsPathSeparator().Substring(1);
 
             var compilationNodes = project.Element(_msBuildNameSpace + "Project")
                                           .Elements(_msBuildNameSpace + "ItemGroup")

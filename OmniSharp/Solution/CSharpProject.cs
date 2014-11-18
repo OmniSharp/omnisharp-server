@@ -1,196 +1,31 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
-using System.Xml.Linq;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
-using ICSharpCode.NRefactory.Utils;
 using Mono.Cecil;
-using ICSharpCode.NRefactory.Editor;
 using OmniSharp.Configuration;
 
 namespace OmniSharp.Solution
 {
-    public class Project : IProject
-    {
-        Logger _logger;
-        IFileSystem _fileSystem;
-
-        public Project (IFileSystem fileSystem, Logger logger)
-        {
-            _fileSystem = fileSystem;
-            _logger = logger;
-        }
-
-        public CompilerSettings CompilerSettings { get; set; }
-        static ConcurrentDictionary<string, IUnresolvedAssembly> assemblyDict = new ConcurrentDictionary<string, IUnresolvedAssembly>(Platform.FileNameComparer);
-
-        public void UpdateFile(string fileName,string source)
-        {
-            var file = GetFile (fileName, source);
-            file.Content = new StringTextSource(source);
-            file.Parse(this, fileName, source);
-
-            this.ProjectContent = this.ProjectContent
-                .AddOrUpdateFiles(file.ParsedFile);
-        }
-
-        private CSharpFile GetFile(string fileName, string source)
-        {
-            var file = Files.FirstOrDefault(f => f.FileName.Equals(fileName, StringComparison.InvariantCultureIgnoreCase));
-            if (file == null)
-            {
-                file = new CSharpFile(this, fileName, source);
-                Files.Add (file);
-
-                this.ProjectContent = this.ProjectContent
-                    .AddOrUpdateFiles(file.ParsedFile);
-            }
-            return file;
-        }
-
-        public CSharpParser CreateParser()
-        {
-            return new CSharpParser(CompilerSettings);
-        }
-
-        public XDocument AsXml()
-        {
-            return XDocument.Load(FileName);
-        }
-
-        public void AddReference(IAssemblyReference reference)
-        {
-            References.Add(reference);
-            ProjectContent = ProjectContent.AddAssemblyReferences(References);
-        }
-
-        public void AddReference(string reference)
-        {
-            try
-            {
-                References.Add(LoadAssembly(reference));
-                ProjectContent = ProjectContent.AddAssemblyReferences(References);
-            }
-            catch(BadImageFormatException)
-            {
-                // Ignore native dlls
-                _logger.Error(reference + " is a native dll");
-            }
-        }
-
-
-        public IUnresolvedAssembly LoadAssembly(string assemblyFileName)
-        {
-            if (!_fileSystem.File.Exists(assemblyFileName))
-            {
-                throw new FileNotFoundException("Assembly does not exist!", assemblyFileName);
-            }
-            return assemblyDict.GetOrAdd(assemblyFileName, file => new CecilLoader().LoadAssemblyFile(file));
-        }
-
-
-
-
-
-        public void Save(XDocument project)
-        {
-            project.Save(FileName);
-        }
-
-        public string FindAssembly (string evaluatedInclude)
-        {
-            throw new NotImplementedException ();
-        }
-
-        public IProjectContent ProjectContent {
-            get {
-                throw new NotImplementedException ();
-            }
-            set {
-                throw new NotImplementedException ();
-            }
-        }
-
-        public string Title { get; protected set; }
-
-        public string FileName { get; protected set; }
-
-        public List<CSharpFile> Files { get; protected set; }
-
-        public List<IAssemblyReference> References { get; set; }
-
-        public Guid ProjectId { get; protected set; }
-    }
-
     public class CSharpProject : Project
     {
-        public static readonly string[] AssemblySearchPaths =
-        {
-            //Windows Paths
-            @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5",
-            @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0",
-            @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.5",
-            @"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5",
-            @"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0",
-            @"C:\Program Files\Reference Assemblies\Microsoft\Framework\v3.5",
-            @"C:\Windows\Microsoft.NET\Framework\v2.0.50727",
-            @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v2.0\Assemblies",
-            @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\Assemblies",
-            @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET MVC 4\Assemblies",
-            @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET MVC 3\Assemblies",
-            @"C:\Program Files\Microsoft ASP.NET\ASP.NET Web Pages\v2.0\Assemblies",
-            @"C:\Program Files\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\Assemblies",
-            @"C:\Program Files\Microsoft ASP.NET\ASP.NET MVC 4\Assemblies",
-            @"C:\Program Files\Microsoft ASP.NET\ASP.NET MVC 3\Assemblies",
-            @"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v4.5",
-            @"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v4.0",
-            @"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v2.0",
-            @"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\ReferenceAssemblies\v2.0",
-            @"C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies",
-            @"C:\Program Files\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v4.5",
-            @"C:\Program Files\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v4.0",
-            @"C:\Program Files\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v2.0",
-            @"C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE\ReferenceAssemblies\v2.0",
-            @"C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies",
 
-            //Unix Paths
-            @"/usr/local/lib/mono/4.5",
-            @"/usr/local/lib/mono/4.0",
-            @"/usr/local/lib/mono/3.5",
-            @"/usr/local/lib/mono/2.0",
-            @"/usr/lib/mono/4.5",
-            @"/usr/lib/mono/4.0",
-            @"/usr/lib/mono/3.5",
-            @"/usr/lib/mono/2.0",
-            @"/opt/mono/lib/mono/4.5",
-            @"/opt/mono/lib/mono/4.0",
-            @"/opt/mono/lib/mono/3.5",
-            @"/opt/mono/lib/mono/2.0",
-
-            //OS X Paths
-            @"/Library/Frameworks/Mono.Framework/Libraries/mono/4.5",
-            @"/Library/Frameworks/Mono.Framework/Libraries/mono/4.0",
-            @"/Library/Frameworks/Mono.Framework/Libraries/mono/3.5",
-            @"/Library/Frameworks/Mono.Framework/Libraries/mono/2.0",
-            @"~/.kpm/packages"
-        };
         private readonly ISolution _solution;
 
-        public string FileName { get; private set; }
+        // public string FileName { get; private set; }
 
         public string AssemblyName { get; set; }
 
-        public Guid ProjectId { get; private set; }
+        // public Guid ProjectId { get; private set; }
 
-        public string Title { get; private set; }
+        // public string Title { get; private set; }
 
-        public IProjectContent ProjectContent { get; set; }
+        // public IProjectContent ProjectContent { get; set; }
 
-        public List<CSharpFile> Files { get; private set; }
+        // public List<CSharpFile> Files { get; private set; }
 
         private readonly Logger _logger;
 
@@ -251,17 +86,22 @@ namespace OmniSharp.Solution
                              string fileName, 
                              Guid id) : base(fileSystem, logger)
         {
+            _fileSystem = fileSystem;
             _logger = logger;
             _solution = solution;
             Title = title;
-            FileName = fileName.ForceNativePathSeparator();
+            if (fileSystem is FileSystem)
+            {
+                fileName = fileName.ForceNativePathSeparator ();
+            }
+            FileName = fileName;
             ProjectId = id;
             Files = new List<CSharpFile>();
             Microsoft.Build.Evaluation.Project project;
 
             try
             {
-                project = new Microsoft.Build.Evaluation.Project(FileName);
+                project = new Microsoft.Build.Evaluation.Project(_fileSystem, fileName);
             }
             catch(DirectoryNotFoundException)
             {
@@ -323,7 +163,7 @@ namespace OmniSharp.Solution
         private void AddAllKpmPackages()
         {
             var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var folder = _fileSystem.DirectoryInfo.FromDirectoryName(_fileSystem.Path.Combine(userDir, ".kpm", "packages"));
+            var folder = _fileSystem.DirectoryInfo.FromDirectoryName(Path.Combine(userDir, ".kpm", "packages"));
 
             if(folder.Exists)
             {
@@ -333,8 +173,6 @@ namespace OmniSharp.Solution
                     _logger.Debug(dll.FullName);
 
                     AddReference(dll.FullName);
-
-
                 }
             }
         }
@@ -418,35 +256,9 @@ namespace OmniSharp.Solution
             }
         }
 
-        public List<IAssemblyReference> References { get; set; }
-
-
-
         public override string ToString()
         {
             return string.Format("[CSharpProject AssemblyName={0}]", AssemblyName);
-        }
-
-
-
-
-        public string FindAssembly(string evaluatedInclude)
-        {
-
-            if (evaluatedInclude.IndexOf(',') >= 0)
-                evaluatedInclude = evaluatedInclude.Substring(0, evaluatedInclude.IndexOf(','));
-
-            string directAssemblyFile = (evaluatedInclude + ".dll").ForceNativePathSeparator();
-            if (_fileSystem.File.Exists(directAssemblyFile))
-                return directAssemblyFile;
-
-            foreach (string searchPath in AssemblySearchPaths)
-            {
-                string assemblyFile = _fileSystem.Path.Combine(searchPath, evaluatedInclude + ".dll").ForceNativePathSeparator();
-                if (_fileSystem.File.Exists(assemblyFile))
-                    return assemblyFile;
-            }
-            return null;
         }
 
         string FindAssemblyInNetGac(string evaluatedInclude)

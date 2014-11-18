@@ -1,45 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml.Linq;
+using System.IO.Abstractions;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
 using System.Linq;
-using ICSharpCode.NRefactory.Editor;
 
 namespace OmniSharp.Solution
 {
     /// <summary>
     /// Placeholder that can be used for files that don't belong to a project yet.
     /// </summary>
-    public class OrphanProject : IProject
+    public class OrphanProject : Project
     {
-        public string Title { get; private set; }
-        public List<CSharpFile> Files { get; private set; }
-        public List<IAssemblyReference> References { get; set; }
-        public IProjectContent ProjectContent { get; set; }
-        public string FileName { get; private set; }
-        public Guid ProjectId { get; private set; }
-        public CompilerSettings CompilerSettings { get { return null; } }
-
-        public void AddReference(IAssemblyReference reference)
-        {
-            References.Add(reference);
-            ProjectContent.AddAssemblyReferences (new[] { reference });
-        }
-
-        public void AddReference(string reference)
-        {
-            AddReference(LoadAssembly(reference));
-        }
-
-        public void AddFile(string fileName)
-        {
-            var csharpFile = new CSharpFile (this, fileName);
-            Files.Add (csharpFile);
-            ProjectContent.AddOrUpdateFiles (new[] { csharpFile.ParsedFile });
-        }
-
-        public OrphanProject()
+        public OrphanProject(IFileSystem fileSystem, Logger logger) : base(fileSystem, logger)
         {
             Title = "Orphan Project";
             Files = new List<CSharpFile>();
@@ -48,11 +21,11 @@ namespace OmniSharp.Solution
 
             References = new List<IAssemblyReference>();
             FileName = "OrphanProject";
-            string mscorlib = CSharpProject.FindAssembly("mscorlib");
+            string mscorlib = FindAssembly("mscorlib");
             Console.WriteLine(mscorlib);
             ProjectContent = new CSharpProjectContent()
                 .SetAssemblyName("OrphanProject")
-                .AddAssemblyReferences(CSharpProject.LoadAssembly(mscorlib));
+                .AddAssemblyReferences(LoadAssembly(mscorlib));
         }
 
         private CSharpFile GetFile(string fileName, string source)
@@ -68,31 +41,5 @@ namespace OmniSharp.Solution
             }
             return file;
         }
-
-        public void UpdateFile(string fileName,string source)
-        {
-            var file = GetFile (fileName, source);
-            file.Content = new StringTextSource(source);
-            file.Parse(this, fileName, source);
-
-            this.ProjectContent = this.ProjectContent
-                .AddOrUpdateFiles(file.ParsedFile);
-        }
-
-        public CSharpParser CreateParser()
-        {
-            return new CSharpParser();
-        }
-
-        public XDocument AsXml()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Save(XDocument project)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }
