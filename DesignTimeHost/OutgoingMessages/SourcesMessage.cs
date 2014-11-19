@@ -8,7 +8,7 @@ namespace Microsoft.Framework.DesignTimeHost.Models.OutgoingMessages
 {
     public class SourcesMessage
     {
-//        public FrameworkData Framework { get; set; }
+        public FrameworkData Framework { get; set; }
 
         public IList<string> Files { get; set; }
         public IDictionary<string, string> GeneratedFiles { get; set; }
