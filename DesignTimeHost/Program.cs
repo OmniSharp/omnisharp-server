@@ -28,7 +28,9 @@ namespace DesignTimeHostDemo
         public delegate void FileReferenceUpdateHandler(object sender, FileReferenceEventArgs e);
         public event FileReferenceUpdateHandler OnUpdateFileReference;
 
-        public void Go(string runtimePath, string applicationRoot)
+        public event Action<IEnumerable<string>> OnUpdateSourceFileReference;
+
+        public void Go(string runtimePath, string applicationRoot, Action<string> log)
         {
             var hostId = Guid.NewGuid().ToString();
             var port = 1334;
@@ -46,17 +48,20 @@ namespace DesignTimeHostDemo
 
                 var networkStream = new NetworkStream(socket);
 
-                Console.WriteLine("Connected");
+                log("Connected to design time host");
 
                 var mapping = new Dictionary<int, string>();
                 var queue = new ProcessingQueue(networkStream);
 
                 queue.OnReceive += m =>
                 {
+                    log(m.ToString());
+
                     // Get the project associated with this message
                     var projectPath = mapping[m.ContextId];
 
-                    Console.WriteLine(m.MessageType);
+                    log(m.MessageType);
+
                     // This is where we can handle messages and update the
                     // language service
                     if (m.MessageType == "References")
@@ -67,7 +72,6 @@ namespace DesignTimeHostDemo
                          {
                             var args = new FileReferenceEventArgs(reference);
                             OnUpdateFileReference(this, args);
-                            Console.WriteLine(reference);
                          }
                     }
                     else if (m.MessageType == "Diagnostics")
@@ -92,7 +96,8 @@ namespace DesignTimeHostDemo
                     else if (m.MessageType == "Sources")
                     {
                         // The sources to feed to the language service
-                        // var val = m.Payload.ToObject<SourcesMessage>();
+                        var val = m.Payload.ToObject<SourcesMessage>();
+                        OnUpdateSourceFileReference(val.Files);
                     }
                 };
 

@@ -11,7 +11,7 @@ namespace OmniSharp.Solution
     public class CSharpFolder : ISolution
     {
         Logger _logger;
-        CSharpProject _project;
+        AspNet5Project _project;
         IFileSystem _fileSystem;
 
         public CSharpFolder(string folder, Logger logger, IFileSystem fileSystem)
@@ -28,7 +28,7 @@ namespace OmniSharp.Solution
         public void LoadSolution()
         {
             Loaded = false;
-            _project = new CSharpProject(this, _logger, FileName, _fileSystem);
+            _project = new AspNet5Project(this, _logger, FileName, _fileSystem);
             Loaded = true;
 
             var dth = new DesignTimeHostDemo.Program();
@@ -50,8 +50,14 @@ namespace OmniSharp.Solution
 
             _logger.Debug("Using KRE at = " + krePath);
 
-            dth.Go(krePath, FileName);
+            dth.Go(krePath, FileName, val => _logger.Debug(val));
             dth.OnUpdateFileReference += OnUpdateFileReference;
+            dth.OnUpdateSourceFileReference += OnUpdateSourceFileReference;
+        }
+
+        void OnUpdateSourceFileReference(IEnumerable<string> files)
+        {
+            _project.AddFiles(files);
         }
 
         void OnUpdateFileReference(object sender, FileReferenceEventArgs e)
