@@ -112,7 +112,8 @@ namespace DesignTimeHostDemo
                     var initializeMessage = new InitializeMessage
                     {
                         ProjectFolder = projectPath,
-                        TargetFramework = activeTargetFramework
+                        // ??? 
+                        Configuration = activeTargetFramework
                     };
 
                     // Create a unique id for this project

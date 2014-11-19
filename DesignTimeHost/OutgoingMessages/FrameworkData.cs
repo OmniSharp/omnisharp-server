@@ -1,26 +1,22 @@
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Microsoft.Framework.DesignTimeHost.Models.OutgoingMessages
 {
-    public class SourcesMessage
+    public class FrameworkData
     {
-//        public FrameworkData Framework { get; set; }
-
-        public IList<string> Files { get; set; }
-        public IDictionary<string, string> GeneratedFiles { get; set; }
-
+        public string FrameworkName { get; set; }
+        public string FriendlyName { get; set; }
+        public string ShortName { get; set; }
+        public string RedistListPath { get; set; }
 
         public override bool Equals(object obj)
         {
-            var other = obj as SourcesMessage;
+            var other = obj as FrameworkData;
 
             return other != null &&
-                   Enumerable.SequenceEqual(Files, other.Files);
-
+                   string.Equals(FrameworkName, other.FrameworkName);
         }
 
         public override int GetHashCode()
