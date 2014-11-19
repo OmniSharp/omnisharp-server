@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 using DesignTimeHostDemo;
+using System.Text.RegularExpressions;
 
 namespace OmniSharp.Solution
 {
@@ -29,7 +30,13 @@ namespace OmniSharp.Solution
             _project = new CSharpProject(this, _logger, FileName, _fileSystem);
             Loaded = true;
             var dth = new DesignTimeHostDemo.Program();
-            dth.Go("/Users/jason/.kre/packages/KRE-Mono.1.0.0-beta2-10709/", FileName);
+            var paths = Environment.GetEnvironmentVariable("PATH").Split(':');
+            var kreBinPath = paths.FirstOrDefault(path => path.Contains ("packages") && path.Contains ("KRE"));
+//            var activeKreOutput = ShellWrapper.GetShellOuput("kvm", "list | grep default");
+//            var components = Regex.Split(activeKreOutput, @"\s{1,}");
+            //*    1.0.0-beta2-10709    Mono    ~/.kre/packages      default
+            // /Users/jason/.kre/packages/KRE-Mono.1.0.0-beta2-10709/bin
+            dth.Go(kreBinPath.Remove(kreBinPath.Length - 3), FileName);
             dth.OnUpdateFileReference += OnUpdateFileReference;
         }
 

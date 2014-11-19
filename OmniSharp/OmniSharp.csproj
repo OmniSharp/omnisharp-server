@@ -265,6 +265,7 @@
     <Compile Include="Solution\AssemblySearch.cs" />
     <Compile Include="Solution\Project.cs" />
     <Compile Include="Solution\SolutionPicker.cs" />
+    <Compile Include="Common\ShellWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
