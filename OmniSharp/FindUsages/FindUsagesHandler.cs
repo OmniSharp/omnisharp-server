@@ -121,7 +121,12 @@ namespace OmniSharp.FindUsages
                     Parallel.ForEach(interesting.Distinct(), file =>
                         {
                             string text = _solution.GetFile(file.FileName.LowerCaseDriveLetter()).Content.Text;
-                            var unit = new CSharpParser().Parse(text, file.FileName);
+                            SyntaxTree unit ;
+                            if(project.CompilerSettings!=null){
+                            	unit = new CSharpParser(project.CompilerSettings).Parse(text, file.FileName);
+                            }else{
+                            	unit = new CSharpParser().Parse(text, file.FileName);
+                            }
 
                             foreach (var scope in searchScopes)
                             {
