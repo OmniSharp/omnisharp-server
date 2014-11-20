@@ -22,6 +22,7 @@ namespace OmniSharp.Configuration
             }
             var config = StripComments(File.ReadAllText(configLocation));
             _config = new Nancy.Json.JavaScriptSerializer().Deserialize<OmniSharpConfiguration>(config);
+            _config.ConfigFileLocation = configLocation;
 
             if (!string.IsNullOrWhiteSpace(clientMode))
             {
