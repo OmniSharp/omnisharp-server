@@ -97,7 +97,7 @@ namespace OmniSharp.Tests.AutoComplete
         }
 
         [Test]
-		public void Should_not_add_bracket_to_method_as_generic_type_is_known()
+        public void Should_not_add_bracket_to_method_as_generic_type_is_known()
         {
             CompletionsFor(
                 @"using System.Collections.Generic;
@@ -108,15 +108,15 @@ namespace OmniSharp.Tests.AutoComplete
                     l.Conv$
                 }
             }")
-				.ShouldContain("ConvertAll(");
+                .ShouldContain("ConvertAll(");
         }
 
-		[Test]
-		public void Should_not_add_angle_bracket_when_TSource_is_same_as_callee()
-		{
-			CompletionsFor(
-				@"using System.Collections.Generic;
-			using System.Linq;
+        [Test]
+        public void Should_not_add_angle_bracket_when_TSource_is_same_as_callee()
+        {
+            CompletionsFor(
+                @"using System.Collections.Generic;
+            using System.Linq;
             public class Class1 {
                 public Class1()
                 {
@@ -124,8 +124,8 @@ namespace OmniSharp.Tests.AutoComplete
                     l.Distin$
                 }
             }")
-				.ShouldContain("Distinct(");
-		}
+                .ShouldContain("Distinct(");
+        }
 
         [Test]
         public void Should_not_add_angle_bracket_when_type_can_be_inferred_from_parameter()

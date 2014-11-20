@@ -48,7 +48,6 @@ namespace OmniSharp.AutoComplete
                 _writer.WriteIdentifier(Identifier.Create(symbol.Name));
             }
 
-
             if (HasParameters(symbol))
             {
                 _writer.WriteToken(symbol.SymbolKind == SymbolKind.Indexer ? Roles.LBracket : Roles.LPar, symbol.SymbolKind == SymbolKind.Indexer ? "[" : "(");
@@ -218,7 +217,16 @@ namespace OmniSharp.AutoComplete
                     break;
                 default:
                     writer.WriteIdentifier(Identifier.Create(member.Name));
-                    WriteTypeParameters(writer, node.GetChildrenByRole(Roles.TypeParameter));
+                    IEnumerable<AstNode> typeArgs = node.GetChildrenByRole(Roles.TypeParameter);
+                    if(member is IMethod)
+                    {
+                        var typeArguments = ((IMethod)member).TypeArguments;
+                        if(typeArguments.Any() && typeArguments.First().Name == "TSource")
+                        {
+                            typeArgs = typeArgs.Skip(1);
+                        }
+                    }
+                    WriteTypeParameters(writer, typeArgs);
                     break;
             }
         }

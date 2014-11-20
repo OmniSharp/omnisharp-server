@@ -13,11 +13,11 @@ namespace OmniSharp.Refactoring
 {
     public class OmniSharpRefactoringContext : RefactoringContext
     {
-		public override string DefaultNamespace {
-			get {
-				throw new System.NotImplementedException ();
-			}
-		}
+        public override string DefaultNamespace {
+            get {
+                throw new System.NotImplementedException ();
+            }
+        }
 
         private readonly IDocument _document;
         private readonly TextLocation _location;

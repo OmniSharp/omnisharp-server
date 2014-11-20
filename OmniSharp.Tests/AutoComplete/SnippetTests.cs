@@ -20,6 +20,22 @@ namespace OmniSharp.Tests.AutoComplete
         }
 
         [Test]
+        public void Should_not_include_tsource_argument_type()
+        {
+            SnippetFor(
+                @"using System.Collections.Generic;
+            using System.Linq;
+            public class Class1 {
+                public Class1()
+                {
+                    var l = new List<string>();
+                    l.Firs$
+                }
+            }")
+                .ShouldContain("First()$0");        
+        }
+
+        [Test]
         public void Should_template_field()
         {
             SnippetFor(
