@@ -29,23 +29,46 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
             var project = new MockProject (Solution, _fs, new Logger (Verbosity.Quiet), projFileName);
             project.FileName = projFileName;
             project.Files.Add (new CSharpFile (project, @"c:\test\code\test.cs", "some c# code"));
+            project.Files.Add (new CSharpFile (project, @"c:\test2\Absolute.cs", "some c# code"));
+            project.Files.Add (new CSharpFile (project, @"c:\test2\Foreign.cs", "some c# code"));
             return project;
         }
 
         [Test]
         public void ShouldNotAddFileToProjectWhenAlreadyExists()
         {
-            var project = GetProject (@"<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003""><ItemGroup><Compile Include=""Hello.cs""/><Compile Include=""Test.cs""/></ItemGroup></Project>");
+            var project = GetProject (@"<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003""><ItemGroup><Compile Include=""Hello.cs""/><Compile Include=""Test.cs""/><Compile Include=""c:\test2\Absolute.cs""/><Compile Include=""..\..\test2\Foreign.cs""/></ItemGroup></Project>");
             var expectedXml = project.AsXml ();
 
             var solution = new FakeSolution (@"c:\test\fake.sln");
             solution.Projects.Add (project);
+
+            // test relative internal
 
             var request = new AddToProjectRequest {
                 FileName = @"c:\test\code\test.cs"
             };
 
             var handler = new AddToProjectHandler (solution, new FakeWindowsFileSystem ());
+            handler.AddToProject (request);
+            project.AsXml ().ToString ().ShouldEqual (expectedXml.ToString ());
+
+            // test absolute
+            request = new AddToProjectRequest {
+                FileName = @"c:\test2\Absolute.cs"
+            };
+
+            handler = new AddToProjectHandler (solution, new FakeWindowsFileSystem ());
+            handler.AddToProject (request);
+            project.AsXml ().ToString ().ShouldEqual (expectedXml.ToString ());
+
+            // test relative foreign tree
+
+            request = new AddToProjectRequest {
+                FileName = @"c:\test2\Foreign.cs"
+            };
+
+            handler = new AddToProjectHandler (solution, new FakeWindowsFileSystem ());
             handler.AddToProject (request);
             project.AsXml ().ToString ().ShouldEqual (expectedXml.ToString ());
         }
