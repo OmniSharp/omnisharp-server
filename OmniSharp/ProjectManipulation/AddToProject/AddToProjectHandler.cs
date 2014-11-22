@@ -11,11 +11,9 @@ namespace OmniSharp.ProjectManipulation.AddToProject
     {
         private readonly ISolution _solution;
         private readonly XNamespace _msBuildNameSpace = "http://schemas.microsoft.com/developer/msbuild/2003";
-        private readonly IFileSystem _fileSystem;
 
-        public AddToProjectHandler(ISolution solution, IFileSystem fileSystem)
+        public AddToProjectHandler(ISolution solution)
         {
-            _fileSystem = fileSystem;
             _solution = solution;
         }
 

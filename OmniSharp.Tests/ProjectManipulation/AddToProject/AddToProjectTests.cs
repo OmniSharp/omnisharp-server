@@ -49,7 +49,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
                 FileName = @"c:\test\code\test.cs"
             };
 
-            var handler = new AddToProjectHandler (solution, new FakeWindowsFileSystem ());
+            var handler = new AddToProjectHandler (solution);
             handler.AddToProject (request);
             project.AsXml ().ToString ().ShouldEqual (expectedXml.ToString ());
 
@@ -58,7 +58,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
                 FileName = @"c:\test2\Absolute.cs"
             };
 
-            handler = new AddToProjectHandler (solution, new FakeWindowsFileSystem ());
+            handler = new AddToProjectHandler (solution);
             handler.AddToProject (request);
             project.AsXml ().ToString ().ShouldEqual (expectedXml.ToString ());
 
@@ -68,7 +68,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
                 FileName = @"c:\test2\Foreign.cs"
             };
 
-            handler = new AddToProjectHandler (solution, new FakeWindowsFileSystem ());
+            handler = new AddToProjectHandler (solution);
             handler.AddToProject (request);
             project.AsXml ().ToString ().ShouldEqual (expectedXml.ToString ());
         }
@@ -87,7 +87,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
                 FileName = @"c:\test\code\files\Test.cs"
             };
 
-            var handler = new AddToProjectHandler (solution, new FakeWindowsFileSystem ());
+            var handler = new AddToProjectHandler (solution);
             handler.AddToProject (request);
 
             var expectedXml = XDocument.Parse (
@@ -112,7 +112,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
                 FileName = @"c:\test\code\foo.txt"
             };
 
-            var handler = new AddToProjectHandler (solution, new FakeWindowsFileSystem ());
+            var handler = new AddToProjectHandler (solution);
             handler.AddToProject (request);
 
             project.AsXml ().ToString ().ShouldEqual (expectedXml.ToString ());
@@ -135,7 +135,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
                     FileName = @"/test/code/folder/Test.cs"
                 };
 
-                var handler = new AddToProjectHandler (solution, new FakeUnixFileSystem ());
+                var handler = new AddToProjectHandler (solution);
                 handler.AddToProject (request);
 
                 project.AsXml().ToString().ShouldEqual (expectedXml.ToString ());
@@ -153,7 +153,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
                 FileName = @"/test/folder/Test.cs"
             };
 
-            var handler = new AddToProjectHandler (solution, new FakeUnixFileSystem ());
+            var handler = new AddToProjectHandler (solution);
             handler.AddToProject (request);
         }
 
@@ -169,7 +169,7 @@ namespace OmniSharp.Tests.ProjectManipulation.AddToProject
                 FileName = @"/test/folder/Test.cs"
             };
 
-            var handler = new AddToProjectHandler (solution, new FakeUnixFileSystem ());
+            var handler = new AddToProjectHandler (solution);
             handler.AddToProject (request);
         }
     }
