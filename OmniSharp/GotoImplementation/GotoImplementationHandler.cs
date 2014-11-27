@@ -52,7 +52,7 @@ namespace OmniSharp.GotoImplementation
 
         private QuickFixResponse GetTypeResponse(ITypeResolveContext rctx, ITypeDefinition typeDefinition)
         {
-            var types = GetAllTypes(rctx).Select(t => t.Resolve(rctx).GetDefinition());
+            var types = GetAllTypes(rctx);
             var quickFixes = from type in types where type != null
                                  && type != typeDefinition
                                  && type.IsDerivedFrom(typeDefinition)
@@ -67,13 +67,12 @@ namespace OmniSharp.GotoImplementation
         {
             var quickFixes = new List<QuickFix>();
             //TODO: we don't need to scan all types in all projects
-            foreach (IUnresolvedTypeDefinition type in GetAllTypes(rctx))
+            foreach (ITypeDefinition type in GetAllTypes(rctx))
             {
-                ITypeDefinition resolvedDef = type.Resolve(rctx).GetDefinition();
-                if (resolvedDef != null)
+                if (type != null)
                 {
                     IMember member =
-                        InheritanceHelper.GetDerivedMember(resolveResult.Member, resolvedDef);
+                        InheritanceHelper.GetDerivedMember(resolveResult.Member, type);
                     if (member != null)
                     {
                         var quickFix = QuickFix.ForFirstLineInRegion
@@ -86,10 +85,14 @@ namespace OmniSharp.GotoImplementation
             return new QuickFixResponse(quickFixes);
         }
 
-        private IEnumerable<IUnresolvedTypeDefinition> GetAllTypes(ITypeResolveContext context)
+        private IEnumerable<ITypeDefinition> GetAllTypes(ITypeResolveContext context)
         {
             var projects = _projectFinder.FindProjectsReferencing(context);
-            return projects.SelectMany(project => project.ProjectContent.GetAllTypeDefinitions());
+            return projects.SelectMany(project =>
+                    {
+                        ITypeResolveContext pctx = new CSharpTypeResolveContext(project.ProjectContent.Resolve(context));
+                        return project.ProjectContent.GetAllTypeDefinitions().Select(t => t.Resolve(pctx).GetDefinition());
+                    });
         }
     }
 
