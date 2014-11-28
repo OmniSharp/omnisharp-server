@@ -36,6 +36,22 @@ namespace OmniSharp.Tests.AutoComplete
         }
 
         [Test]
+        public void Should_not_include_tresult_argument_type()
+        {
+            SnippetFor(
+                @"using System.Collections.Generic;
+            using System.Linq;
+            public class Class1 {
+                public Class1()
+                {
+                    var dict = new Dictionary<string, object>();
+                    dict.Sel$
+                }
+            }")
+                .ShouldContain("Select({1:Func<TSource, TResult> selector})()$0");
+        }
+
+        [Test]
         public void Should_template_field()
         {
             SnippetFor(
