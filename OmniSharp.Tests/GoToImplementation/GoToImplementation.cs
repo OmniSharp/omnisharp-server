@@ -11,7 +11,7 @@ namespace OmniSharp.Tests.GotoImplementation
     public class GotoImplementationTests
     {
         [Test]
-        public void Should_find_usages_in_same_file() {
+        public void Should_find_implementations_in_same_file() {
             const string editorText =
 @"
 public class BaseClass {}
@@ -43,7 +43,7 @@ public class DerivedClassC : BaseClass {}
         }
 
         [Test]
-        public void Should_find_usages_in_all_files() {
+        public void Should_find_implementations_in_all_files() {
             const string editorText1 =
 @"
 public class BaseClass {}
@@ -78,7 +78,7 @@ public class DerivedClassB : BaseClass {}
         }
       
         [Test]
-        public void Should_find_usages_in_all_projects() {
+        public void Should_find_implementations_in_all_projects() {
             const string editorText1 =
 @"
 public class BaseClass {}
