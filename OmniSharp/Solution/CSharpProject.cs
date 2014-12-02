@@ -31,10 +31,11 @@ namespace OmniSharp.Solution
 
         IFileSystem _fileSystem;
 
-        public CSharpProject (ISolution solution, 
+        public CSharpProject(ISolution solution, 
                              Logger logger, 
                              string folderPath, 
-                             IFileSystem fileSystem) : base (fileSystem, logger)
+                             IFileSystem fileSystem)
+            : base(fileSystem, logger)
         {
             _fileSystem = fileSystem;
             _logger = logger;
@@ -49,7 +50,7 @@ namespace OmniSharp.Solution
             {
                 folder = _fileSystem.DirectoryInfo.FromDirectoryName(folderPath);
             }
-            catch(DirectoryNotFoundException)
+            catch (DirectoryNotFoundException)
             {
                 logger.Error("Directory not found - " + folderPath);
                 return;
@@ -69,7 +70,7 @@ namespace OmniSharp.Solution
 
             AddMsCorlib();
             AddReference(LoadAssembly(FindAssembly("System.Core")));
-            AddAllKpmPackages();
+
 
             var dlls = folder.GetFiles("*.dll", SearchOption.AllDirectories);
             foreach (var dll in dlls)
@@ -84,7 +85,8 @@ namespace OmniSharp.Solution
                              Logger logger, 
                              string title, 
                              string fileName, 
-                             Guid id) : base(fileSystem, logger)
+                             Guid id)
+            : base(fileSystem, logger)
         {
             _fileSystem = fileSystem;
             _logger = logger;
@@ -92,7 +94,7 @@ namespace OmniSharp.Solution
             Title = title;
             if (fileSystem is FileSystem)
             {
-                fileName = fileName.ForceNativePathSeparator ();
+                fileName = fileName.ForceNativePathSeparator();
             }
             FileName = fileName;
             ProjectId = id;
@@ -103,7 +105,7 @@ namespace OmniSharp.Solution
             {
                 project = new Microsoft.Build.Evaluation.Project(_fileSystem, fileName);
             }
-            catch(DirectoryNotFoundException)
+            catch (DirectoryNotFoundException)
             {
                 logger.Error("Directory not found - " + FileName);
                 return;
@@ -160,23 +162,6 @@ namespace OmniSharp.Solution
             AddProjectReferences(project);
         }
 
-        private void AddAllKpmPackages()
-        {
-            var userDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var folder = _fileSystem.DirectoryInfo.FromDirectoryName(Path.Combine(userDir, ".kpm", "packages"));
-
-            if(folder.Exists)
-            {
-                var dlls = folder.GetFiles("*.dll", SearchOption.AllDirectories);
-                foreach (var dll in dlls)
-                {
-                    _logger.Debug(dll.FullName);
-
-                    AddReference(dll.FullName);
-                }
-            }
-        }
-
         string GetAssemblyFileNameFromHintPath(Microsoft.Build.Evaluation.Project p, Microsoft.Build.Evaluation.ProjectItem item)
         {
             string assemblyFileName = null;
@@ -201,7 +186,7 @@ namespace OmniSharp.Solution
                 CheckForOverflow = GetBoolProperty(p, "CheckForOverflowUnderflow") ?? false
             };
             string[] defines = p.GetPropertyValue("DefineConstants")
-                .Split(new [] {';'}, StringSplitOptions.RemoveEmptyEntries);
+                .Split(new [] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string define in defines)
                 CompilerSettings.ConditionalSymbols.Add(define);
 
