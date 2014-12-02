@@ -50,7 +50,7 @@ namespace OmniSharp.Overrides {
                 return new IMember[0];
 
             var candidates = this.CurrentType
-                .GetMembers(m => m.IsVirtual && m.IsOverridable).ToArray();
+                .GetMembers(m => (m.IsVirtual || m.IsAbstract) && m.IsOverridable).ToArray();
 
             var overridden = this.CurrentType
                 .GetMembers(m => m.IsOverride && 
