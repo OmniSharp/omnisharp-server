@@ -18,6 +18,7 @@ namespace OmniSharp.Configuration
         public IEnumerable<PathReplacement> PathReplacements { get; set; }
         public IEnumerable<string> Defines { get; set; }
         public IEnumerable<string> IgnoredCodeIssues { get; set; }
+        public string MSBuildPath { get; set; }
         public TextEditorOptions TextEditorOptions { get; set; }
         public TestCommands TestCommands { get; set; }
         public string CSharpFormattingOptionsName { get; set; }
