@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using OmniSharp.Solution;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.Build
 {
