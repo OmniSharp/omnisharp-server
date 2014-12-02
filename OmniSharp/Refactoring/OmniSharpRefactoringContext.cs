@@ -74,6 +74,7 @@ namespace OmniSharp.Refactoring
                 refactoringContext = new OmniSharpRefactoringContext(doc, resolver, location);
             }
             refactoringContext.Services.AddService (typeof(NamingConventionService), new DefaultNameService ());
+            refactoringContext.Services.AddService (typeof(CodeGenerationService), new DefaultCodeGenerationService ());
             return refactoringContext;
         }
 
