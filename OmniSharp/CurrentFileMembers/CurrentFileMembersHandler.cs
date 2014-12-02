@@ -41,7 +41,7 @@ namespace OmniSharp.CurrentFileMembers
         /// </summary>
         public IEnumerable<QuickFix> GetCurrentFileMembersAsFlat(CurrentFileMembersRequest request)
         {
-            if (request.DoNotShowAccessModifiers)
+            if (!request.ShowAccessModifiers)
             {
                 return GetCurrentFileMembersAsFlatWithoutAccessModifiers(request);
             }
@@ -88,7 +88,7 @@ namespace OmniSharp.CurrentFileMembers
             foreach (var item in members)
             {
                 var ambience = new CSharpAmbience();
-                ambience.ConversionFlags = ICSharpCode.NRefactory.TypeSystem.ConversionFlags.ShowParameterList | ICSharpCode.NRefactory.TypeSystem.ConversionFlags.ShowParameterNames;
+                ambience.ConversionFlags = ConversionFlags.ShowParameterList | ConversionFlags.ShowParameterNames;
                 var memberTitle = ambience.ConvertSymbol(item.Resolve(context.ResolveContext));
 
                 var qf = new QuickFix()

@@ -4,6 +4,11 @@ namespace OmniSharp.CurrentFileMembers
 {
     public class CurrentFileMembersRequest : Request
     {
-        public bool DoNotShowAccessModifiers { get; set; }
+        public bool ShowAccessModifiers { get; set; }
+
+        public CurrentFileMembersRequest()
+        {
+            ShowAccessModifiers = true;
+        }
     }
 }
