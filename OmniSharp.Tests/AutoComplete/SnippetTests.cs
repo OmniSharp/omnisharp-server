@@ -1,4 +1,6 @@
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OmniSharp.Tests.AutoComplete
 {
@@ -17,6 +19,11 @@ namespace OmniSharp.Tests.AutoComplete
                 }
             }")
                 .ShouldContain("List<${1:T}>()$0");        
+        }
+
+        void SomeMethod<T>()
+        {
+            
         }
 
         [Test]
@@ -48,7 +55,7 @@ namespace OmniSharp.Tests.AutoComplete
                     dict.Sel$
                 }
             }")
-                .ShouldContain("Select({1:Func<TSource, TResult> selector})()$0");
+                .ShouldContain("Select(${1:Func<TSource, TResult> selector})$0");
         }
 
         [Test]
