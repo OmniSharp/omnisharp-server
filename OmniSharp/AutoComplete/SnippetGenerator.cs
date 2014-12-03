@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ICSharpCode.NRefactory.CSharp.Refactoring;
+using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.NRefactory.TypeSystem;
 using ICSharpCode.NRefactory.CSharp;
 
@@ -217,17 +218,71 @@ namespace OmniSharp.AutoComplete
                     break;
                 default:
                     writer.WriteIdentifier(Identifier.Create(member.Name));
-                    IEnumerable<AstNode> typeArgs = node.GetChildrenByRole(Roles.TypeParameter);
-                    if(member is IMethod)
+                    if (member is IMethod)
                     {
-                        var typeArguments = ((IMethod)member).TypeArguments;
-                        if(typeArguments.Any() && typeArguments.First().Name == "TSource")
-                        {
-                            typeArgs = typeArgs.Skip(1);
-                        }
+
+                        // var typeInference = new TypeInference(member.Compilation);
+                        var method = ((IMethod)member);
+                        var typeParams = method.TypeParameters;
+
+                        var methodParameterTypeArguments =
+                            from p in method.Parameters
+                            from type in ExpandIntersections(p.Type)
+                            from typeArgument in type.TypeArguments
+                            select typeArgument.Name;
+
+                        IEnumerable<AstNode> typeArgs = node.GetChildrenByRole(Roles.TypeParameter).Where(arg => !methodParameterTypeArguments.Contains(arg.Name));
+                        WriteTypeParameters(writer, typeArgs);
                     }
-                    WriteTypeParameters(writer, typeArgs);
                     break;
+            }
+        }
+
+        static IEnumerable<IType> ExpandIntersections(IType type)
+        {
+            IntersectionType it = type as IntersectionType;
+            if (it != null)
+            {
+                return it.Types.SelectMany(t => ExpandIntersections(t));
+            }
+            ParameterizedType pt = type as ParameterizedType;
+            if (pt != null)
+            {
+                IType[][] typeArguments = new IType[pt.TypeArguments.Count][];
+                for (int i = 0; i < typeArguments.Length; i++)
+                {
+                    typeArguments[i] = ExpandIntersections(pt.TypeArguments[i]).ToArray();
+                }
+                return AllCombinations(typeArguments).Select(ta => new ParameterizedType(pt.GetDefinition(), ta));
+            }
+            return new [] { type };
+        }
+        
+        /// <summary>
+        /// Performs the combinatorial explosion.
+        /// </summary>
+        static IEnumerable<IType[]> AllCombinations(IType[][] typeArguments)
+        {
+            int[] index = new int[typeArguments.Length];
+            index[typeArguments.Length - 1] = -1;
+            while (true)
+            {
+                int i;
+                for (i = index.Length - 1; i >= 0; i--)
+                {
+                    if (++index[i] == typeArguments[i].Length)
+                        index[i] = 0;
+                    else
+                        break;
+                }
+                if (i < 0)
+                    break;
+                IType[] r = new IType[typeArguments.Length];
+                for (i = 0; i < r.Length; i++)
+                {
+                    r[i] = typeArguments[i][index[i]];
+                }
+                yield return r;
             }
         }
 

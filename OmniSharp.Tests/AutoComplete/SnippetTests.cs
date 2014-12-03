@@ -1,4 +1,6 @@
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OmniSharp.Tests.AutoComplete
 {
@@ -19,6 +21,11 @@ namespace OmniSharp.Tests.AutoComplete
                 .ShouldContain("List<${1:T}>()$0");        
         }
 
+        void SomeMethod<T>()
+        {
+            
+        }
+
         [Test]
         public void Should_not_include_tsource_argument_type()
         {
@@ -33,6 +40,22 @@ namespace OmniSharp.Tests.AutoComplete
                 }
             }")
                 .ShouldContain("First()$0");        
+        }
+
+        [Test]
+        public void Should_not_include_tresult_argument_type()
+        {
+            SnippetFor(
+                @"using System.Collections.Generic;
+            using System.Linq;
+            public class Class1 {
+                public Class1()
+                {
+                    var dict = new Dictionary<string, object>();
+                    dict.Sel$
+                }
+            }")
+                .ShouldContain("Select(${1:Func<TSource, TResult> selector})$0");
         }
 
         [Test]
