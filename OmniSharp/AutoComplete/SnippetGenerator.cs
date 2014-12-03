@@ -220,8 +220,6 @@ namespace OmniSharp.AutoComplete
                     writer.WriteIdentifier(Identifier.Create(member.Name));
                     if (member is IMethod)
                     {
-
-                        // var typeInference = new TypeInference(member.Compilation);
                         var method = ((IMethod)member);
                         var typeParams = method.TypeParameters;
 

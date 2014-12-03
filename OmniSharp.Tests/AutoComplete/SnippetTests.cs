@@ -21,11 +21,6 @@ namespace OmniSharp.Tests.AutoComplete
                 .ShouldContain("List<${1:T}>()$0");        
         }
 
-        void SomeMethod<T>()
-        {
-            
-        }
-
         [Test]
         public void Should_not_include_tsource_argument_type()
         {
