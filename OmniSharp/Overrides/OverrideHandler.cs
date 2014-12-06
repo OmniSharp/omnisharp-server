@@ -99,6 +99,8 @@ namespace OmniSharp.Overrides {
             memberDeclaration.Modifiers |= Modifiers.Override;
             // Remove virtual flag
             memberDeclaration.Modifiers &= ~ Modifiers.Virtual;
+            // Remove abstract flag
+            memberDeclaration.Modifiers &= ~ Modifiers.Abstract;
 
             // The current type declaration, e.g. class, struct..
             var typeDeclaration = parsedContent.SyntaxTree.GetNodeAt

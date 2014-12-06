@@ -1,15 +1,20 @@
 ﻿using System.IO;
 using OmniSharp.Solution;
+using OmniSharp.Configuration;
 
 namespace OmniSharp.Build
 {
     public class BuildCommandBuilder
     {
         private readonly ISolution _solution;
+        private readonly OmniSharpConfiguration _config;
 
-        public BuildCommandBuilder(ISolution solution)
+        public BuildCommandBuilder(
+            ISolution solution,
+            OmniSharpConfiguration config)
         {
             _solution = solution;
+            _config = config;
         }
 
         public string Executable
@@ -18,8 +23,9 @@ namespace OmniSharp.Build
             {
                 return PlatformService.IsUnix
                     ? "xbuild"
-                    : Path.Combine(System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory(),
-                    "Msbuild.exe");
+                    : Path.Combine(
+                        _config.MSBuildPath ?? System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory(),
+                        "Msbuild.exe");
             }
         }
 

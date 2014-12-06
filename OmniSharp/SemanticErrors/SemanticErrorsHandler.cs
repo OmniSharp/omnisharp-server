@@ -31,7 +31,12 @@ namespace OmniSharp.SemanticErrors
             var project = _solution.ProjectContainingFile(request.FileName);
             project.UpdateFile(request.FileName, request.Buffer);
             var solutionSnapshot = new DefaultSolutionSnapshot(_solution.Projects.Select(i => i.ProjectContent));
-            var syntaxTree = new CSharpParser().Parse(request.Buffer, request.FileName);
+            SyntaxTree syntaxTree;
+            if(project.CompilerSettings!=null){
+            	syntaxTree = new CSharpParser(project.CompilerSettings).Parse(request.Buffer, request.FileName);
+            }else{
+            	syntaxTree = new CSharpParser().Parse(request.Buffer, request.FileName);
+            }
             var resolver = new CSharpAstResolver(solutionSnapshot.GetCompilation(project.ProjectContent), syntaxTree);
             var navigator = new SemanticErrorsNavigator();
             resolver.ApplyNavigator(navigator);
