@@ -221,6 +221,7 @@
     <Compile Include="SemanticErrors\SemanticErrorsResponse.cs" />
     <Compile Include="Solution\CSharpFile.cs" />
     <Compile Include="Solution\CSharpProject.cs" />
+    <Compile Include="Solution\AspNet5Project.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="AutoComplete\MyCompletionCategory.cs" />
     <Compile Include="Options.cs" />

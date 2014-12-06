@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
+using System.IO;
 using System.Linq;
 using DesignTimeHostDemo;
 using System.Text.RegularExpressions;
@@ -10,7 +11,7 @@ namespace OmniSharp.Solution
     public class CSharpFolder : ISolution
     {
         Logger _logger;
-        CSharpProject _project;
+        AspNet5Project _project;
         IFileSystem _fileSystem;
 
         public CSharpFolder(string folder, Logger logger, IFileSystem fileSystem)
@@ -27,17 +28,36 @@ namespace OmniSharp.Solution
         public void LoadSolution()
         {
             Loaded = false;
-            _project = new CSharpProject(this, _logger, FileName, _fileSystem);
+            _project = new AspNet5Project(this, _logger, FileName, _fileSystem);
             Loaded = true;
+
             var dth = new DesignTimeHostDemo.Program();
-            var paths = Environment.GetEnvironmentVariable("PATH").Split(':');
-            var kreBinPath = paths.FirstOrDefault(path => path.Contains ("packages") && path.Contains ("KRE"));
-//            var activeKreOutput = ShellWrapper.GetShellOuput("kvm", "list | grep default");
-//            var components = Regex.Split(activeKreOutput, @"\s{1,}");
-            //*    1.0.0-beta2-10709    Mono    ~/.kre/packages      default
-            // /Users/jason/.kre/packages/KRE-Mono.1.0.0-beta2-10709/bin
-            dth.Go(kreBinPath.Remove(kreBinPath.Length - 3), FileName);
+            var kreHome = Path.Combine(Environment.GetEnvironmentVariable("HOME"), ".kre");
+
+            _logger.Debug("KRE Home = " + kreHome);
+
+            var defaultAlias = Path.Combine(kreHome, "alias", "default.alias");
+
+            _logger.Debug("Using default alias = " + defaultAlias);
+
+            var version = File.ReadAllText(defaultAlias).Trim();
+
+            _logger.Debug("Using KRE version = " + version);
+
+            // TODO: Make this work on windows
+
+            var krePath = Path.Combine(kreHome, "packages", version);
+
+            _logger.Debug("Using KRE at = " + krePath);
+
+            dth.Go(krePath, FileName, val => _logger.Debug(val));
             dth.OnUpdateFileReference += OnUpdateFileReference;
+            dth.OnUpdateSourceFileReference += OnUpdateSourceFileReference;
+        }
+
+        void OnUpdateSourceFileReference(IEnumerable<string> files)
+        {
+            _project.AddFiles(files);
         }
 
         void OnUpdateFileReference(object sender, FileReferenceEventArgs e)
@@ -76,5 +96,5 @@ namespace OmniSharp.Solution
         }
 
     }
-    
+
 }
