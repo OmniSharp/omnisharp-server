@@ -52,25 +52,6 @@ namespace OmniSharp.Tests.ProjectManipulation.AddReference
                         </Reference>
                     </ItemGroup>
                 </Project>");
-
-//            var project = new Project(_fs, new Logger (Verbosity.Quiet));
-//            //project..AddFile("some content", @"c:\test\one\test.cs");
-//            return project;
-//            var project = new CSharpProject("fakeone", @"c:\test\one\fake1.csproj", Guid.NewGuid())
-//            {
-//                Title = "Project One",
-//                XmlRepresentation = XDocument.Parse(@"
-//                <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
-//                    <ItemGroup>
-//                        <Compile Include=""Test.cs""/>
-//                    </ItemGroup>
-//                    <ItemGroup>
-//                        <Reference Include=""System.Web.Mvc"" />
-//                    </ItemGroup>
-//                </Project>")
-//            };
-//            project.AddFile("some content", @"c:\test\one\test.cs");
-//            return project;
         }
     }
 }
