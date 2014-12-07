@@ -113,7 +113,7 @@ namespace OmniSharp.Solution
         public void LoadProject(string title, string location, string id)
         {
             _logger.Debug("Loading project - {0}, {1}, {2}", title, location, id);
-            Projects.Add(new CSharpProject(this, _fileSystem, _logger, title, location, new Guid(id)));
+            Projects.Add(new MSBuildProject(this, _fileSystem, _logger, title, location, new Guid(id)));
         }
 
         public CSharpFile GetFile(string filename)

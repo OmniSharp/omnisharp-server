@@ -4,7 +4,6 @@ using System.IO.Abstractions;
 using System.IO;
 using System.Linq;
 using DesignTimeHostDemo;
-using System.Text.RegularExpressions;
 
 namespace OmniSharp.Solution
 {
@@ -94,7 +93,5 @@ namespace OmniSharp.Solution
                 return new List<IProject> { _project };
             }
         }
-
     }
-
 }

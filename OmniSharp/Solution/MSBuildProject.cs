@@ -10,9 +10,8 @@ using OmniSharp.Configuration;
 
 namespace OmniSharp.Solution
 {
-    public class CSharpProject : Project
+    public class MSBuildProject : Project
     {
-
         private readonly ISolution _solution;
 
         public string AssemblyName { get; set; }
@@ -21,55 +20,55 @@ namespace OmniSharp.Solution
 
         IFileSystem _fileSystem;
 
-        public CSharpProject(ISolution solution, 
-                             Logger logger, 
-                             string folderPath, 
-                             IFileSystem fileSystem)
-            : base(fileSystem, logger)
-        {
-            _fileSystem = fileSystem;
-            _logger = logger;
-            _solution = solution;
-
-            Files = new List<CSharpFile>();
-            References = new List<IAssemblyReference>();
-
-            DirectoryInfoBase folder;
-
-            try
-            {
-                folder = _fileSystem.DirectoryInfo.FromDirectoryName(folderPath);
-            }
-            catch (DirectoryNotFoundException)
-            {
-                logger.Error("Directory not found - " + folderPath);
-                return;
-            }
-
-            var files = folder.GetFiles("*.cs", SearchOption.AllDirectories);
-            foreach (var file in files)
-            {
-                _logger.Debug("Loading " + file.FullName);
-                Files.Add(new CSharpFile(this, file.FullName));
-            }
-
-            this.ProjectContent = new CSharpProjectContent()
-                .SetAssemblyName(AssemblyName)
-                .AddAssemblyReferences(References)
-                .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
-
-            AddMsCorlib();
-            AddReference(LoadAssembly(FindAssembly("System.Core")));
-
-            var dlls = folder.GetFiles("*.dll", SearchOption.AllDirectories);
-            foreach (var dll in dlls)
-            {
-                _logger.Debug("Loading assembly " + dll.FullName);
-                AddReference(dll.FullName);
-            }
-        }
-
-        public CSharpProject(ISolution solution,
+//        public MSBuildProject(ISolution solution, 
+//                             Logger logger, 
+//                             string folderPath, 
+//                             IFileSystem fileSystem)
+//            : base(fileSystem, logger)
+//        {
+//            _fileSystem = fileSystem;
+//            _logger = logger;
+//            _solution = solution;
+//
+//            Files = new List<CSharpFile>();
+//            References = new List<IAssemblyReference>();
+//
+//            DirectoryInfoBase folder;
+//
+//            try
+//            {
+//                folder = _fileSystem.DirectoryInfo.FromDirectoryName(folderPath);
+//            }
+//            catch (DirectoryNotFoundException)
+//            {
+//                logger.Error("Directory not found - " + folderPath);
+//                return;
+//            }
+//
+//            var files = folder.GetFiles("*.cs", SearchOption.AllDirectories);
+//            foreach (var file in files)
+//            {
+//                _logger.Debug("Loading " + file.FullName);
+//                Files.Add(new CSharpFile(this, file.FullName));
+//            }
+//
+//            this.ProjectContent = new CSharpProjectContent()
+//                .SetAssemblyName(AssemblyName)
+//                .AddAssemblyReferences(References)
+//                .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
+//
+//            AddMsCorlib();
+//            AddReference(LoadAssembly(FindAssembly("System.Core")));
+//
+//            var dlls = folder.GetFiles("*.dll", SearchOption.AllDirectories);
+//            foreach (var dll in dlls)
+//            {
+//                _logger.Debug("Loading assembly " + dll.FullName);
+//                AddReference(dll.FullName);
+//            }
+//        }
+//
+        public MSBuildProject(ISolution solution,
                              IFileSystem fileSystem,
                              Logger logger, 
                              string title, 
@@ -119,7 +118,7 @@ namespace OmniSharp.Solution
                 var assemblyFileName = GetAssemblyFileNameFromHintPath(project, item);
                 //If there isn't a path hint or it doesn't exist, try searching
                 if (assemblyFileName == null)
-                    assemblyFileName = FindAssembly(item.EvaluatedInclude);
+                    assemblyFileName = GetAssemblyLocation(item.EvaluatedInclude);
 
                 //If it isn't in the search paths, try the GAC
                 if (assemblyFileName == null && PlatformService.IsWindows)
@@ -144,8 +143,8 @@ namespace OmniSharp.Solution
                 else
                     _logger.Error("Could not find referenced assembly " + item.EvaluatedInclude);
             }
-            if (!hasSystemCore && FindAssembly("System.Core") != null)
-                AddReference(LoadAssembly(FindAssembly("System.Core")));
+            if (!hasSystemCore && GetAssemblyLocation("System.Core") != null)
+                AddReference(LoadAssembly(GetAssemblyLocation("System.Core")));
 
 
             AddProjectReferences(project);
@@ -186,7 +185,7 @@ namespace OmniSharp.Solution
 
         void AddMsCorlib()
         {
-            string mscorlib = FindAssembly("mscorlib");
+            string mscorlib = GetAssemblyLocation("mscorlib");
             if (mscorlib != null)
                 AddReference(LoadAssembly(mscorlib));
             else

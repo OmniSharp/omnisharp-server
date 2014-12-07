@@ -102,18 +102,18 @@ namespace OmniSharp.Solution
             _fileSystem.File.WriteAllText (FileName, project.ToString ());
         }
 
-        public string FindAssembly(string evaluatedInclude)
+        public string GetAssemblyLocation(string assemblyName)
         {
-            if (evaluatedInclude.IndexOf (',') >= 0)
-                evaluatedInclude = evaluatedInclude.Substring (0, evaluatedInclude.IndexOf (','));
+            if (assemblyName.IndexOf (',') >= 0)
+                assemblyName = assemblyName.Substring (0, assemblyName.IndexOf (','));
 
-            string directAssemblyFile = (evaluatedInclude + ".dll").ForcePathSeparator(Path.DirectorySeparatorChar);
+            string directAssemblyFile = (assemblyName + ".dll").ForcePathSeparator(Path.DirectorySeparatorChar);
             if (_fileSystem.File.Exists (directAssemblyFile))
                 return directAssemblyFile;
 
             foreach (string searchPath in AssemblySearch.Paths)
             {
-                string assemblyFile = _fileSystem.Path.Combine (searchPath, evaluatedInclude + ".dll");
+                string assemblyFile = _fileSystem.Path.Combine (searchPath, assemblyName + ".dll");
                 if (_fileSystem.File.Exists (assemblyFile))
                     return assemblyFile;
             }

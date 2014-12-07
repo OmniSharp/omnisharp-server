@@ -31,7 +31,7 @@ namespace OmniSharp.ProjectManipulation.AddReference
                     projectXml.Element(MsBuildNameSpace + "Project").Add(projectItemGroup);
                 }
 
-                var assemblyPath = project.FindAssembly (reference);
+                var assemblyPath = project.GetAssemblyLocation(reference);
                 if (assemblyPath != null)
                 {
                     project.AddReference (assemblyPath);

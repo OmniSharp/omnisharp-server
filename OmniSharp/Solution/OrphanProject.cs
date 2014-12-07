@@ -21,7 +21,7 @@ namespace OmniSharp.Solution
 
             References = new List<IAssemblyReference>();
             FileName = "OrphanProject";
-            string mscorlib = FindAssembly("mscorlib");
+            string mscorlib = GetAssemblyLocation("mscorlib");
             Console.WriteLine(mscorlib);
             ProjectContent = new CSharpProjectContent()
                 .SetAssemblyName("OrphanProject")
