@@ -90,6 +90,7 @@ namespace OmniSharp.Solution
                                 // ignore folders
                             break;
                         case "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}": // C# project
+                        case "{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}": // k project
                             LoadProject(title, location, guid);
                             break;
                         default:
