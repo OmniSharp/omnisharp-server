@@ -172,18 +172,6 @@ namespace DesignTimeHostDemo
                     }
                 };
             });
-
-//            Console.WriteLine("Process Q to exit");
-//
-//            while (true)
-//            {
-//                var ki = Console.ReadKey(true);
-//
-//                if (ki.Key == ConsoleKey.Q)
-//                {
-//                    break;
-//                }
-//            }
         }
 
         private static void StartRuntime(string runtimePath,
@@ -222,7 +210,7 @@ namespace DesignTimeHostDemo
                 }
             };
 
-            // Wait a little bit for it to conncet before firing the callback
+            // Wait a little bit for it to connect before firing the callback
             Thread.Sleep(1000);
 
             if (kreProcess.HasExited)
