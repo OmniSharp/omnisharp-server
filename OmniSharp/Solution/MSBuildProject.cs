@@ -20,54 +20,6 @@ namespace OmniSharp.Solution
 
         IFileSystem _fileSystem;
 
-//        public MSBuildProject(ISolution solution, 
-//                             Logger logger, 
-//                             string folderPath, 
-//                             IFileSystem fileSystem)
-//            : base(fileSystem, logger)
-//        {
-//            _fileSystem = fileSystem;
-//            _logger = logger;
-//            _solution = solution;
-//
-//            Files = new List<CSharpFile>();
-//            References = new List<IAssemblyReference>();
-//
-//            DirectoryInfoBase folder;
-//
-//            try
-//            {
-//                folder = _fileSystem.DirectoryInfo.FromDirectoryName(folderPath);
-//            }
-//            catch (DirectoryNotFoundException)
-//            {
-//                logger.Error("Directory not found - " + folderPath);
-//                return;
-//            }
-//
-//            var files = folder.GetFiles("*.cs", SearchOption.AllDirectories);
-//            foreach (var file in files)
-//            {
-//                _logger.Debug("Loading " + file.FullName);
-//                Files.Add(new CSharpFile(this, file.FullName));
-//            }
-//
-//            this.ProjectContent = new CSharpProjectContent()
-//                .SetAssemblyName(AssemblyName)
-//                .AddAssemblyReferences(References)
-//                .AddOrUpdateFiles(Files.Select(f => f.ParsedFile));
-//
-//            AddMsCorlib();
-//            AddReference(LoadAssembly(FindAssembly("System.Core")));
-//
-//            var dlls = folder.GetFiles("*.dll", SearchOption.AllDirectories);
-//            foreach (var dll in dlls)
-//            {
-//                _logger.Debug("Loading assembly " + dll.FullName);
-//                AddReference(dll.FullName);
-//            }
-//        }
-//
         public MSBuildProject(ISolution solution,
                              IFileSystem fileSystem,
                              Logger logger, 
