@@ -7,7 +7,7 @@ namespace OmniSharp.ProjectManipulation.AddToProject
     {
         public AddToProjectModule(AddToProjectHandler handler)
         {
-            Post["/addtoproject"] = x =>
+            Post["AddToProject", "/addtoproject"] = x =>
                 {
                     var req = this.Bind<AddToProjectRequest>();
                     handler.AddToProject(req);

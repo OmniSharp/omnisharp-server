@@ -7,7 +7,7 @@ namespace OmniSharp.ProjectManipulation.RemoveFromProject
     {
         public RemoveFromProjectModule(RemoveFromProjectHandler handler)
         {
-            Post["/removefromproject"] = x =>
+            Post["RemoveFromProject", "/removefromproject"] = x =>
                 {
                     var req = this.Bind<RemoveFromProjectRequest>();
                     handler.RemoveFromProject(req);

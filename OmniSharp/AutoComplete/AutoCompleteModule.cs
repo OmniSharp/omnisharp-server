@@ -8,7 +8,7 @@ namespace OmniSharp.AutoComplete
     {
         public AutoCompleteModule(AutoCompleteHandler autoCompleteHandler)
         {
-            Post["/autocomplete"] = x =>
+            Post["AutoComplete", "/autocomplete"] = x =>
                 {
                     var req = this.Bind<AutoCompleteRequest>();
                     var completions = autoCompleteHandler.CreateProvider(req);
@@ -16,6 +16,6 @@ namespace OmniSharp.AutoComplete
                 };
         }
 
-        
+
     }
 }

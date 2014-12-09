@@ -8,7 +8,7 @@ namespace OmniSharp.SemanticErrors
     {
         public SemanticErrorsModule(SemanticErrorsHandler semanticErrorsHandler)
         {
-            Post["/semanticerrors"] = x =>
+            Post["SemanticErrors", "/semanticerrors"] = x =>
                 {
                     var req = this.Bind<Request>();
                     var res = semanticErrorsHandler.FindSemanticErrors(req);

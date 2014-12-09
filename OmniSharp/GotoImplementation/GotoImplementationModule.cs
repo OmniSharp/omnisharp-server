@@ -9,7 +9,7 @@ namespace OmniSharp.GotoImplementation
     {
         public GotoImplementationModule(GotoImplementationHandler handler)
         {
-            Post["/findimplementations"] = x =>
+            Post["FindImplementations", "/findimplementations"] = x =>
                 {
                     var req = this.Bind<GotoImplementationRequest>();
                     var res =

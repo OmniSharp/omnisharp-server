@@ -7,7 +7,7 @@ namespace OmniSharp.TypeLookup
     {
         public TypeLookupModule(TypeLookupHandler typeLookupHandler)
         {
-            Post["/typelookup"] = x =>
+            Post["TypeLookup", "/typelookup"] = x =>
                 {
                     var req = this.Bind<TypeLookupRequest>();
                     var res = typeLookupHandler.GetTypeLookupResponse(req);
