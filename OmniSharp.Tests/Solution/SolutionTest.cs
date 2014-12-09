@@ -27,7 +27,7 @@ namespace OmniSharp.Tests
             var fs = new MockFileSystem();
             fs.File.WriteAllText("Unity.sln", "");
             fs.File.WriteAllText("Unity-csharp.sln", "");
-            var solution = new SolutionPicker(fs).LoadSolution(@".", new Logger(Verbosity.Verbose));
+            var solution = new SolutionPicker(fs, new Logger(Verbosity.Verbose)).LoadSolution(@".");
             fs.FileInfo.FromFileName (solution.FileName).Name.ShouldEqual("Unity-csharp.sln");
         }
     }

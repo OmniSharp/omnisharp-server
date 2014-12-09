@@ -59,9 +59,12 @@ namespace OmniSharp.Solution
             _project.AddFiles(files);
         }
 
-        void OnUpdateFileReference(object sender, FileReferenceEventArgs e)
+        void OnUpdateFileReference(IEnumerable<string> references)
         {
-            _project.AddReference(e.Reference);
+            foreach(var reference in references)
+            {
+                _project.AddReference(reference);
+            }
         }
 
         public CSharpFile GetFile(string filename)

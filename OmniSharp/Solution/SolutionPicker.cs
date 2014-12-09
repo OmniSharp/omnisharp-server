@@ -8,12 +8,15 @@ namespace OmniSharp
     {
         readonly IFileSystem _fileSystem;
 
-        public SolutionPicker(IFileSystem fileSystem)
+        Logger _logger;
+
+        public SolutionPicker(IFileSystem fileSystem, Logger logger)
         {
+            _logger = logger;
             _fileSystem = fileSystem;
         }
 
-        public ISolution LoadSolution(string solutionPath, Logger logger)
+        public ISolution LoadSolution(string solutionPath)
         {
             solutionPath = solutionPath.ApplyPathReplacementsForServer ();
             if (_fileSystem.Directory.Exists (solutionPath))
@@ -21,21 +24,23 @@ namespace OmniSharp
                 var unitySolutions = GetUnitySolutions(solutionPath);
                 if (unitySolutions.Length == 1)
                 {
-                    solutionPath = unitySolutions[0];
-                    logger.Debug ("Found solution file - " + solutionPath);
-                    return new CSharpSolution (_fileSystem, solutionPath, logger);
+                    return GetSolution(unitySolutions[0]);
                 }
 
                 var slnFiles = _fileSystem.Directory.GetFiles (solutionPath, "*.sln");
                 if (slnFiles.Length == 1)
                 {
-                    solutionPath = slnFiles [0];
-                    logger.Debug ("Found solution file - " + solutionPath);
-                    return new CSharpSolution (_fileSystem, solutionPath, logger);
+                    return GetSolution(slnFiles[0]);
                 }
-                return new CSharpFolder (solutionPath, logger, _fileSystem);
+                return new CSharpFolder (solutionPath, _logger, _fileSystem);
             }
-            return new CSharpSolution (_fileSystem, solutionPath, logger);
+            return new CSharpSolution (_fileSystem, solutionPath, _logger);
+        }
+
+        CSharpSolution GetSolution(string solutionPath)
+        {
+            _logger.Debug ("Found solution file - " + solutionPath);
+            return new CSharpSolution (_fileSystem, solutionPath, _logger);
         }
 
         string[] GetUnitySolutions(string solutionPath)

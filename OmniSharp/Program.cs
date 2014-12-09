@@ -97,7 +97,7 @@ namespace OmniSharp
                 Configuration.ConfigurationLoader.Load(
                         configLocation: configLocation, clientMode: clientPathMode);
 
-                var solution = new SolutionPicker(new FileSystem()).LoadSolution(solutionPath, logger);
+                var solution = new SolutionPicker(new FileSystem(), logger).LoadSolution(solutionPath);
                 logger.Debug("Using solution path " + solutionPath);
                 logger.Debug("Using config file " + configLocation);
 

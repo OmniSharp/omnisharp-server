@@ -12,10 +12,10 @@ namespace OmniSharp.Solution
 
         private readonly Logger _logger;
 
-        public AspNet5Project (ISolution solution, 
-                               Logger logger, 
-                               string folderPath, 
-                               IFileSystem fileSystem) : base (fileSystem, logger)
+        public AspNet5Project(ISolution solution, 
+                              Logger logger, 
+                              string folderPath, 
+                              IFileSystem fileSystem) : base (fileSystem, logger)
         {
             _logger = logger;
 
