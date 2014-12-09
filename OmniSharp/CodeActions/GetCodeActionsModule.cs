@@ -8,7 +8,7 @@ namespace OmniSharp.CodeActions
     {
         public GetCodeActionsModule(GetCodeActionsHandler getCodeActionsHandler)
         {
-            Post["/getcodeactions"] = x =>
+            Post["GetCodeActions", "/getcodeactions"] = x =>
                 {
                     var req = this.Bind<CodeActionRequest>();
                     var res = getCodeActionsHandler.GetCodeActions(req);

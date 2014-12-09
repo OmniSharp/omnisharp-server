@@ -12,7 +12,7 @@ namespace OmniSharp.CurrentFileMembers {
     /// </summary>
     public class CurrentFileTopLevelTypesModule : NancyModule {
         public CurrentFileTopLevelTypesModule(CurrentFileMembersHandler handler) {
-            Post["/currentfiletopleveltypes"] = x => {
+            Post["CurrentFileTopLevelTypes", "/currentfiletopleveltypes"] = x => {
                 var req = this.Bind<CurrentFileMembersRequest>();
                 var members = handler.GetCurrentFileMembersAsTree(req);
 

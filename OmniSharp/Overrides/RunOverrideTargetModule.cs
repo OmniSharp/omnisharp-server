@@ -7,7 +7,7 @@ namespace OmniSharp.Overrides {
         public RunOverrideTargetModule
             (OverrideHandler overrideHandler) {
 
-            Post["/runoverridetarget"] = x =>
+            Post["RunOverrideTarget", "/runoverridetarget"] = x =>
                 {
                     var req = this.Bind<RunOverrideTargetRequest>();
                     var response = overrideHandler.RunOverrideTarget(req);

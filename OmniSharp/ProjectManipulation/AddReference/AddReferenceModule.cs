@@ -7,7 +7,7 @@ namespace OmniSharp.ProjectManipulation.AddReference
     {
         public AddReferenceModule(AddReferenceHandler handler)
         {
-            Post["/addreference"] = x =>
+            Post["AddReference", "/addreference"] = x =>
                 {
                     var req = this.Bind<AddReferenceRequest>();
                     var res = handler.AddReference(req);

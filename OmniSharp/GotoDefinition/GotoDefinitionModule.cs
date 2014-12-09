@@ -7,7 +7,7 @@ namespace OmniSharp.GotoDefinition
     {
         public GotoDefinitionModule(GotoDefinitionHandler gotoDefinitionHandler)
         {
-            Post["/gotodefinition"] = x =>
+            Post["GoToDefinition", "/gotodefinition"] = x =>
                 {
                     var req = this.Bind<GotoDefinitionRequest>();
                     var res = gotoDefinitionHandler.GetGotoDefinitionResponse(req);

@@ -7,7 +7,7 @@ namespace OmniSharp.CheckReadyStatus
     {
         public CheckReadyStatusModule(ISolution solution)
         {
-            Post["/checkreadystatus"] = x =>
+            Post["CheckReadyStatus", "/checkreadystatus"] = x =>
                 {
                     return Response.AsJson(solution.Loaded);
                 };

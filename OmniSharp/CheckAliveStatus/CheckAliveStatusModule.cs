@@ -6,7 +6,7 @@ namespace OmniSharp.CheckAliveStatus
     {
         public CheckAliveStatusModule()
         {
-            Post["/checkalivestatus"] = x =>
+            Post["CheckAliveStatus", "/checkalivestatus"] = x =>
                 {
                     return Response.AsJson(true);
                 };

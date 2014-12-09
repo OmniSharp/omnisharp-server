@@ -7,7 +7,7 @@ namespace OmniSharp.ReloadSolution
     {
         public ReloadSolutionModule(ISolution solution)
         {
-            Post["/reloadsolution"] = x =>
+            Post["ReloadSolution", "/reloadsolution"] = x =>
                 {
                     solution.Reload();
                     var config = Configuration.ConfigurationLoader.Config;
