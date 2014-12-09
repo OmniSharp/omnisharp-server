@@ -22,6 +22,7 @@ namespace OmniSharp
         {
             solutionPath = solutionPath.ApplyPathReplacementsForServer();
             var solution = PickSolution(solutionPath);
+            solution.LoadSolution();
             AddAspNet5Projects(solutionPath, solution);
             return solution;
         }
@@ -36,6 +37,8 @@ namespace OmniSharp
                    
                 foreach (var projectFile in aspNet5Projects)
                 {
+                    _logger.Debug("Loading ASPNet 5 project - " + projectFile);
+                    dth.RegisterProject(projectFile);
                     string projectPath = Path.GetDirectoryName(projectFile).TrimEnd(Path.DirectorySeparatorChar);
                     solution.Projects.Add(new AspNet5Project(solution, _logger, projectPath, _fileSystem));
                 }

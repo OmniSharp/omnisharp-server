@@ -117,7 +117,7 @@ namespace OmniSharp
 
                 nancyHost.Start();
                 logger.Debug("OmniSharp server is listening");
-                solution.LoadSolution();
+                // solution.LoadSolution();
                 logger.Debug("Solution has finished loading");
                 while (!solution.Terminated)
                 {

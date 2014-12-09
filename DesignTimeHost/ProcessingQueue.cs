@@ -12,7 +12,7 @@ namespace DesignTimeHostDemo
 {
     public class ProcessingQueue
     {
-        private readonly List<Message> _queue = new List<Message>();
+        // private readonly List<Message> _queue = new List<Message>();
         private readonly BinaryReader _reader;
         private readonly BinaryWriter _writer;
 

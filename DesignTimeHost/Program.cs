@@ -18,34 +18,24 @@ namespace DesignTimeHostDemo
         public event Action<IEnumerable<string>> OnUpdateSourceFileReference;
         public event Action<IEnumerable<string>> OnUpdateFileReference;
 
+        string hostId = Guid.NewGuid().ToString();
+        // this can be k10
+        string activeTargetFramework = "net45";
+        int contextId = 0;
+        Dictionary<int, string> mapping = new Dictionary<int, string>();
+
+        Dictionary<string, int> projects = new Dictionary<string, int>();
+
+        ProcessingQueue queue;
+
         public void Go(string applicationRoot, Action<string> log)
         {
-            var kreHome = Path.Combine(Environment.GetEnvironmentVariable("HOME"), ".kre");
+            var runtimePath = GetRuntimePath(log);
 
-            log("KRE Home = " + kreHome);
-
-            var defaultAlias = Path.Combine(kreHome, "alias", "default.alias");
-
-            log("Using default alias = " + defaultAlias);
-
-            var version = File.ReadAllText(defaultAlias).Trim();
-
-            log("Using KRE version = " + version);
-
-            // TODO: Make this work on windows
-
-            var runtimePath = Path.Combine(kreHome, "packages", version);
-
-            log("Using KRE at = " + runtimePath);
-
-            var hostId = Guid.NewGuid().ToString();
             var port = 1334;
 
             // Show runtime output
             var showRuntimeOutput = true;
-
-            // this can be k10
-            var activeTargetFramework = "net45";
 
             StartRuntime(runtimePath, applicationRoot, hostId, port, showRuntimeOutput, () =>
                 {
@@ -56,8 +46,7 @@ namespace DesignTimeHostDemo
 
                     log("Connected to design time host");
 
-                    var mapping = new Dictionary<int, string>();
-                    var queue = new ProcessingQueue(networkStream);
+                    queue = new ProcessingQueue(networkStream);
 
                     queue.OnReceive += m =>
                     {
@@ -111,54 +100,11 @@ namespace DesignTimeHostDemo
 
                     var solutionPath = applicationRoot;
                     var watcher = new FileWatcher(solutionPath);
-                    var projects = new Dictionary<string, int>();
-                    int contextId = 0;
-
-                    foreach (var projectFile in Directory.EnumerateFiles(solutionPath, "project.json", SearchOption.AllDirectories))
-                    {
-                        string projectPath = Path.GetDirectoryName(projectFile).TrimEnd(Path.DirectorySeparatorChar);
-
-                        // Send an InitializeMessage for each project
-                        var initializeMessage = new InitializeMessage
-                        {
-                            ProjectFolder = projectPath,
-                            // ??? 
-                            Configuration = activeTargetFramework
-                        };
-
-                        // Create a unique id for this project
-                        int projectContextId = contextId++;
-
-                        // Create a mapping from path to contextid and back
-                        projects[projectPath] = projectContextId;
-                        mapping[projectContextId] = projectPath;
-
-                        // Initialize this project
-                        queue.Post(new Message
-                            {
-                                ContextId = projectContextId,
-                                MessageType = "Initialize",
-                                Payload = JToken.FromObject(initializeMessage),
-                                HostId = hostId
-                            });
-
-                        // Watch the project.json file
-                        watcher.WatchFile(Path.Combine(projectPath, "project.json"));
-                        watcher.WatchDirectory(projectPath, ".cs");
-
-                        // Watch all directories for cs files
-
-                        foreach (var cs in Directory.GetFiles(projectPath, "*.cs", SearchOption.AllDirectories))
-                        {
-                            watcher.WatchFile(cs);
-                        }
-
-                        foreach (var d in Directory.GetDirectories(projectPath, "*.*", SearchOption.AllDirectories))
-                        {
-                            watcher.WatchDirectory(d, ".cs");
-                        }
-                    }
-
+//
+//                    foreach (var projectFile in Directory.EnumerateFiles(solutionPath, "project.json", SearchOption.AllDirectories))
+//                    {
+//                    }
+//
                     // When there's a file change
                     watcher.OnChanged += changedPath =>
                     {
@@ -177,6 +123,66 @@ namespace DesignTimeHostDemo
                         }
                     };
                 });
+        }
+
+        string GetRuntimePath(Action<string> log)
+        {
+            var kreHome = Path.Combine(Environment.GetEnvironmentVariable("HOME"), ".kre");
+            log("KRE Home = " + kreHome);
+            var defaultAlias = Path.Combine(kreHome, "alias", "default.alias");
+            log("Using default alias = " + defaultAlias);
+            var version = File.ReadAllText(defaultAlias).Trim();
+            log("Using KRE version = " + version);
+            // TODO: Make this work on windows
+            var runtimePath = Path.Combine(kreHome, "packages", version);
+            log("Using KRE at = " + runtimePath);
+            return runtimePath;
+        }
+
+        public void RegisterProject(string projectFile)
+        {
+            string projectPath = Path.GetDirectoryName(projectFile).TrimEnd(Path.DirectorySeparatorChar);
+
+            // Send an InitializeMessage for each project
+            var initializeMessage = new InitializeMessage
+            {
+                ProjectFolder = projectPath,
+                // ??? 
+                Configuration = activeTargetFramework
+            };
+
+            // Create a unique id for this project
+            int projectContextId = contextId++;
+
+            // Create a mapping from path to contextid and back
+            projects[projectPath] = projectContextId;
+            mapping[projectContextId] = projectPath;
+
+            // Initialize this project
+            queue.Post(new Message
+                {
+                    ContextId = projectContextId,
+                    MessageType = "Initialize",
+                    Payload = JToken.FromObject(initializeMessage),
+                    HostId = hostId
+                });
+
+            // Watch the project.json file
+            // watcher.WatchFile(Path.Combine(projectPath, "project.json"));
+            // watcher.WatchDirectory(projectPath, ".cs");
+
+            // // Watch all directories for cs files
+
+            // foreach (var cs in Directory.GetFiles(projectPath, "*.cs", SearchOption.AllDirectories))
+            // {
+            //     watcher.WatchFile(cs);
+            // }
+
+            // foreach (var d in Directory.GetDirectories(projectPath, "*.*", SearchOption.AllDirectories))
+            // {
+            //     watcher.WatchDirectory(d, ".cs");
+            // }
+                    
         }
 
         private static void StartRuntime(string runtimePath,
