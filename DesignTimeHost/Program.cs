@@ -18,8 +18,26 @@ namespace DesignTimeHostDemo
         public event Action<IEnumerable<string>> OnUpdateSourceFileReference;
         public event Action<IEnumerable<string>> OnUpdateFileReference;
 
-        public void Go(string runtimePath, string applicationRoot, Action<string> log)
+        public void Go(string applicationRoot, Action<string> log)
         {
+            var kreHome = Path.Combine(Environment.GetEnvironmentVariable("HOME"), ".kre");
+
+            log("KRE Home = " + kreHome);
+
+            var defaultAlias = Path.Combine(kreHome, "alias", "default.alias");
+
+            log("Using default alias = " + defaultAlias);
+
+            var version = File.ReadAllText(defaultAlias).Trim();
+
+            log("Using KRE version = " + version);
+
+            // TODO: Make this work on windows
+
+            var runtimePath = Path.Combine(kreHome, "packages", version);
+
+            log("Using KRE at = " + runtimePath);
+
             var hostId = Guid.NewGuid().ToString();
             var port = 1334;
 

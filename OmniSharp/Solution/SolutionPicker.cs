@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using OmniSharp.Solution;
 using System.IO.Abstractions;
+using System.IO;
 
 namespace OmniSharp
 {
@@ -19,8 +21,25 @@ namespace OmniSharp
         public ISolution LoadSolution(string solutionPath)
         {
             solutionPath = solutionPath.ApplyPathReplacementsForServer();
+            var solution = PickSolution(solutionPath);
+            AddAspNet5Projects(solutionPath, solution);
+            return solution;
+        }
 
-            return PickSolution(solutionPath);
+        void AddAspNet5Projects(string solutionPath, ISolution solution)
+        {
+            var aspNet5Projects = Directory.EnumerateFiles(solutionPath, "project.json", SearchOption.AllDirectories);
+            if (aspNet5Projects.Any())
+            {
+                var dth = new DesignTimeHostDemo.Program();
+                dth.Go(solutionPath, _logger.Debug);
+                   
+                foreach (var projectFile in aspNet5Projects)
+                {
+                    string projectPath = Path.GetDirectoryName(projectFile).TrimEnd(Path.DirectorySeparatorChar);
+                    solution.Projects.Add(new AspNet5Project(solution, _logger, projectPath, _fileSystem));
+                }
+            }
         }
 
         ISolution PickSolution(string solutionPath)

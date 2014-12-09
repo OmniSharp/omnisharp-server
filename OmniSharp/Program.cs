@@ -139,8 +139,6 @@ namespace OmniSharp
             }
         }
 
-
-
         static void ShowHelp(OptionSet p)
         {
             Console.WriteLine("Usage: omnisharp [-s /path/to/sln] [-p PortNumber]");

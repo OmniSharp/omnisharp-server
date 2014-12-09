@@ -30,6 +30,14 @@ namespace OmniSharp.Tests
             var solution = new SolutionPicker(fs, new Logger(Verbosity.Verbose)).LoadSolution(@".");
             fs.FileInfo.FromFileName (solution.FileName).Name.ShouldEqual("Unity-csharp.sln");
         }
+
+        [Test]
+        public void LoadEntropySolution()
+        {
+            var fs = new FileSystem();
+            var solution = new SolutionPicker(fs, new Logger(Verbosity.Verbose)).LoadSolution(@"/Users/jason/src/Entropy");
+            solution.FileName.ShouldEqual ("/Users/jason/src/Entropy/Entropy.sln");
+        }
     }
 
     [TestFixture]

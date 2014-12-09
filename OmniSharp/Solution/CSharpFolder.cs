@@ -31,25 +31,7 @@ namespace OmniSharp.Solution
             Loaded = true;
 
             var dth = new DesignTimeHostDemo.Program();
-            var kreHome = Path.Combine(Environment.GetEnvironmentVariable("HOME"), ".kre");
-
-            _logger.Debug("KRE Home = " + kreHome);
-
-            var defaultAlias = Path.Combine(kreHome, "alias", "default.alias");
-
-            _logger.Debug("Using default alias = " + defaultAlias);
-
-            var version = File.ReadAllText(defaultAlias).Trim();
-
-            _logger.Debug("Using KRE version = " + version);
-
-            // TODO: Make this work on windows
-
-            var krePath = Path.Combine(kreHome, "packages", version);
-
-            _logger.Debug("Using KRE at = " + krePath);
-
-            dth.Go(krePath, FileName, val => _logger.Debug(val));
+            dth.Go(FileName, val => _logger.Debug(val));
             dth.OnUpdateFileReference += OnUpdateFileReference;
             dth.OnUpdateSourceFileReference += OnUpdateSourceFileReference;
         }

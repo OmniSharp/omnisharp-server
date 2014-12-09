@@ -60,13 +60,14 @@ namespace OmniSharp.Solution
             _logger = logger;
             _fileSystem = fileSystem;
             FileName = filename;
+            Projects = new List<IProject>();
         }
 
         public void LoadSolution()
         {
             Loaded = false;
             _orphanProject = new OrphanProject(_fileSystem, _logger);
-            Projects = new List<IProject>();
+
             Projects.Add(_orphanProject);
 
             var directory = Path.GetDirectoryName(FileName);
