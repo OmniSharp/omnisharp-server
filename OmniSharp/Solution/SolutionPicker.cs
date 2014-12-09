@@ -18,8 +18,14 @@ namespace OmniSharp
 
         public ISolution LoadSolution(string solutionPath)
         {
-            solutionPath = solutionPath.ApplyPathReplacementsForServer ();
-            if (_fileSystem.Directory.Exists (solutionPath))
+            solutionPath = solutionPath.ApplyPathReplacementsForServer();
+
+            return PickSolution(solutionPath);
+        }
+
+        ISolution PickSolution(string solutionPath)
+        {
+            if (_fileSystem.Directory.Exists(solutionPath))
             {
                 var unitySolutions = GetUnitySolutions(solutionPath);
                 if (unitySolutions.Length == 1)
@@ -27,20 +33,21 @@ namespace OmniSharp
                     return GetSolution(unitySolutions[0]);
                 }
 
-                var slnFiles = _fileSystem.Directory.GetFiles (solutionPath, "*.sln");
+                var slnFiles = _fileSystem.Directory.GetFiles(solutionPath, "*.sln");
                 if (slnFiles.Length == 1)
                 {
                     return GetSolution(slnFiles[0]);
                 }
-                return new CSharpFolder (solutionPath, _logger, _fileSystem);
+
+                return new CSharpFolder(solutionPath, _logger, _fileSystem);
             }
-            return new CSharpSolution (_fileSystem, solutionPath, _logger);
+            return new MSBuildSolution(_fileSystem, solutionPath, _logger);
         }
 
-        CSharpSolution GetSolution(string solutionPath)
+        MSBuildSolution GetSolution(string solutionPath)
         {
-            _logger.Debug ("Found solution file - " + solutionPath);
-            return new CSharpSolution (_fileSystem, solutionPath, _logger);
+            _logger.Debug("Found solution file - " + solutionPath);
+            return new MSBuildSolution(_fileSystem, solutionPath, _logger);
         }
 
         string[] GetUnitySolutions(string solutionPath)

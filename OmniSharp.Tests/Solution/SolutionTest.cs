@@ -35,12 +35,12 @@ namespace OmniSharp.Tests
     [TestFixture]
     public class SolutionTest
     {
-        readonly CSharpSolution _solution;
+        readonly MSBuildSolution _solution;
 
         public SolutionTest()
         {
             var path = Environment.CurrentDirectory + "/Solution/minimal/minimal.sln";
-            _solution = new CSharpSolution (new FileSystem(), path, new Logger(Verbosity.Verbose));
+            _solution = new MSBuildSolution (new FileSystem(), path, new Logger(Verbosity.Verbose));
             _solution.LoadSolution ();
         }
 

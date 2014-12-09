@@ -41,7 +41,7 @@ namespace OmniSharp.Solution
     }
 
 
-    public class CSharpSolution : ISolution
+    public class MSBuildSolution : ISolution
     {
         OrphanProject _orphanProject;
         Logger _logger;
@@ -55,7 +55,7 @@ namespace OmniSharp.Solution
 
         public bool Loaded { get; private set; }
 
-        public CSharpSolution(IFileSystem fileSystem, string filename, Logger logger)
+        public MSBuildSolution(IFileSystem fileSystem, string filename, Logger logger)
         {
             _logger = logger;
             _fileSystem = fileSystem;
