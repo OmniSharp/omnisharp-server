@@ -221,7 +221,6 @@ namespace OmniSharp.AutoComplete
                     if (member is IMethod)
                     {
                         var method = ((IMethod)member);
-                        var typeParams = method.TypeParameters;
 
                         var methodParameterTypeArguments =
                             from p in method.Parameters

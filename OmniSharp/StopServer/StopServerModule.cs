@@ -7,7 +7,7 @@ namespace OmniSharp.StopServer
     {
         public StopServerModule(ISolution solution)
         {
-            Post["/stopserver"] = x =>
+            Post["StopServer", "/stopserver"] = x =>
                 {
                     solution.Terminate();
                     return Response.AsJson(true);

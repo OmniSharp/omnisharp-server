@@ -7,7 +7,7 @@ namespace OmniSharp.Rename
     {
         public RenameModule(RenameHandler renameHandler)
         {
-            Post["/rename"] = x =>
+            Post["Rename", "/rename"] = x =>
             {
                 var req = this.Bind<RenameRequest>();
                 var usages = renameHandler.Rename(req);

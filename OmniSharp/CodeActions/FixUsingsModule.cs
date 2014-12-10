@@ -6,7 +6,7 @@ public class FixUsingsModule : NancyModule
 {
     public FixUsingsModule(FixUsingsHandler fixUsingsHandler)
     {
-        Post["/fixusings"] = x =>
+        Post["FixUsings", "/fixusings"] = x =>
         {
             var req = this.Bind<OmniSharp.Common.Request>();
             var res = fixUsingsHandler.FixUsings(req);

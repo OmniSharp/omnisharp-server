@@ -33,6 +33,23 @@ namespace OmniSharp.Tests.AutoComplete
 }").First().ShouldEqual("string");
         }
 
+
+        [Test]
+        public void Should_not_show_namespace_in_return_type()
+        {
+            ReturnTypeFor(
+
+@"  using System.Collections.Generic;
+    
+    public class A {
+    public List<string> SomeList { get; }             
+    public A() 
+    {
+        this.SomeL$
+    }
+}").First().ShouldEqual("List<string> { get; }");
+
+        }
         [Test]
         public void Should_return_variable_return_type()
         {

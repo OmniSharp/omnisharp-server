@@ -11,6 +11,7 @@ namespace OmniSharp.AutoComplete
         {
             var stringWriter = new StringWriter();
             var astBuilder = new TypeSystemAstBuilder();
+            astBuilder.AlwaysUseShortTypeNames = true;
             AstNode node = astBuilder.ConvertSymbol(symbol);
             var writer = new TextWriterTokenWriter(stringWriter);
             var rt = node.GetChildByRole(Roles.Type);

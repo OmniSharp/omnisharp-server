@@ -8,7 +8,7 @@ namespace OmniSharp.SyntaxErrors
     {
         public SyntaxErrorsModule(SyntaxErrorsHandler handler)
         {
-            Post["/syntaxerrors"] = x =>
+            Post["SyntaxErrors", "/syntaxerrors"] = x =>
                 {
                     var req = this.Bind<Request>();
                     var res = handler.FindSyntaxErrors(req);

@@ -9,7 +9,7 @@ namespace OmniSharp.SyntaxErrors
     {
         public CodeCheckModule(CodeCheckHandler handler)
         {
-            Post["/codecheck"] = x =>
+            Post["CodeCheck", "/codecheck"] = x =>
                 {
                     var req = this.Bind<Request>();
                     var res = handler.CodeCheck(req);
