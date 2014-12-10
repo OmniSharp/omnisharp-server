@@ -13,10 +13,16 @@ using Newtonsoft.Json.Linq;
 
 namespace DesignTimeHostDemo
 {
+    public class FileReferenceEvent
+    {
+        public string ProjectName { get; set; }
+        public IEnumerable<string> References { get; set; }
+    }
+    
     public class Program
     {
-        public event Action<IEnumerable<string>> OnUpdateSourceFileReference;
-        public event Action<IEnumerable<string>> OnUpdateFileReference;
+        public event Action<FileReferenceEvent> OnUpdateSourceFileReference;
+        public event Action<FileReferenceEvent> OnUpdateFileReference;
 
         string hostId = Guid.NewGuid().ToString();
         // this can be k10
@@ -65,8 +71,12 @@ namespace DesignTimeHostDemo
                         {
                             // References as well as the dependency graph information
                             var val = m.Payload.ToObject<ReferencesMessage>();
-                          
-                            OnUpdateFileReference(val.FileReferences);
+                            var referencesEvent = new FileReferenceEvent
+                            {
+                                ProjectName = projectPath,
+                                References = val.FileReferences
+                            };
+                            OnUpdateFileReference(referencesEvent);
                         }
                         else if (m.MessageType == "Diagnostics")
                         {
@@ -91,37 +101,43 @@ namespace DesignTimeHostDemo
                         {
                             // The sources to feed to the language service
                             var val = m.Payload.ToObject<SourcesMessage>();
-                            OnUpdateSourceFileReference(val.Files);
+                            var referencesEvent = new FileReferenceEvent
+                            {
+                                ProjectName = projectPath,
+                                References = val.Files
+                            };
+                            OnUpdateSourceFileReference(referencesEvent);
+                            // OnUpdateSourceFileReference(val.Files);
                         }
                     };
 
                     // Start the message channel
                     queue.Start();
 
-                    var solutionPath = applicationRoot;
-                    var watcher = new FileWatcher(solutionPath);
+                    // var solutionPath = applicationRoot;
+                    // var watcher = new FileWatcher(solutionPath);
 //
 //                    foreach (var projectFile in Directory.EnumerateFiles(solutionPath, "project.json", SearchOption.AllDirectories))
 //                    {
 //                    }
 //
                     // When there's a file change
-                    watcher.OnChanged += changedPath =>
-                    {
-                        foreach (var project in projects)
-                        {
-                            // If the project changed
-                            if (changedPath.StartsWith(project.Key, StringComparison.OrdinalIgnoreCase))
-                            {
-                                queue.Post(new Message
-                                    {
-                                        ContextId = project.Value,
-                                        MessageType = "FilesChanged",
-                                        HostId = hostId
-                                    });
-                            }
-                        }
-                    };
+                    // watcher.OnChanged += changedPath =>
+                    // {
+                    //     foreach (var project in projects)
+                    //     {
+                    //         // If the project changed
+                    //         if (changedPath.StartsWith(project.Key, StringComparison.OrdinalIgnoreCase))
+                    //         {
+                    //             queue.Post(new Message
+                    //                 {
+                    //                     ContextId = project.Value,
+                    //                     MessageType = "FilesChanged",
+                    //                     HostId = hostId
+                    //                 });
+                    //         }
+                    //     }
+                    // };
                 });
         }
 
@@ -231,21 +247,21 @@ namespace DesignTimeHostDemo
             }
 
             kreProcess.EnableRaisingEvents = true;
-            kreProcess.Exited += (sender, e) =>
-            {
-                Console.WriteLine("Process crash trying again");
+            // kreProcess.Exited += (sender, e) =>
+            // {
+            //     Console.WriteLine("Process crash trying again");
 
-                Thread.Sleep(1000);
+            //     Thread.Sleep(1000);
 
-                StartRuntime(runtimePath, applicationPath, hostId, port, verboseOutput, onStart);
-            };
+            //     StartRuntime(runtimePath, applicationPath, hostId, port, verboseOutput, onStart);
+            // };
 
             onStart();
         }
 
-        private static Task ConnectAsync(Socket socket, IPEndPoint endPoint)
-        {
-            return Task.Factory.FromAsync((cb, state) => socket.BeginConnect(endPoint, cb, state), ar => socket.EndConnect(ar), null);
-        }
+        // private static Task ConnectAsync(Socket socket, IPEndPoint endPoint)
+        // {
+        //     return Task.Factory.FromAsync((cb, state) => socket.BeginConnect(endPoint, cb, state), ar => socket.EndConnect(ar), null);
+        // }
     }
 }

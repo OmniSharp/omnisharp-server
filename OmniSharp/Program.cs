@@ -131,6 +131,7 @@ namespace OmniSharp
             {
                 if(e is SocketException || e is HttpListenerException)
                 {
+                    logger.Error(e);
                     logger.Error("Detected an OmniSharp instance already running on port " + port + ". Press a key.");
                     Console.ReadKey();
                     return;

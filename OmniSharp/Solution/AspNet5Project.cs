@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
+using DesignTimeHostDemo;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
 
@@ -13,9 +14,10 @@ namespace OmniSharp.Solution
         private readonly Logger _logger;
 
         public AspNet5Project(ISolution solution, 
-                              Logger logger, 
-                              string folderPath, 
-                              IFileSystem fileSystem) : base (fileSystem, logger)
+            Logger logger, 
+            string folderPath, 
+            IFileSystem fileSystem)
+            : base(fileSystem, logger)
         {
             _logger = logger;
 
@@ -27,9 +29,17 @@ namespace OmniSharp.Solution
                 .AddAssemblyReferences(References);
         }
 
-        public void AddFiles(IEnumerable<string> files)
+        public void AddReferences(IEnumerable<string> references)
         {
-            foreach (var file in files)
+            foreach (var reference in references)
+            {
+                this.AddReference(reference);
+            }
+        }
+
+        public void AddFiles(IEnumerable<string> references)
+        {
+            foreach (var file in references)
             {
                 _logger.Debug("Loading " + file);
                 
@@ -37,7 +47,7 @@ namespace OmniSharp.Solution
                 Files.Add(csFile);
 
                 this.ProjectContent = this.ProjectContent
-                    .AddOrUpdateFiles (csFile.ParsedFile);
+                    .AddOrUpdateFiles(csFile.ParsedFile);
             }
         }
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.IO;
 using System.Linq;
-using DesignTimeHostDemo;
+// using DesignTimeHostDemo;
 
 namespace OmniSharp.Solution
 {
@@ -26,28 +26,28 @@ namespace OmniSharp.Solution
 
         public void LoadSolution()
         {
-            Loaded = false;
+            // Loaded = false;
             _project = new AspNet5Project(this, _logger, FileName, _fileSystem);
             Loaded = true;
 
-            var dth = new DesignTimeHostDemo.Program();
-            dth.Go(FileName, val => _logger.Debug(val));
-            dth.OnUpdateFileReference += OnUpdateFileReference;
-            dth.OnUpdateSourceFileReference += OnUpdateSourceFileReference;
+            // var dth = new DesignTimeHostDemo.Program();
+            // dth.Go(FileName, val => _logger.Debug(val));
+            // dth.OnUpdateFileReference += OnUpdateFileReference;
+            // dth.OnUpdateSourceFileReference += OnUpdateSourceFileReference;
         }
 
-        void OnUpdateSourceFileReference(IEnumerable<string> files)
-        {
-            _project.AddFiles(files);
-        }
+        // void OnUpdateSourceFileReference(FileReferenceEvent fileReferenceEvent)
+        // {
+        //     _project.AddFiles(fileReferenceEvent.References);
+        // }
 
-        void OnUpdateFileReference(IEnumerable<string> references)
-        {
-            foreach(var reference in references)
-            {
-                _project.AddReference(reference);
-            }
-        }
+        // void OnUpdateFileReference(FileReferenceEvent fileReferenceEvent)
+        // {
+        //     foreach(var reference in fileReferenceEvent.References)
+        //     {
+        //         _project.AddReference(reference);
+        //     }
+        // }
 
         public CSharpFile GetFile(string filename)
         {

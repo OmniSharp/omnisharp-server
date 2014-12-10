@@ -17,8 +17,8 @@ namespace OmniSharp.Tests
         public void Should_start_in_folder_mode()
         {
             var path = Environment.CurrentDirectory + "/Solution/minimal";
-            var solution = new CSharpFolder(path, new Logger (Verbosity.Verbose), new FileSystem());
-            solution.LoadSolution ();
+            var solution = new CSharpFolder(path, new Logger(Verbosity.Verbose), new FileSystem());
+            solution.LoadSolution();
         }
 
         [Test]
@@ -28,7 +28,7 @@ namespace OmniSharp.Tests
             fs.File.WriteAllText("Unity.sln", "");
             fs.File.WriteAllText("Unity-csharp.sln", "");
             var solution = new SolutionPicker(fs, new Logger(Verbosity.Verbose)).LoadSolution(@".");
-            fs.FileInfo.FromFileName (solution.FileName).Name.ShouldEqual("Unity-csharp.sln");
+            fs.FileInfo.FromFileName(solution.FileName).Name.ShouldEqual("Unity-csharp.sln");
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace OmniSharp.Tests
         {
             var fs = new FileSystem();
             var solution = new SolutionPicker(fs, new Logger(Verbosity.Verbose)).LoadSolution(@"/Users/jason/src/Entropy");
-            solution.FileName.ShouldEqual ("/Users/jason/src/Entropy/Entropy.sln");
+            solution.FileName.ShouldEqual("/Users/jason/src/Entropy/Entropy.sln");
         }
     }
 
@@ -48,8 +48,8 @@ namespace OmniSharp.Tests
         public SolutionTest()
         {
             var path = Environment.CurrentDirectory + "/Solution/minimal/minimal.sln";
-            _solution = new MSBuildSolution (new FileSystem(), path, new Logger(Verbosity.Verbose));
-            _solution.LoadSolution ();
+            _solution = new MSBuildSolution(new FileSystem(), path, new Logger(Verbosity.Verbose));
+            _solution.LoadSolution();
         }
 
         [Test]
