@@ -62,7 +62,8 @@ namespace OmniSharp.AutoComplete
             engine.AutomaticallyAddImports = request.WantImportableTypes;
             _logger.Debug("Getting Completion Data");
 
-            IEnumerable<CompletionData> data = engine.GetCompletionData(completionContext.CursorPosition, true).Cast<CompletionData>();
+            IEnumerable<CompletionData> data = engine.GetCompletionData(completionContext.CursorPosition, request.ForceSemanticCompletion.GetValueOrDefault(true)).Cast<CompletionData>();
+
             _logger.Debug("Got Completion Data");
             return data.Where(d => d != null && d.CompletionText.IsValidCompletionFor(partialWord))
                        .FlattenOverloads()
