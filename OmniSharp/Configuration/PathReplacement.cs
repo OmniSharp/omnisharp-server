@@ -21,8 +21,30 @@ namespace OmniSharp.Configuration
                 configLocation = Path.Combine(executableLocation, "config.json");
             }
             var config = StripComments(File.ReadAllText(configLocation));
-            _config = new Nancy.Json.JavaScriptSerializer().Deserialize<OmniSharpConfiguration>(config);
-            _config.ConfigFileLocation = configLocation;
+	    try
+	    {
+	        _config = new Nancy.Json.JavaScriptSerializer().Deserialize<OmniSharpConfiguration>(config);
+		_config.ConfigFileLocation = configLocation;
+	    } catch (System.ArgumentException e)
+	    {
+		Console.WriteLine(e.Message);
+		const string pattern = @"\(([0-9]+)\)$";
+		int offset;
+		if (int.TryParse(Regex.Match(e.Message, pattern).Groups[1].Value, out offset))
+		{
+		string[] lines = config.Replace("\r\n","\n").Replace("\n\r","\n").Split('\n');
+		
+		int characc = 0;
+		for (int i = 0; i<lines.Length; i++) {
+		    int characc1 = characc + lines[i].Length;
+		    if (characc1 >= offset) {
+		    Console.WriteLine(configLocation + "(" + i + "," + (offset-characc) + "):"+lines[i]);
+		    break;
+		    }
+		}
+		Environment.Exit(1);
+		}
+	    }
 
             if (!string.IsNullOrWhiteSpace(clientMode))
             {
