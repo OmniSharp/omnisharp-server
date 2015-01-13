@@ -6,7 +6,7 @@ namespace OmniSharp.GotoFile
     {
         public GotoFileModule(GotoFileHandler gotoFileHandler)
         {
-            Post["GotoFile", "/ gotofile"] = x =>
+            Post["GotoFile", "/gotofile"] = x =>
             {
                 var res = gotoFileHandler.GetSolutionFiles();
                 return Response.AsJson(res);
