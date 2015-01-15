@@ -23,7 +23,11 @@ namespace OmniSharp
             // Determine the default location for the server side config.json file.
             // The user may override this with a command line option if they want.
             string executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string configLocation = Path.Combine(executableLocation, "config.json");
+            string configLocation = Path.Combine(solutionPath, "omnisharp.json");
+            if (!File.Exists(configLocation))
+            {
+                configLocation = Path.Combine(executableLocation, "config.json");
+            }
 
             var port = 2000;
             Verbosity verbosity = Verbosity.Debug;
