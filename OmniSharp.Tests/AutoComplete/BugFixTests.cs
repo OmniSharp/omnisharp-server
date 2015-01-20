@@ -112,5 +112,84 @@ public class MyClass
                     }
                 }").ShouldContain("String(");
         }
+
+        [Test]
+        public void WhenOneSpace_ThenShouldCompleteWithProperty()
+        {
+            CompletionsFor(
+                @"
+                public class MyClass
+                { 
+                    public class Foo 
+                    {
+                        public string Bar { get; set; }
+                    }   
+
+                    public MyClass()
+                    {
+                        var d = new Foo{ $
+                    }
+                }").ShouldContain("Bar");
+        }
+
+        [Test]
+        public void WhenNoSpace_ThenShouldCompleteWithProperty()
+        {
+            CompletionsFor(
+                @"
+                public class MyClass
+                { 
+                    public class Foo 
+                    {
+                        public string Bar { get; set; }
+                    }   
+
+                    public MyClass()
+                    {
+                        var d = new Foo{$
+                    }
+                }").ShouldContain("Bar");
+        }
+
+        [Test]
+        public void WhenNewLine_ThenShouldCompleteWithProperty()
+        {
+            CompletionsFor(
+                @"
+                public class MyClass
+                { 
+                    public class Foo 
+                    {
+                        public string Bar { get; set; }
+                    }   
+
+                    public MyClass()
+                    {
+                        var d = new Foo {
+                        $
+                    }
+                }").ShouldContain("Bar");
+        }
+
+        [Test]
+        public void WhenNewLineCol1_ThenShouldCompleteWithProperty()
+        {
+            CompletionsFor(
+@"
+public class MyClass
+{ 
+    public class Foo 
+    {
+        public string Bar { get; set; }
+    }   
+
+    public MyClass()
+    {
+        var d = new Foo {
+$
+    }
+}"
+            ).ShouldContain("Bar");
+        }
     }
 }
