@@ -31,20 +31,27 @@ namespace OmniSharp.Configuration
 		const string pattern = @"\(([0-9]+)\)$";
 		int offset;
 		if (int.TryParse(Regex.Match(e.Message, pattern).Groups[1].Value, out offset))
-		{
-		string[] lines = config.Replace("\r\n","\n").Replace("\n\r","\n").Split('\n');
-		
-		int characc = 0;
-		for (int i = 0; i<lines.Length; i++) {
-		    int characc1 = characc + lines[i].Length;
-		    if (characc1 >= offset) {
-		    Console.WriteLine(configLocation + "(" + i + "," + (offset-characc) + "):"+lines[i]);
-		    break;
-		    }
-		}
-		Environment.Exit(1);
-		}
-	    }
+                {
+                    string[] lines = config.Replace("\r\n","\n").Replace("\n\r","\n").Split('\n');
+
+                    int lengthSum = 0;
+                    for (int i = 0; i<lines.Length; i++)
+                    {
+                        lengthSum += lines[i].Length;
+                        if ((lengthSum + lines[i].Length) >= offset)
+                        {
+                            Console.WriteLine(configLocation + "(" + i + "," + (offset-lengthSum) + "):"+lines[i]);
+                            break;
+                        }
+                    }
+                    Environment.Exit(1);
+                    // The system cannot work because of a User
+                    // error. Therefore we Exit(). If we would throw
+                    // the error again, we would trigger a stacktrace.
+                    // That would lead the user to think this is a
+                    // programming error.
+                }
+            }
 
             if (!string.IsNullOrWhiteSpace(clientMode))
             {
