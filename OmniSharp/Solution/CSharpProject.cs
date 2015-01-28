@@ -110,6 +110,11 @@ namespace OmniSharp.Solution
                 logger.Error("Directory not found - " + FileName);
                 return;
             }
+            catch (FileNotFoundException)
+            {
+                logger.Error("File not found - " + FileName);
+                return;
+            }
 
             AssemblyName = project.GetPropertyValue("AssemblyName");
 
