@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using OmniSharp.Solution;
 using OmniSharp.Configuration;
+using Microsoft.Win32;
 
 namespace OmniSharp.Build
 {
@@ -23,9 +24,11 @@ namespace OmniSharp.Build
             {
                 return PlatformService.IsUnix
                     ? "xbuild"
-                    : Path.Combine(
-                        _config.MSBuildPath ?? System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory(),
-                        "Msbuild.exe");
+                    : string.Format("\"{0}\"", Path.Combine(
+                        _config.MSBuildPath ??
+                        Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0", "MSBuildToolsPath", null) as string ??
+                        System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory(),
+                        "Msbuild.exe"));
             }
         }
 
