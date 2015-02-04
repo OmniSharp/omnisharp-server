@@ -152,7 +152,7 @@ namespace OmniSharp.AutoComplete
             if (entity.Documentation != null)
             {
                 completionData = new CompletionData(_signature, _completionText,
-                    _signature + Environment.NewLine +
+                    _signature + _config.TextEditorOptions.EolMarker +
                     DocumentationConverter.ConvertDocumentation(entity.Documentation, _config));
             }
             else
@@ -171,7 +171,7 @@ namespace OmniSharp.AutoComplete
                 {
                     string documentation = new DocumentationFetcher().GetDocumentation(_project, entity, _config);
                     var documentationAndSignature =
-                        documentationSignature + Environment.NewLine + documentation;
+                        documentationSignature + _config.TextEditorOptions.EolMarker + documentation;
                     completionData = new CompletionData(_signature, _completionText, documentationAndSignature);
                 }
                 else
