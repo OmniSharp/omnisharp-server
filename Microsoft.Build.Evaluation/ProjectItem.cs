@@ -18,7 +18,11 @@ namespace Microsoft.Build.Evaluation
         {
             get
             {
-                return this.Element.Attribute("Include").Value;
+                string value = this.Element.Attribute("Include").Value;
+                if(value == null)
+                    return null;
+
+                return System.Uri.UnescapeDataString(value);
             }
         }
         public bool HasMetadata(string name)
