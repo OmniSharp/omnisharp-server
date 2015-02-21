@@ -24,8 +24,8 @@ namespace OmniSharp.Build
                 return PlatformService.IsUnix
                     ? "xbuild"
                     : Path.Combine(
-                        _config.MSBuildPath ?? System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory(),
-                        "Msbuild.exe");
+                    _config.MSBuildPath ?? System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory(),
+                    "Msbuild.exe");
             }
         }
 
@@ -36,7 +36,7 @@ namespace OmniSharp.Build
 
         public BuildTargetResponse BuildCommand(BuildTargetRequest req)
         {
-            return new BuildTargetResponse { Command = this.Executable.ApplyPathReplacementsForClient() + " " + this.Arguments + " /target:" + req.Type.ToString() };
+            return new BuildTargetResponse { Command = this.Executable.ApplyPathReplacementsForClient() + " " + this.Arguments + " /target:" + req.Type.ToString() + " " + "/p:Configuration=" + req.Configuration.ToString() };
         }
     }
 }
