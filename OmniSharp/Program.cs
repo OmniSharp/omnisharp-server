@@ -59,7 +59,7 @@ namespace OmniSharp
                     h => showHelp = h != null
                 },
                 {
-                    "hostPID|pid=", "The processId of the editor to watch",
+                    "pid|hostPID=", "The processId of the editor to watch",
                     (int pid) => hostPID = pid
                 },
                 {
@@ -89,7 +89,6 @@ namespace OmniSharp
             }
 
             StartServer(solutionPath, clientPathMode, port, verbosity, configLocation, hostPID);
-            
         }
 
 
