@@ -313,6 +313,8 @@
     <Compile Include="Common\Metadata\QuickFixResponseMetadataProvider.cs" />
     <Compile Include="Common\Metadata\QuickFixMetadataProvider.cs" />
     <Compile Include="Common\Metadata\RequestMetadataProvider.cs" />
+    <Compile Include="ProcessExtensions.cs" />
+    <Compile Include="PlatformHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
