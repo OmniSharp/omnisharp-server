@@ -9,6 +9,7 @@ using Nancy.Hosting.Self;
 using NDesk.Options;
 using OmniSharp.Common;
 using OmniSharp.Solution;
+using System.Diagnostics;
 
 namespace OmniSharp
 {
@@ -19,6 +20,7 @@ namespace OmniSharp
             bool showHelp = false;
             string solutionPath = Directory.GetCurrentDirectory();
             string clientPathMode = null;
+            int hostPID = -1;
 
             // Determine the default location for the server side config.json file.
             // The user may override this with a command line option if they want.
@@ -33,28 +35,32 @@ namespace OmniSharp
             Verbosity verbosity = Verbosity.Debug;
 
             var options = new OptionSet
-                    {
-                        {
-                            "s|solution=", "The path to the solution file",
-                            s => solutionPath = s
-                        },
-                        {
-                            "p|port=", "Port number to listen on",
-                            (int p) => port = p
-                        },
-                        {
-                            "c|client-path-mode=", "The path mode of the client (Cygwin, Windows or Unix)",
-                            c => clientPathMode = c
-                        },
-                        {
-                            "v|verbose=", "Output debug information (Quiet, Debug, Verbose)",
-                            v => verbosity = v != null 
+            {
+                {
+                    "s|solution=", "The path to the solution file",
+                    s => solutionPath = s
+                },
+                {
+                    "p|port=", "Port number to listen on",
+                    (int p) => port = p
+                },
+                {
+                    "c|client-path-mode=", "The path mode of the client (Cygwin, Windows or Unix)",
+                    c => clientPathMode = c
+                },
+                {
+                    "v|verbose=", "Output debug information (Quiet, Debug, Verbose)",
+                    v => verbosity = v != null 
                                                 ? (Verbosity)Enum.Parse(typeof(Verbosity), v)
                                                 : Verbosity.Debug
-                        },
-                        {
+                },
+                {
                             "h|help", "Show this message and exit",
                             h => showHelp = h != null
+                        },
+                        {
+                            "hostPID|hostPID=", "The processId of the editor to watch",
+                            (int pid) => hostPID = pid
                         },
                         {
                             "config=", "The path to the server config.json file",
@@ -82,7 +88,7 @@ namespace OmniSharp
                 return;
             }
 
-            StartServer(solutionPath, clientPathMode, port, verbosity, configLocation);
+            StartServer(solutionPath, clientPathMode, port, verbosity, configLocation, hostPID);
             
         }
 
@@ -92,7 +98,8 @@ namespace OmniSharp
             string clientPathMode,
             int port,
             Verbosity verbosity,
-            string configLocation)
+            string configLocation,
+            int hostPID)
         {
             
             var logger = new Logger(verbosity);
@@ -110,6 +117,12 @@ namespace OmniSharp
                         {
                             solution.Terminate();
                             Console.WriteLine("Ctrl-C pressed");
+                            if (hostPID != -1)
+                            {
+                                var hostProcess = Process.GetProcessById(hostPID);
+                                hostProcess.EnableRaisingEvents = true;
+                                hostProcess.OnExit(() => hostProcess.KillAll() );
+                            }
                             e.Cancel = true;
                         };
                 var nancyHost = new NancyHost(new Bootstrapper(
