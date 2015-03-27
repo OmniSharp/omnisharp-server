@@ -55,18 +55,18 @@ namespace OmniSharp
                                                 : Verbosity.Debug
                 },
                 {
-                            "h|help", "Show this message and exit",
-                            h => showHelp = h != null
-                        },
-                        {
-                            "hostPID|hostPID=", "The processId of the editor to watch",
-                            (int pid) => hostPID = pid
-                        },
-                        {
-                            "config=", "The path to the server config.json file",
-                            path => configLocation = path
-                        }
-                    };
+                    "h|help", "Show this message and exit",
+                    h => showHelp = h != null
+                },
+                {
+                    "hostPID|pid=", "The processId of the editor to watch",
+                    (int pid) => hostPID = pid
+                },
+                {
+                    "config=", "The path to the server config.json file",
+                    path => configLocation = path
+                }
+            };
            
 
             try
@@ -106,7 +106,7 @@ namespace OmniSharp
             try
             {
                 Configuration.ConfigurationLoader.Load(
-                        configLocation: configLocation, clientMode: clientPathMode);
+                    configLocation: configLocation, clientMode: clientPathMode);
 
                 var solution = new SolutionPicker(new FileSystem()).LoadSolution(solutionPath, logger);
                 logger.Debug("Using solution path " + solutionPath);
@@ -114,28 +114,29 @@ namespace OmniSharp
 
                 Console.CancelKeyPress +=
                     (sender, e) =>
-                        {
-                            solution.Terminate();
-                            Console.WriteLine("Ctrl-C pressed");
-                            if (hostPID != -1)
-                            {
-                                var hostProcess = Process.GetProcessById(hostPID);
-                                hostProcess.EnableRaisingEvents = true;
-                                hostProcess.OnExit(() => hostProcess.KillAll() );
-                            }
-                            e.Cancel = true;
-                        };
+                {
+                    solution.Terminate();
+                    Console.WriteLine("Ctrl-C pressed");
+                    
+                    e.Cancel = true;
+                };
                 var nancyHost = new NancyHost(new Bootstrapper(
-                                                solution, 
-                                                new NativeFileSystem(), 
-                                                logger), 
-                                                new HostConfiguration{RewriteLocalhost=false}, 
-                                                new Uri("http://localhost:" + port));
+                                        solution, 
+                                        new NativeFileSystem(), 
+                                        logger), 
+                                    new HostConfiguration{ RewriteLocalhost = false }, 
+                                    new Uri("http://localhost:" + port));
 
                 nancyHost.Start();
                 logger.Debug("OmniSharp server is listening");
                 solution.LoadSolution();
                 logger.Debug("Solution has finished loading");
+                if (hostPID != -1)
+                {
+                    var hostProcess = Process.GetProcessById(hostPID);
+                    hostProcess.EnableRaisingEvents = true;
+                    hostProcess.OnExit(() => solution.Terminate());
+                }
                 while (!solution.Terminated)
                 {
                     Thread.Sleep(1000);
@@ -144,9 +145,9 @@ namespace OmniSharp
                 Console.WriteLine("Quit gracefully");
                 nancyHost.Stop();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                if(e is SocketException || e is HttpListenerException)
+                if (e is SocketException || e is HttpListenerException)
                 {
                     logger.Error("Detected an OmniSharp instance already running on port " + port + ". Press a key.");
                     Console.ReadKey();
