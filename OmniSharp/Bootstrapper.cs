@@ -29,6 +29,7 @@ namespace OmniSharp
             JsonSettings.MaxJsonLength = int.MaxValue;
 			// so I don't break existing clients after Nancy upgrade
 			JsonSettings.RetainCasing = true;
+            StaticConfiguration.DisableErrorTraces = false;
         }
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
