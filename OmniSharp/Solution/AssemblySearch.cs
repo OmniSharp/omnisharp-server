@@ -11,6 +11,7 @@ namespace OmniSharp.Solution
             @"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5",
             @"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0",
             @"C:\Program Files\Reference Assemblies\Microsoft\Framework\v3.5",
+            @"C:\Windows\Microsoft.NET\Framework\v4.0.30319",            
             @"C:\Windows\Microsoft.NET\Framework\v2.0.50727",
             @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v2.0\Assemblies",
             @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\Assemblies",
@@ -30,7 +31,6 @@ namespace OmniSharp.Solution
             @"C:\Program Files\Microsoft Visual Studio 11.0\Common7\IDE\ReferenceAssemblies\v2.0",
             @"C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE\ReferenceAssemblies\v2.0",
             @"C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE\PublicAssemblies",
-            @"C:\Windows\Microsoft.NET\Framework\v4.0.30319",
 
             //Unix Paths
             @"/usr/local/lib/mono/4.5",
