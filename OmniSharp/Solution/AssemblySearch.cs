@@ -11,6 +11,7 @@ namespace OmniSharp.Solution
             @"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5",
             @"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0",
             @"C:\Program Files\Reference Assemblies\Microsoft\Framework\v3.5",
+            @"C:\Windows\Microsoft.NET\Framework\v4.0.30319",            
             @"C:\Windows\Microsoft.NET\Framework\v2.0.50727",
             @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v2.0\Assemblies",
             @"C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\Assemblies",
