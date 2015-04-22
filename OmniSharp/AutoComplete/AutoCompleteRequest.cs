@@ -18,6 +18,12 @@ namespace OmniSharp.AutoComplete
         }
 
         /// <summary>
+        ///   Specifies whether to force semantic completion (i.e. CTRL-space in
+        ///   NRefactory).
+        /// </summary>
+        public bool? ForceSemanticCompletion { get; set; }
+
+        /// <summary>
         ///   Specifies whether to return the code documentation for
         ///   each and every returned autocomplete result.
         /// </summary>
