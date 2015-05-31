@@ -9,7 +9,7 @@ namespace OmniSharp.Build
         public BuildCommandModule(BuildCommandBuilder commandBuilder)
         {
             Post["BuildCommand", "/buildcommand"] = x =>
-                Response.AsText(commandBuilder.Executable.ApplyPathReplacementsForClient() + " " + commandBuilder.Arguments);
+                Response.AsText(commandBuilder.Executable.ApplyPathReplacementsForClient() + " " + commandBuilder.BuildArguments(true));
 
             Post["BuildTarget", "/buildtarget"] = x =>
             {

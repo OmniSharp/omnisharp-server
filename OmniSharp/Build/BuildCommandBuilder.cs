@@ -1,6 +1,7 @@
 ﻿using System.IO;
-using OmniSharp.Solution;
+using System.Linq;
 using OmniSharp.Configuration;
+using OmniSharp.Solution;
 
 namespace OmniSharp.Build
 {
@@ -8,11 +9,14 @@ namespace OmniSharp.Build
     {
         private readonly ISolution _solution;
         private readonly OmniSharpConfiguration _config;
+        private readonly Logger _logger;
 
         public BuildCommandBuilder(
             ISolution solution,
-            OmniSharpConfiguration config)
+            OmniSharpConfiguration config,
+            Logger logger)
         {
+            _logger = logger;
             _solution = solution;
             _config = config;
         }
@@ -29,14 +33,52 @@ namespace OmniSharp.Build
             }
         }
 
-        public string Arguments
+        public string BuildArguments(bool includeSolutionFile)
         {
-            get { return (PlatformService.IsUnix ? "" : "/m ") + "/nologo /v:q /property:GenerateFullPaths=true \"" + _solution.FileName + "\""; }
+            
+             var args = (PlatformService.IsUnix ? "" : "/m ") + "/nologo /v:q /property:GenerateFullPaths=true"; 
+             if(includeSolutionFile)
+             {
+                 _logger.Debug("Adding solution " + _solution.FileName);
+                 args += " \"" + _solution.FileName + "\""; 
+             }
+             return args;
         }
 
         public BuildTargetResponse BuildCommand(BuildTargetRequest req)
         {
-            return new BuildTargetResponse { Command = this.Executable.ApplyPathReplacementsForClient() + " " + this.Arguments + " /target:" + req.Type.ToString() + " " + "/p:Configuration=" + req.Configuration.ToString() };
+            var command = Executable.ApplyPathReplacementsForClient() + " " + BuildArguments(false); 
+            var file = _solution.FileName;
+            var addConfiguration = true;
+
+            if (!string.IsNullOrEmpty(req.Project))
+            {
+                var prj = _solution.Projects.FirstOrDefault(x => x.Title == req.Project);
+                if (prj == null)
+                {
+                    _logger.Error("Could not find project with name " + req.Project + ". Falling back to building solution");
+                }
+                else
+                {
+                    _logger.Debug("Adding project " + prj.FileName + " to build command");
+                    file = prj.FileName;
+                    // Specifying a specific configuration will cause issues when dependent projects do not have the same configuration (Debug\Release) as the target project
+                    addConfiguration = false;
+                }
+            }
+
+            command += " \"" + file + "\" /target:" + req.Type;
+
+            if(addConfiguration)
+            {
+                command += " /p:Configuration=" + req.Configuration;
+            }
+
+
+
+            var response = new BuildTargetResponse { Command = command };
+            return response;
         }
+
     }
 }
