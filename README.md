@@ -1,3 +1,8 @@
+#Notice
+This project is being replaced with [OmniSharp Roslyn](https://github.com/OmniSharp/omnisharp-roslyn). I'll still accept PRs for this project, but please note that all development has stopped here.
+
+
+
 OmniSharpServer
 ===============
 [![Mono Build Status](https://travis-ci.org/OmniSharp/omnisharp-server.svg?branch=master)](https://travis-ci.org/OmniSharp/omnisharp-server) [![Windows Build Status](http://teamcity.codebetter.com/app/rest/builds/buildType:(id:bt1232)/statusIcon)](http://teamcity.codebetter.com/viewType.html?buildTypeId=bt1232&guest=1)
