@@ -16,7 +16,10 @@ namespace OmniSharp.FindProjects
         public QuickFixResponse FindAllProjects()
         {
             
-            var quickfixes = _solution.Projects.OrderBy(x => x.Title).Select(t => new QuickFix
+            var quickfixes = _solution.Projects
+                .Where(x => x.Title != OrphanProject.ProjectFileName)
+                .OrderBy(x => x.Title)
+                .Select(t => new QuickFix
                 {
                     Text = t.Title,
                     FileName = t.FileName
