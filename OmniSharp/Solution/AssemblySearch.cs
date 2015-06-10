@@ -47,10 +47,10 @@ namespace OmniSharp.Solution
             @"/opt/mono/lib/mono/2.0",
 
             //OS X Paths
-            @"/Library/Frameworks/Mono.Framework/Libraries/mono/4.5",
-            @"/Library/Frameworks/Mono.Framework/Libraries/mono/4.0",
-            @"/Library/Frameworks/Mono.Framework/Libraries/mono/3.5",
-            @"/Library/Frameworks/Mono.Framework/Libraries/mono/2.0",
+            @"/Library/Frameworks/Mono.framework/Libraries/mono/4.5",
+            @"/Library/Frameworks/Mono.framework/Libraries/mono/4.0",
+            @"/Library/Frameworks/Mono.framework/Libraries/mono/3.5",
+            @"/Library/Frameworks/Mono.framework/Libraries/mono/2.0",
             @"~/.kpm/packages"
         };
     }
