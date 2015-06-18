@@ -35,7 +35,7 @@ namespace OmniSharp.FindUsages
         {
             var result = FindUsageNodes(request)
                             .Distinct(new NodeComparer())
-                            .OrderBy(n => n.GetRegion().FileName.LowerCaseDriveLetter())
+                            .OrderBy(n => n.GetRegion().FileName)
                             .ThenBy(n => n.StartLocation.Line)
                             .ThenBy(n => n.StartLocation.Column);
                             
@@ -45,7 +45,7 @@ namespace OmniSharp.FindUsages
                 var usages = result.Select(node => new QuickFix
                 {
                     FileName = node.GetRegion().FileName,
-                    Text = node.Preview(_solution.GetFile(node.GetRegion().FileName.LowerCaseDriveLetter()), request.MaxWidth).Replace("'", "''"),
+                    Text = node.Preview(_solution.GetFile(node.GetRegion().FileName), request.MaxWidth).Replace("'", "''"),
                     Line = node.StartLocation.Line,
                     Column = node.StartLocation.Column,
                 });
@@ -120,7 +120,7 @@ namespace OmniSharp.FindUsages
 
                     Parallel.ForEach(interesting.Distinct(), file =>
                         {
-                            string text = _solution.GetFile(file.FileName.LowerCaseDriveLetter()).Content.Text;
+                            string text = _solution.GetFile(file.FileName).Content.Text;
                             SyntaxTree unit ;
                             if(project.CompilerSettings!=null){
                             	unit = new CSharpParser(project.CompilerSettings).Parse(text, file.FileName);

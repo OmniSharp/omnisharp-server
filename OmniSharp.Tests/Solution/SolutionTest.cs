@@ -60,7 +60,7 @@ namespace OmniSharp.Tests
         [Test]
         public void Should_put_unknown_file_near_to_close_project_file()
         {
-            _solution.ProjectContainingFile((Environment.CurrentDirectory + "/Solution/minimal/minimal/test.cs").LowerCaseDriveLetter())
+            _solution.ProjectContainingFile((Environment.CurrentDirectory + "/Solution/minimal/minimal/test.cs"))
                 .Title.ShouldEqual("minimal");
         }
 
