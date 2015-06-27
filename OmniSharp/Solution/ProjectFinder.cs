@@ -20,7 +20,11 @@ namespace OmniSharp.Solution
 
             IProject sourceProject = _solution.Projects.FirstOrDefault(p => p.ProjectContent.FullAssemblyName == contextAssemblyName);
             var projectsThatReferenceUsage = from p in _solution.Projects
-            where p.References.Any(r => r.Resolve(context).FullAssemblyName == contextAssemblyName) || p == sourceProject
+            where p.References.Any(r => {
+                    var ctx = r.Resolve(context);
+                    if (ctx == null) return false;
+                    return ctx.FullAssemblyName == contextAssemblyName;
+                    }) || p == sourceProject
             select p;
             return projectsThatReferenceUsage;
         }

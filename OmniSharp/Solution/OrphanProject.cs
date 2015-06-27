@@ -12,6 +12,7 @@ namespace OmniSharp.Solution
     /// </summary>
     public class OrphanProject : Project
     {
+        public const string ProjectFileName = "OrphanProject";
         public OrphanProject(IFileSystem fileSystem, Logger logger) : base(fileSystem, logger)
         {
             Title = "Orphan Project";
@@ -20,11 +21,11 @@ namespace OmniSharp.Solution
             ProjectId = Guid.NewGuid();
 
             References = new List<IAssemblyReference>();
-            FileName = "OrphanProject";
+            FileName = ProjectFileName;
             string mscorlib = FindAssembly("mscorlib");
             Console.WriteLine(mscorlib);
             ProjectContent = new CSharpProjectContent()
-                .SetAssemblyName("OrphanProject")
+                .SetAssemblyName(ProjectFileName)
                 .AddAssemblyReferences(LoadAssembly(mscorlib));
         }
 

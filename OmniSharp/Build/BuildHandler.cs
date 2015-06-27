@@ -30,7 +30,7 @@ namespace OmniSharp.Build
             var startInfo = new ProcessStartInfo
                 {
                     FileName = build,
-                    Arguments = _commandBuilder.Arguments,
+                    Arguments = _commandBuilder.BuildArguments(true),
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     RedirectStandardInput = true,
@@ -62,8 +62,8 @@ namespace OmniSharp.Build
             if (e.Data == null)
                 return;
 
-            if (e.Data == "Build succeeded.")
-                _response.Success = true;
+            //if (e.Data == "Build succeeded.")
+             //   _response.Success = true;
             var quickfix = _logParser.Parse(e.Data);
             if(quickfix != null)
                 _quickFixes.Add(quickfix);
