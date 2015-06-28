@@ -5,7 +5,7 @@ namespace OmniSharp.FindProjects
     {
        public FindProjectsModule(FindProjectsHandler handler)
        {
-           Post["FindProjects", "/findprojects"] = x =>
+           Post["Projects", "/projects"] = x =>
            {
                var res = handler.FindAllProjects();
                return Response.AsJson(res);
