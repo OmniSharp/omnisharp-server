@@ -315,6 +315,9 @@
     <Compile Include="PlatformHelper.cs" />
     <Compile Include="FindProjects\FindProjectsHandler.cs" />
     <Compile Include="FindProjects\FindProjectsModule.cs" />
+    <Compile Include="FindProjects\FindProjectsResponse.cs" />
+    <Compile Include="FindProjects\MsBuildProject.cs" />
+    <Compile Include="FindProjects\MsBuildWorkspaceInformation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
