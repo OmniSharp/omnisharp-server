@@ -18,16 +18,16 @@ This is the server component for the [Vim OmniSharp plugin](https://github.com/n
 ####OSX / Linux 
 Requires a minimum of Mono 3.0.12 - If you absolutely must use mono 2.10 then checkout the mono-2.10.8 tag. [Updating mono on ubuntu](https://github.com/nosami/OmniSharpServer/wiki). If you are using OSX, please use the official version of Mono as the homebrew version has [known](https://github.com/nosami/OmniSharpServer/issues/83) [issues](https://github.com/nosami/OmniSharpServer/issues/80).
 ```
-    git clone https://github.com/nosami/OmniSharpServer.git
-    cd OmniSharpServer
+    git clone https://github.com/OmniSharp/omnisharp-server.git
+    cd omnisharp-server
     git submodule update --init --recursive
     xbuild
 ```
 
 ####Windows
 ```
-    git clone https://github.com/nosami/OmniSharpServer.git
-    cd OmniSharpServer
+    git clone https://github.com/OmniSharp/omnisharp-server.git
+    cd omnisharp-server
     git submodule update --init --recursive
 
     # (if using Cygwin, overwrite the default config file config.json with config-cygwin.json)
