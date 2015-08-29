@@ -18,11 +18,6 @@ namespace OmniSharp.Solution
             return Regex.Replace(stringToTrim, @"\s+", " ");
         }
 
-        public static string LowerCaseDriveLetter(this string path)
-        {
-        	return path.Replace(@"C:\", @"c:\").Replace(@"D:\", @"d:\");
-        }
-
 		public static string ForceWindowsPathSeparator(this string path)
 		{
 			return path.Replace ('/', '\\');
