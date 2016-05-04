@@ -8,10 +8,16 @@ namespace OmniSharp.TestContextInformation
         public GetTestContextModule(GetTestContextHandler handler)
         {
             Post["/gettestcontext"] = x =>
-                {
-                    var request = this.Bind<TestCommandRequest>();
-                    return Response.AsJson(handler.GetTestContextResponse(request));
-                };
+            {
+                var request = this.Bind<TestCommandRequest>();
+                return Response.AsJson(handler.GetTestContextResponse(request));
+            };
+
+            Post["/gettestparams"] = x =>
+            {
+                var request = this.Bind<TestCommandRequest>();
+                return Response.AsJson(handler.GetContextResponse(request));
+            };
         }
     }
 }
