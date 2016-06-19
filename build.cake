@@ -26,7 +26,9 @@ Task("Clean")
             {
                 CleanDirectories(new DirectoryPath[] {
                         binDir, objDir, releaseDir });
-                DeleteFile(releaseZip);
+                if (FileExists(releaseZip)) {
+                    DeleteFile(releaseZip);
+                }
             });
 
 Task("Restore")
@@ -38,7 +40,7 @@ Task("Restore")
                         Source = new List<string> {
                             "https://www.nuget.org/api/v2/"
                         },
-                        ToolPath = ".nuget/nuget.exe"
+                        ToolPath = ".nuget/NuGet.exe"
                     });
             });
 
