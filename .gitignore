@@ -115,3 +115,6 @@ UpgradeLog*.XML
 packages/
 
 .projectile
+
+# Cake
+tools/Cake
