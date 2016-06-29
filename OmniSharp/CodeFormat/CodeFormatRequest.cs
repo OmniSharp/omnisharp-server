@@ -11,5 +11,9 @@ namespace OmniSharp.CodeFormat
             get { return _expandTab; }
             set { _expandTab = value; }
         }
+
+        public bool TabsToSpaces { get; set; } = true;
+
+        public int TabSize { get; set; } = 4;
     }
 }
