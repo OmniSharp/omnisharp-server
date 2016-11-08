@@ -51,7 +51,15 @@ namespace OmniSharp.Solution
             @"/Library/Frameworks/Mono.framework/Libraries/mono/4.0",
             @"/Library/Frameworks/Mono.framework/Libraries/mono/3.5",
             @"/Library/Frameworks/Mono.framework/Libraries/mono/2.0",
-            @"~/.kpm/packages"
+            @"~/.kpm/packages",
+
+
+            //OS X Unity3d mono Paths
+            @"/Applications/Unity/MonoDevelop.app/Contents/Frameworks/Mono.framework/Versions/Current/lib/mono/4.5",
+            @"/Applications/Unity/MonoDevelop.app/Contents/Frameworks/Mono.framework/Versions/Current/lib/mono/4.0",
+            @"/Applications/Unity/MonoDevelop.app/Contents/Frameworks/Mono.framework/Versions/Current/lib/mono/3.5",
+            @"/Applications/Unity/MonoDevelop.app/Contents/Frameworks/Mono.framework/Versions/Current/lib/mono/2.0"
+
         };
     }
 }
