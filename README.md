@@ -13,9 +13,9 @@ HTTP wrapper around [NRefactory] (https://github.com/icsharpcode/NRefactory) all
 This is the server component for the [Vim OmniSharp plugin](https://github.com/nosami/OmniSharp), [YouCompleteMe](https://github.com/Valloric/YouCompleteMe), [Sublime Text 2](https://github.com/PaulCampbell/OmniSharpSublimePlugin), [Sublime Text 3](https://github.com/moonrabbit/OmniSharpSublime), [Emacs OmniSharp plugin](https://github.com/sp3ctum/omnisharp-emacs) and [Atom plugin](https://github.com/Mpdreamz/atom-sharper)
 
 
-#Build
+# Build
 
-####OSX / Linux 
+#### OSX / Linux 
 Requires a minimum of Mono 3.0.12 - If you absolutely must use mono 2.10 then checkout the mono-2.10.8 tag. [Updating mono on ubuntu](https://github.com/nosami/OmniSharpServer/wiki). If you are using OSX, please use the official version of Mono as the homebrew version has [known](https://github.com/nosami/OmniSharpServer/issues/83) [issues](https://github.com/nosami/OmniSharpServer/issues/80).
 ```
     git clone https://github.com/OmniSharp/omnisharp-server.git
@@ -24,7 +24,7 @@ Requires a minimum of Mono 3.0.12 - If you absolutely must use mono 2.10 then ch
     xbuild
 ```
 
-####Windows
+#### Windows
 ```
     git clone https://github.com/OmniSharp/omnisharp-server.git
     cd omnisharp-server
@@ -52,7 +52,7 @@ To start the Omnisharp server manually (The Vim OmniSharp client and YouComplete
 [mono] OmniSharp.exe -s path
 ```
 
-###Problems (or just want to see what's going on)?
+### Problems (or just want to see what's going on)?
 
 Try adding an extra ```-v Verbose``` to the end of the command line. You should see something like the following.
 
