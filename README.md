@@ -1,5 +1,5 @@
 # 📢 Notice
-This project has been replaced replaced with [OmniSharp Roslyn](https://github.com/OmniSharp/omnisharp-roslyn). Please note that all development has stopped here - if you wish to use OmniSharp, head over to [OmniSharp Roslyn](https://github.com/OmniSharp/omnisharp-roslyn).
+This project has been replaced with [OmniSharp Roslyn](https://github.com/OmniSharp/omnisharp-roslyn). Please note that all development has stopped here - if you wish to use OmniSharp, head over to [OmniSharp Roslyn](https://github.com/OmniSharp/omnisharp-roslyn).
 
 OmniSharpServer
 ===============
