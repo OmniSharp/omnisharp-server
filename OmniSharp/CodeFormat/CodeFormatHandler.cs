@@ -15,6 +15,10 @@ namespace OmniSharp.CodeFormat
         {
             var options = _config.TextEditorOptions;
             var policy = _config.CSharpFormattingOptions;
+
+            options.TabsToSpaces = request.TabsToSpaces;
+            options.TabSize = request.TabSize;
+
             var formatter = new CSharpFormatter(policy, options);
             formatter.FormattingMode = FormattingMode.Intrusive;
             var output = formatter.Format(request.Buffer);
