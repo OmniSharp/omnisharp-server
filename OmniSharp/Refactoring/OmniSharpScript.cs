@@ -14,6 +14,7 @@ namespace OmniSharp.Refactoring
     public class OmniSharpScript : DocumentScript
     {
         readonly OmniSharpRefactoringContext _context;
+
         public OmniSharpScript(OmniSharpRefactoringContext context, OmniSharpConfiguration config)
             : base(context.Document, config.CSharpFormattingOptions, config.TextEditorOptions)
         {
@@ -27,44 +28,52 @@ namespace OmniSharp.Refactoring
             {
                 Debug.Assert(GetSegment(node) != null);
             }
-            return new Task(() => { });
+            return new Task(() =>
+                {
+                });
         }
 
-		public override Task<Script> InsertWithCursor(string operation, InsertPosition defaultPosition, IList<AstNode> nodes)
-		{
-			EntityDeclaration entity = _context.GetNode<EntityDeclaration>();
-			if (entity is Accessor) {
-				entity = (EntityDeclaration) entity.Parent;
-			}
+        public override Task<Script> InsertWithCursor(string operation, InsertPosition defaultPosition, IList<AstNode> nodes)
+        {
+            EntityDeclaration entity = _context.GetNode<EntityDeclaration>();
+            if (entity is Accessor)
+            {
+                entity = (EntityDeclaration)entity.Parent;
+            }
 
-			foreach (var node in nodes) {
-				InsertBefore(entity, node);
-			}
-			var tcs = new TaskCompletionSource<Script> ();
-			tcs.SetResult (this);
-			return tcs.Task;
-		}
+            foreach (var node in nodes)
+            {
+                InsertBefore(entity, node);
+            }
+            var tcs = new TaskCompletionSource<Script>();
+            tcs.SetResult(this);
+            return tcs.Task;
+        }
 
-		public override Task<Script> InsertWithCursor(string operation, ITypeDefinition parentType, Func<Script, RefactoringContext, IList<AstNode>> nodeCallback)
-		{
-			var unit = _context.RootNode;
-			var insertType = unit.GetNodeAt<TypeDeclaration> (parentType.Region.Begin);
+        public override Task<Script> InsertWithCursor(string operation, ITypeDefinition parentType, Func<Script, RefactoringContext, IList<AstNode>> nodeCallback)
+        {
+            var unit = _context.RootNode;
+            var insertType = unit.GetNodeAt<TypeDeclaration>(parentType.Region.Begin);
 
-			var startOffset = GetCurrentOffset (insertType.LBraceToken.EndLocation);
-			var nodes = nodeCallback(this, _context);
-			foreach (var node in nodes.Reverse ()) {
-				var output = OutputNode (1, node, true);
-				if (parentType.Kind == TypeKind.Enum) {
-					InsertText (startOffset, output.Text + (!parentType.Fields.Any() ? "" : ","));
-				} else {
-					InsertText (startOffset, output.Text);
-				}
-				output.RegisterTrackedSegments (this, startOffset);
-			}
-			var tcs = new TaskCompletionSource<Script> ();
-			tcs.SetResult (this);
-			return tcs.Task;
-		}
+            var startOffset = GetCurrentOffset(insertType.LBraceToken.EndLocation);
+            var nodes = nodeCallback(this, _context);
+            foreach (var node in nodes.Reverse ())
+            {
+                var output = OutputNode(1, node, true);
+                if (parentType.Kind == TypeKind.Enum)
+                {
+                    InsertText(startOffset, output.Text + (!parentType.Fields.Any() ? "" : ","));
+                }
+                else
+                {
+                    InsertText(startOffset, output.Text);
+                }
+                output.RegisterTrackedSegments(this, startOffset);
+            }
+            var tcs = new TaskCompletionSource<Script>();
+            tcs.SetResult(this);
+            return tcs.Task;
+        }
 
         public void Rename(AstNode node, string newName)
         {
@@ -94,40 +103,49 @@ namespace OmniSharp.Refactoring
             Replace(node, new IdentifierExpression(newName));
         }
 
-		public override void Rename(ISymbol symbol, string name = null)
+        public override void Rename(ISymbol symbol, string name = null)
         {
             FindReferences refFinder = new FindReferences();
             refFinder.FindReferencesInFile(refFinder.GetSearchScopes(symbol),
-                                           _context.UnresolvedFile,
-                                           _context.RootNode as SyntaxTree,
-                                           _context.Compilation, (n, r) => Rename(n, name),
-                                           _context.CancellationToken);
+                _context.UnresolvedFile,
+                _context.RootNode as SyntaxTree,
+                _context.Compilation, (n, r) => Rename(n, name),
+                _context.CancellationToken);
         }
 
-//        public override void Rename(IVariable variable, string name)
-//        {
-//            FindReferences refFinder = new FindReferences();
-//            refFinder.FindLocalReferences(variable,
-//                                          _context.UnresolvedFile,
-//                                          _context.RootNode as SyntaxTree,
-//                                          _context.Compilation, (n, r) => Rename(n, name),
-//                                          _context.CancellationToken);
-//        }
-//
-//        public override void RenameTypeParameter(IType type, string name = null)
-//        {
-//            FindReferences refFinder = new FindReferences();
-//            refFinder.FindTypeParameterReferences(type,
-//                                                  _context.UnresolvedFile,
-//                                                  _context.RootNode as SyntaxTree,
-//                                                  _context.Compilation, (n, r) => Rename(n, name),
-//                                                  _context.CancellationToken);
-//        }
+        //        public override void Rename(IVariable variable, string name)
+        //        {
+        //            FindReferences refFinder = new FindReferences();
+        //            refFinder.FindLocalReferences(variable,
+        //                                          _context.UnresolvedFile,
+        //                                          _context.RootNode as SyntaxTree,
+        //                                          _context.Compilation, (n, r) => Rename(n, name),
+        //                                          _context.CancellationToken);
+        //        }
+        //
+        //        public override void RenameTypeParameter(IType type, string name = null)
+        //        {
+        //            FindReferences refFinder = new FindReferences();
+        //            refFinder.FindTypeParameterReferences(type,
+        //                                                  _context.UnresolvedFile,
+        //                                                  _context.RootNode as SyntaxTree,
+        //                                                  _context.Compilation, (n, r) => Rename(n, name),
+        //                                                  _context.CancellationToken);
+        //        }
 
         public override void CreateNewType(AstNode newType, NewTypeContext context = NewTypeContext.CurrentNamespace)
         {
             var output = OutputNode(0, newType, true);
-            InsertText(0, output.Text);
+            var firstCurlyBraceIndex = this.CurrentDocument.Text.IndexOf("{");
+            if (firstCurlyBraceIndex < 0)
+            {
+                firstCurlyBraceIndex = 0;
+            }
+            else
+            {
+                firstCurlyBraceIndex = firstCurlyBraceIndex + 1;
+            }
+            InsertText(firstCurlyBraceIndex, output.Text);
         }
     }
 }
