@@ -319,5 +319,38 @@ public class Handler
                 }
             }");
         }
+
+        [Test]
+        public void Should_not_rename_implementations_when_interface_methods_renamed()
+        {
+            Rename(@"
+            public interface IMyInterface
+            {
+                void Do$It();
+            }
+
+            public class MyClass : IMyInterface
+            {
+                public void DoIt()
+                {
+
+                }
+            }
+            ", "InterfaceRename")
+            .ShouldEqual(@"
+           
+            public interface IMyInterface
+            {
+                void InterfaceRename();
+            }
+
+            public class MyClass : IMyInterface
+            {
+                public void InterfaceRename()
+                {
+
+                }
+            }");
+        }
     }
 }
